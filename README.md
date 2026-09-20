@@ -165,8 +165,6 @@ Three practical questions, answered with patterns already proven elsewhere rathe
 
 **Academic grounding:** [AITEE — Agentic Tutor for EE](https://arxiv.org/pdf/2505.21582) · [Spatial Blindspot of VLMs](https://arxiv.org/pdf/2601.09954) · [Grid-augmented vision](https://arxiv.org/pdf/2411.18270) · [Visual Position Prompt for MLLM Grounding](https://arxiv.org/pdf/2503.15426) · [Supporting Electronics Learning through AR](https://arxiv.org/pdf/2210.13820)
 
-**Hardware capability check:** [Meta Ray-Ban Display glasses](https://www.meta.com/ai-glasses/meta-ray-ban-display/) · [SmartBreadboard-3D (GitHub)](https://github.com/sasivaradhansbee25-hue/SmartBreadboard-3D) · [Resistor Detection dataset (Roboflow)](https://universe.roboflow.com/circuits-project/resistor-detection-5azes)
-
 **Automotive generalizability check:** [ARI: AI Wiring Diagrams](https://ari.app/2026/05/introducing-aris-ai-wiring-diagrams/) · [MECH AI](https://mechai.app/) · [Identifix](https://www.identifix.com/wiring-diagrams/)
 
 *Full bibliography with every source touched (100+ links, credibility-tagged) is in [`research-log.md`](./research-log.md).*
