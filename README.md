@@ -85,8 +85,8 @@ Everything above, in the order it actually happens — before a lesson exists, a
 5. **Readiness check** — tutor asks, out loud: "do you have this, and do you know how to use it?" Waits for a spoken answer, no rushing ahead.
 6. **Fallback micro-tutorial, if needed** — learner says no → a short predefined video for that specific tool/skill plays, then the tutor checks back in before continuing.
 7. **Guided build (close-up)** — learner brings the gathered items in close; spoken, paced directions ("now connect the LED to pin 13") plus a highlight drawn at the exact known pin location — the tutor waits for the learner to actually act, not a fixed script running ahead of them.
-8. **Checkpoint verification** — triggered by the learner saying so ("I'm done" / "check it"), not an inferred signal — our geometry model maps the camera view onto the same hole-naming scheme, and the LLM compares it against the Wokwi answer key.
-9. **Feedback** — spoken + visual correction if something's wrong, or move on to the next step if it's right.
+8. **Checkpoint verification** — triggered by the learner saying so ("I'm done" / "check it"), not an inferred signal. Our geometry model maps the camera view onto the same hole-naming scheme, then a **plain logic check** compares the detected hole-names against the Wokwi answer key — no LLM involved in the comparison itself, it's a deterministic match/no-match.
+9. **Feedback** — if it matches, confirm and move on, no LLM needed. **Only if it doesn't match** does the LLM get called in — not to re-check the same thing, but to work out what actually went wrong and explain it usefully ("looks like you're one row off — move it to hole 13").
 
 "Classroom" is unrelated to this workflow entirely — it's only for institutions needing simulation capacity for many students using Wokwi themselves, not for lesson authoring.
 
@@ -153,7 +153,8 @@ Three practical questions, answered with patterns already proven elsewhere rathe
 
 **Is the grid overlay/geometry step used constantly, or only for specific steps?**
 - *Geometry/tracking* (finding the board, keeping the grid aligned) is cheap classical math — runs continuously, every frame, like any standard AR overlay.
-- *The LLM reasoning call* ("is this wired correctly") is slow and costs money per call — fires only at checkpoints, primarily **the learner saying so** ("I'm done" / "check it"), with stillness/timeout as a backup signal only. Never every frame.
+- *The comparison itself* ("is this wired correctly") is a plain logic check — detected hole-names vs. the Wokwi answer key, deterministic, no LLM involved, effectively free.
+- *The LLM* only gets called at checkpoints, primarily **the learner saying so** ("I'm done" / "check it"), with stillness/timeout as a backup signal — and even then, **only if the logic check found a mismatch**. A correct answer never needs an LLM call at all; the LLM's job is explaining what went wrong, not re-deciding whether something's wrong.
 
 **Local or server?**
 - *On-device:* geometry/tracking/overlay rendering. AR overlays lagging past ~100ms feel visibly broken — tighter than a network round trip can reliably guarantee.

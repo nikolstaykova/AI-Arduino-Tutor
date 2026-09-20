@@ -771,8 +771,8 @@
       <li><span class="idx">5</span><div><h4>Readiness check</h4><p>Tutor asks, out loud: "do you have this, and do you know how to use it?" Waits for a spoken answer — no rushing ahead.</p></div></li>
       <li><span class="idx">6</span><div><h4>Fallback micro-tutorial, if needed</h4><p>Learner says no → a short predefined video for that specific tool/skill plays, then the tutor checks back in before continuing.</p></div></li>
       <li><span class="idx">7</span><div><h4>Guided build (close-up)</h4><p>Learner brings the gathered items in close; spoken, paced directions — "now connect the LED to pin 13" — plus a highlight drawn at the exact known pin location. The tutor waits for the learner to actually act.</p></div></li>
-      <li><span class="idx">8</span><div><h4>Checkpoint verification</h4><p>Triggered by the learner saying so — "I'm done" / "check it" — not an inferred signal. Our geometry model maps the camera view onto the same hole-naming scheme, the LLM compares it against the Wokwi answer key.</p></div></li>
-      <li><span class="idx">9</span><div><h4>Feedback</h4><p>Spoken + visual correction if something's wrong, or move on to the next step if it's right.</p></div></li>
+      <li><span class="idx">8</span><div><h4>Checkpoint verification</h4><p>Triggered by the learner saying so — "I'm done" / "check it" — not an inferred signal. Our geometry model maps the camera view onto the same hole-naming scheme, then a <b>plain logic check</b> compares the detected hole-names against the Wokwi answer key — no LLM in the comparison itself, just a deterministic match/no-match.</p></div></li>
+      <li><span class="idx">9</span><div><h4>Feedback</h4><p>Matches → confirm and move on, no LLM needed. <b>Only on a mismatch</b> does the LLM get called in — not to re-check the same thing, but to work out what went wrong and explain it usefully ("looks like you're one row off — move it to hole 13").</p></div></li>
     </ol>
   </section>
 
@@ -853,7 +853,8 @@
         <span class="qnum">Q · used constantly?</span>
         <h3>Two speeds, two schedules</h3>
         <p><b>Geometry/tracking</b> (finding the board, keeping the grid aligned) is cheap classical math — runs continuously, every frame, like any AR overlay.</p>
-        <p><b>The LLM call</b> ("is this wired right?") is slow and costs money per use — fires only at checkpoints, primarily <b>the learner saying so</b> ("I'm done" / "check it"), with stillness/timeout as a backup signal only. Never every frame.</p>
+        <p><b>The comparison itself</b> ("is this wired right?") is a plain logic check — detected hole-names vs. the Wokwi answer key, deterministic, no LLM, effectively free.</p>
+        <p><b>The LLM</b> only fires at checkpoints, primarily <b>the learner saying so</b> ("I'm done" / "check it") — and even then, only if the logic check found a mismatch. A correct answer never needs an LLM call; its job is explaining what went wrong, not deciding whether something's wrong.</p>
       </div>
       <div class="qa">
         <span class="qnum">Q · local or server?</span>

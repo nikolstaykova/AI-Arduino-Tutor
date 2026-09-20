@@ -6,6 +6,14 @@ Running log of everything researched and explored for this project. Newest entri
 
 ---
 
+## 2026-09-20 (check logic simplified: LLM only fires on mismatch, not for every comparison)
+
+Refinement to the checkpoint verification step: the actual **comparison** between detected wiring and the expected answer doesn't need an LLM at all — once both sides are expressed as hole-names (detected vs. the Wokwi `diagram.json` answer key), checking whether they match is plain deterministic code (`detected == expected`), not an AI decision.
+
+Revised flow: detect wiring (via whichever method wins the classical-CV-vs-LLM research comparison) → plain logic check against the answer key → **if it matches, done, no LLM call at all** → **only if it doesn't match, call the LLM** — not to re-decide correctness, but to work out what actually went wrong and explain it usefully to the learner ("you're one row off, move it to hole 13").
+
+**Why this is a real improvement, not just a detail**: it means the common case (a learner gets it right, assuming reasonably designed lessons) never needs an LLM call at all — further cost/latency savings on top of the existing checkpoint-triggered and cascade/routing decisions already logged. It also puts the LLM to work exactly where it's actually good (natural-language explanation) instead of where it's weak (precise spatial judgment, per the Spatial Blindspot finding) — the "is it correct" decision is handled by deterministic logic, not asked of the model at all. Updated the system-flow steps 8–9 and the Q2 architecture answer in the README and artifact to reflect this.
+
 ## 2026-09-20 (sharpened the central research question: LLM vs. classical CV, not just "does the LLM idea work")
 
 Refined framing suggested and adopted: instead of "does a geometry-preprocessed image + LLM reliably identify the exact hole/pin," the central question is now **"can a general-purpose LLM, combined with our geometric preprocessing, reliably perform hole-level verification of breadboard wiring — and how does that compare against classical CV / a dedicated vision model built specifically for this task?"**
