@@ -429,6 +429,89 @@
     max-width:60ch;
   }
 
+  /* ---------- Capability list (identify/point/verify) ---------- */
+  .cap-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-top:20px;
+  }
+  .cap{
+    display:grid;
+    grid-template-columns:34px 1fr;
+    gap:14px;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--surface);
+  }
+  .cap.hard{border-color:var(--copper);background:color-mix(in srgb, var(--copper) 8%, var(--surface));}
+  .cap .capnum{
+    font-family:"IBM Plex Mono",monospace;
+    font-weight:700;
+    font-size:1.1rem;
+    color:var(--rail-blue);
+  }
+  .cap.hard .capnum{color:var(--copper-strong);}
+  .cap h4{
+    font-family:"IBM Plex Sans",sans-serif;
+    font-size:0.96rem;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .cap p{font-size:0.88rem;color:var(--ink-soft);margin:0;}
+  .cap .captag{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--rail-blue);
+    font-weight:600;
+  }
+  .cap.hard .captag{color:var(--copper-strong);}
+
+  /* ---------- Worked-example transcript ---------- */
+  .transcript{
+    margin-top:22px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--surface);
+    padding:18px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .transcript .line{
+    display:grid;
+    grid-template-columns:52px 1fr;
+    gap:12px;
+    font-size:0.9rem;
+    line-height:1.5;
+  }
+  .transcript .who{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.7rem;
+    font-weight:700;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    padding-top:2px;
+  }
+  .transcript .line.ai .who{color:var(--rail-blue);}
+  .transcript .line.user .who{color:var(--ink-soft);}
+  .transcript .line.hard{
+    background:color-mix(in srgb, var(--copper) 10%, transparent);
+    margin-inline:-10px;
+    padding:8px 10px;
+    border-radius:6px;
+  }
+  .transcript .line.hard .who{color:var(--copper-strong);}
+  .transcript .flag{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:0.68rem;
+    color:var(--copper-strong);
+    font-weight:600;
+  }
+
   /* ---------- Q&A grid (system architecture) ---------- */
   .qa-grid{
     display:grid;
@@ -683,11 +766,11 @@
       <li><span class="idx">1</span><div><h4>Author (before the lesson exists)</h4><p>Free Wokwi account, build the lesson circuit in the ordinary editor — e.g. "wire an LED to pin 13." The <code>diagram.json</code> exists the moment it's built, no paid plan needed.</p></div></li>
       <li><span class="idx">2</span><div><h4>Validate</h4><p>Run it through Wokwi CI to auto-confirm it actually behaves correctly (the LED really blinks) before trusting it as ground truth.</p></div></li>
       <li><span class="idx">3</span><div><h4>Ship the answer key</h4><p>That <code>diagram.json</code> is the lesson's hole-level correct answer, done once, offline, by whoever designs the lesson.</p></div></li>
-      <li><span class="idx">4</span><div><h4>Learner starts the step</h4><p>The tutor speaks first: what's needed for this step — "you'll need a small breadboard and a 220Ω resistor."</p></div></li>
+      <li><span class="idx">4</span><div><h4>Learner starts the step (wide shot)</h4><p>The tutor speaks first: what's needed for this step — "you'll need a small breadboard and a 220Ω resistor" — and identifies/circles those items wherever they sit on the cluttered table.</p></div></li>
       <li><span class="idx">5</span><div><h4>Readiness check</h4><p>Tutor asks, out loud: "do you have this, and do you know how to use it?" Waits for a spoken answer — no rushing ahead.</p></div></li>
       <li><span class="idx">6</span><div><h4>Fallback micro-tutorial, if needed</h4><p>Learner says no → a short predefined video for that specific tool/skill plays, then the tutor checks back in before continuing.</p></div></li>
-      <li><span class="idx">7</span><div><h4>Guided build</h4><p>Spoken, paced directions — "now connect the LED to pin 13" — the tutor waits for the learner to actually act, not a fixed script running ahead of them.</p></div></li>
-      <li><span class="idx">8</span><div><h4>Checkpoint verification</h4><p>At a natural checkpoint (step finished, camera holds still, or the learner asks) — our geometry model maps the camera view onto the same hole-naming scheme, the LLM compares it against the Wokwi answer key.</p></div></li>
+      <li><span class="idx">7</span><div><h4>Guided build (close-up)</h4><p>Learner brings the gathered items in close; spoken, paced directions — "now connect the LED to pin 13" — plus a highlight drawn at the exact known pin location. The tutor waits for the learner to actually act.</p></div></li>
+      <li><span class="idx">8</span><div><h4>Checkpoint verification</h4><p>Triggered by the learner saying so — "I'm done" / "check it" — not an inferred signal. Our geometry model maps the camera view onto the same hole-naming scheme, the LLM compares it against the Wokwi answer key.</p></div></li>
       <li><span class="idx">9</span><div><h4>Feedback</h4><p>Spoken + visual correction if something's wrong, or move on to the next step if it's right.</p></div></li>
     </ol>
   </section>
@@ -707,6 +790,36 @@
     <div class="callout good" style="margin-top:26px;">
       <span class="ctag">Leading idea</span>
       <p>For step 3 — the actual unknown — the strongest candidate so far: use fixed reference points on the board to work out a grid geometrically, then let the AI model read that <em>labeled</em> grid instead of guessing raw coordinates from the photo. Backed by published findings that raw AI vision alone struggles at exact spatial localization (<a href="https://arxiv.org/pdf/2601.09954">Spatial Blindspot of VLMs</a>) but improves a lot once given that kind of visual scaffolding (<a href="https://arxiv.org/pdf/2411.18270">Grid-augmented vision</a>). Still needs to be built and tested against real breadboard photos before it's more than a hypothesis — see the research plan below.</p>
+    </div>
+
+    <h3 style="font-family:'IBM Plex Sans',sans-serif;font-size:1.1rem;margin:34px 0 4px;">Three different capabilities — only one is the hard research</h3>
+    <p class="wide" style="font-size:0.92rem;">Step ④ above actually splits into two very different jobs, and there's an earlier one worth naming too.</p>
+    <div class="cap-list">
+      <div class="cap">
+        <span class="capnum">1</span>
+        <div><span class="captag">Recognition, not precision</span><h4>Identify loose objects</h4><p>"Which one's the resistor, roughly where is it on the table." VLMs are actually fine here — the spatial blind spot is about exact coordinates, not "what is this thing." Well-trodden ground already. <b>Doesn't need the novel research.</b></p></div>
+      </div>
+      <div class="cap">
+        <span class="capnum">2</span>
+        <div><span class="captag">Pure geometry</span><h4>Point to a known board location</h4><p>"Here's output 3." Once the board is tracked, its pin layout is fixed and documented — transform a known coordinate into the live view and draw a highlight. <b>No AI call needed at all.</b></p></div>
+      </div>
+      <div class="cap hard">
+        <span class="capnum">3</span>
+        <div><span class="captag">The actual research</span><h4>Verify the actual connection</h4><p>"Did the wire really end up there." Detecting something new and unknown, not a fixed reference — the hard, unsolved precision-grounding problem.</p></div>
+      </div>
+    </div>
+    <p class="wide" style="font-size:0.9rem;margin-top:16px;">This implies a natural two-phase UX: a <b>wide shot</b> where the system circles what's needed for the step (capability 1), then a <b>close-up</b> once the learner gathers those items to connect them, where pointing and verifying (2 and 3) take over. The wide→close transition doubles as the mode-switch signal.</p>
+
+    <h3 style="font-family:'IBM Plex Sans',sans-serif;font-size:1.1rem;margin:30px 0 4px;">What this sounds like in practice</h3>
+    <div class="transcript">
+      <div class="line ai"><span class="who">AI</span><span>Ready to start?</span></div>
+      <div class="line user"><span class="who">USER</span><span>Yes.</span></div>
+      <div class="line ai"><span class="who">AI</span><span>Perfect — take the board and place it on the table. Before we start, I'll recap what's what — stop me any time if something's unfamiliar.</span></div>
+      <div class="line ai"><span class="who">AI</span><span>Step one: take the blue wire and connect it to output 3, using the wire stripper. Do you know how to use this tool?</span></div>
+      <div class="line user"><span class="who">USER</span><span>Yes.</span></div>
+      <div class="line ai"><span class="who">AI</span><span><em>(points to the exact physical location of output 3)</em> Here's output 3. Let me know once you're done — feel free to ask questions.</span></div>
+      <div class="line user"><span class="who">USER</span><span>I'm done.</span></div>
+      <div class="line ai hard"><span class="who">AI</span><span>Amazing — let me see your work. Show me what you've wired and I'll check it. <span class="flag">← the hard research part</span></span></div>
     </div>
   </section>
 
@@ -739,7 +852,7 @@
         <span class="qnum">Q · used constantly?</span>
         <h3>Two speeds, two schedules</h3>
         <p><b>Geometry/tracking</b> (finding the board, keeping the grid aligned) is cheap classical math — runs continuously, every frame, like any AR overlay.</p>
-        <p><b>The LLM call</b> ("is this wired right?") is slow and costs money per use — fires only at checkpoints: a step finishes, the camera holds still, or the learner asks for a check. Never every frame.</p>
+        <p><b>The LLM call</b> ("is this wired right?") is slow and costs money per use — fires only at checkpoints, primarily <b>the learner saying so</b> ("I'm done" / "check it"), with stillness/timeout as a backup signal only. Never every frame.</p>
       </div>
       <div class="qa">
         <span class="qnum">Q · local or server?</span>

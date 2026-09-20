@@ -6,6 +6,40 @@ Running log of everything researched and explored for this project. Newest entri
 
 ---
 
+## 2026-09-20 (key architecture split: pointing vs. verifying are two different problems)
+
+Worked example that surfaced this: a lesson step says "connect the red wire to pin 13" — the system needs to (a) show the learner exactly where pin 13 is, and (b) later check whether they actually put the wire there. These turned out to be two genuinely different problems, one much easier than the other:
+
+- **Pointing** ("show me where pin 13 is") — the target location is already known and fixed. Pin 13's physical position on an Arduino Uno is documented and identical on every Uno ever made. Once the geometry step has tracked the board (markers + homography, already planned), the system already knows where that point is in the current camera view — it just draws a highlight there. **Pure classical geometry/graphics, real-time, no LLM call needed at all.** This is not a detection problem — nothing is being discovered, a known template coordinate is just being transformed into the live camera's coordinate space.
+- **Verifying** ("did the user actually put the wire there") — this is about detecting something new and unknown: wherever the learner's real wire actually ended up. That's the hard, unsolved half — the actual research (grid-augmented VLM grounding) is needed here, not for pointing.
+
+**Practical implication — this de-risks the build timeline**: the "pointing" half of the AR experience isn't blocked on the research succeeding at all. It can be built and demoed early using only the geometry/tracking pipeline (Category A, already-existing tools), giving a working, visually convincing AR experience well before the harder verification research (Category B) is proven out. The two capabilities should be built and evaluated on separate tracks.
+
+### Revised: it's actually three capabilities, not two
+Follow-up scenario raised: what if the required components are just loose on a table, not yet placed? Their positions aren't known in advance — a red wire could be anywhere, in any orientation — so this isn't a geometry problem like pointing to pin 13 is. It's a genuine object-identification problem, and reveals a third, distinct capability:
+
+1. **Identify loose objects** ("which one's the resistor, roughly where is it on the table") — a semantic recognition task, not a precision task. VLMs are actually good at this (the spatial-blindspot finding is specifically about *exact coordinates*, not "what is this thing"). Well-trodden ground — prior art already found: Roboflow's resistor-detection dataset, the PMC electronic-parts-classification paper. Does **not** need the novel research.
+2. **Point to a known board location** (pin/output N) — pure geometry once the board is tracked. No AI needed at all.
+3. **Verify the actual connection** (did the wire really end up there) — the hard, unsolved precision-grounding problem. This is the actual research contribution — nothing else in this list is.
+
+Only #3 is genuinely novel/risky; #1 and #2 are both solvable with existing techniques and could be built and demoed well before the research is proven out.
+
+### UX shape this implies: wide → close, two phases
+Storyboarded through: **Phase A (wide shot, gathering)** — camera sees the cluttered table, system identifies and circles/highlights what's needed for this step (capability #1) — "there's your board, there's the red wire, there's the tool." **Phase B (close-up, working)** — learner physically gathers the circled items and brings them together near the camera to actually connect them — now capabilities #2 (point to the exact pin) and #3 (verify the connection) take over. The transition from wide to close view is itself a usable signal for switching system modes — no separate detector needed for "which phase are we in."
+
+## 2026-09-20 (worked example: what the conversation actually sounds like, + corrected checkpoint trigger)
+
+A concrete natural-conversation walkthrough was worked out, tagging each line to the capability/system piece behind it:
+
+> **AI:** Ready to start? **User:** Yes.
+> **AI:** Perfect — take the board and place it on the table. Before we start, I'll recap what's what — stop me any time if something's unfamiliar. *(conversational pacing — chat/voice, Category A)*
+> **AI:** Step one: take the blue wire and connect it to output 3, using [tool]. Do you know how to use this tool? **User:** Yes. *(readiness check — skips the fallback micro-tutorial since the answer was yes)*
+> **AI:** *(points to the exact physical location of output 3)* Here's output 3. Let me know once you're done — feel free to ask questions. *(pointing — capability #2, pure geometry, plus the open quick-question chat assistant available throughout)*
+> **User:** I'm done.
+> **AI:** Amazing — let me see your work. Show me what you've wired and I'll check it. *(← this is the hard research part: capability #3, grid-augmented verification against the Wokwi answer key)*
+
+**Correction to the checkpoint trigger**: earlier entries listed "step finished, camera holds still, or the learner asks" as the checkpoint signal. This worked example shows the natural and simplest version is just **the learner saying so** ("I'm done" / "check it") — a spoken trigger, not an inferred one. Stillness/timeout detection should be a backup signal, not the primary one.
+
 ## 2026-09-20 (new feature: audio-paced tutor with readiness checks + fallback micro-tutorials)
 
 Added to the system: the tutor speaks first at the start of each step (states what tools/components are needed), then asks the learner out loud whether they have the item and know how to use it, waiting for a spoken answer rather than assuming and rushing ahead. If the learner says no, a short predefined video for that specific tool/skill plays before continuing. Both pieces are Category A (existing tools, not research): TTS/STT are off-the-shelf APIs, and the fallback clips are just static pre-recorded content, no different in kind from the lesson content already being authored.

@@ -81,11 +81,11 @@ Everything above, in the order it actually happens — before a lesson exists, a
 1. **Author** (before the lesson exists) — free Wokwi account, build the lesson's circuit in the ordinary editor (e.g. "Lesson 1: wire an LED to pin 13"). The `diagram.json` exists the moment it's built.
 2. **Validate** — run it through Wokwi CI to auto-confirm it actually behaves correctly (e.g. the LED really blinks) before trusting it as ground truth.
 3. **Ship the answer key** — that `diagram.json` is the lesson's hole-level correct answer (e.g. `"bb1:18t.d" → "uno:13"`), done once, offline, by whoever designs the lesson.
-4. **Learner starts the step** — the tutor speaks first: what's needed for this step ("you'll need a small breadboard and a 220Ω resistor").
+4. **Learner starts the step (wide shot)** — the tutor speaks first: what's needed for this step ("you'll need a small breadboard and a 220Ω resistor"), and identifies/circles those items wherever they sit on the cluttered table.
 5. **Readiness check** — tutor asks, out loud: "do you have this, and do you know how to use it?" Waits for a spoken answer, no rushing ahead.
 6. **Fallback micro-tutorial, if needed** — learner says no → a short predefined video for that specific tool/skill plays, then the tutor checks back in before continuing.
-7. **Guided build** — spoken, paced directions ("now connect the LED to pin 13") — the tutor waits for the learner to actually act, not a fixed script running ahead of them.
-8. **Checkpoint verification** — at a natural checkpoint (step finished, camera holds still, or the learner asks), our geometry model maps the camera view onto the same hole-naming scheme, and the LLM compares it against the Wokwi answer key.
+7. **Guided build (close-up)** — learner brings the gathered items in close; spoken, paced directions ("now connect the LED to pin 13") plus a highlight drawn at the exact known pin location — the tutor waits for the learner to actually act, not a fixed script running ahead of them.
+8. **Checkpoint verification** — triggered by the learner saying so ("I'm done" / "check it"), not an inferred signal — our geometry model maps the camera view onto the same hole-naming scheme, and the LLM compares it against the Wokwi answer key.
 9. **Feedback** — spoken + visual correction if something's wrong, or move on to the next step if it's right.
 
 "Classroom" is unrelated to this workflow entirely — it's only for institutions needing simulation capacity for many students using Wokwi themselves, not for lesson authoring.
@@ -107,6 +107,25 @@ This is genuinely unsolved (confirmed above), which is exactly what a final-year
 ```
 
 **Leading candidate for step 3** (still to be built and tested, not assumed): use fixed reference points on the board to work out a grid geometrically, then let the AI model read that *labeled* grid instead of guessing raw coordinates from the photo. This is backed by published findings that raw AI vision alone struggles at exact spatial localization ([Spatial Blindspot of VLMs, arXiv](https://arxiv.org/pdf/2601.09954)) but improves substantially once given that kind of visual scaffolding ([Grid-augmented vision, arXiv](https://arxiv.org/pdf/2411.18270); [Visual Position Prompt for MLLM Grounding, arXiv](https://arxiv.org/pdf/2503.15426)). Since nobody's applied this specifically to breadboards/Arduino, building and evaluating it for this domain — proving it actually works, not just assuming it will — is the genuine research contribution here.
+
+### Three different capabilities — only one of them is the hard research
+Step ④ above ("guide & catch errors") actually splits into two very different jobs, and there's a third, earlier one worth naming too:
+
+1. **Identify loose objects** — "which one's the resistor, roughly where is it on the table." A semantic recognition task, not a precision task — the spatial-blindspot finding is specifically about *exact coordinates*, not "what is this thing," so VLMs are actually fine here. Well-trodden ground (Roboflow's resistor-detection dataset, electronic-parts-classification research already exist). **Doesn't need the novel research.**
+2. **Point to a known board location** — "here's output 3." Once the board is tracked, its pin layout is fixed and documented, so this is pure geometry — transform a known template coordinate into the live camera view and draw a highlight. **No AI call needed at all.**
+3. **Verify the actual connection** — "did the wire really end up there." This is about detecting something new and unknown, not a fixed reference — the hard, unsolved precision-grounding problem. **This is the actual research contribution.**
+
+This also implies a natural two-phase UX: a **wide shot** where the camera sees the cluttered table and the system circles what's needed for the step (capability 1), then a **close-up** once the learner gathers those items together to actually connect them, where pointing and verifying (2 and 3) take over. The wide→close transition doubles as the signal for switching modes — no separate detector needed.
+
+**What this sounds like in practice:**
+> **AI:** Ready to start? **User:** Yes.
+> **AI:** Perfect — take the board and place it on the table. Before we start, I'll recap what's what — stop me any time if something's unfamiliar.
+> **AI:** Step one: take the blue wire and connect it to output 3, using [tool]. Do you know how to use this tool? **User:** Yes.
+> **AI:** *(points to the exact physical location of output 3)* Here's output 3. Let me know once you're done — feel free to ask questions.
+> **User:** I'm done.
+> **AI:** Amazing — let me see your work. Show me what you've wired and I'll check it. *(← this is the hard research part)*
+
+Note the checkpoint trigger in that example: it's simply **the learner saying so** ("I'm done"), not an inferred signal like the camera holding still. Spoken trigger first; stillness/timeout detection is only a backup.
 
 ## 6. Research plan, once the system exists
 
@@ -134,7 +153,7 @@ Three practical questions, answered with patterns already proven elsewhere rathe
 
 **Is the grid overlay/geometry step used constantly, or only for specific steps?**
 - *Geometry/tracking* (finding the board, keeping the grid aligned) is cheap classical math — runs continuously, every frame, like any standard AR overlay.
-- *The LLM reasoning call* ("is this wired correctly") is slow and costs money per call — fires only at checkpoints: the user finishes a step and requests a check, the camera holds still, or a lesson-defined milestone. Never every frame.
+- *The LLM reasoning call* ("is this wired correctly") is slow and costs money per call — fires only at checkpoints, primarily **the learner saying so** ("I'm done" / "check it"), with stillness/timeout as a backup signal only. Never every frame.
 
 **Local or server?**
 - *On-device:* geometry/tracking/overlay rendering. AR overlays lagging past ~100ms feel visibly broken — tighter than a network round trip can reliably guarantee.
