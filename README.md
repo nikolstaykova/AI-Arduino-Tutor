@@ -91,9 +91,9 @@ Everything above, in the order it actually happens — before a lesson exists, a
 "Classroom" is unrelated to this workflow entirely — it's only for institutions needing simulation capacity for many students using Wokwi themselves, not for lesson authoring.
 
 ### Research — the actual contribution
-**Central question:** does a geometry-preprocessed image + a general-purpose multimodal LLM reliably identify the exact hole/pin a wire or component touches?
+**Central question:** can modern general-purpose LLMs — combined with our geometric preprocessing — reliably perform hole-level verification of breadboard wiring, and how does that approach compare against classical computer vision / dedicated vision models built specifically for this task?
 
-This is genuinely unsolved (confirmed above), which is exactly what a final-year data-science project should be. It doubles as the dissertation's contribution *and* the product's core differentiator.
+That comparison arm matters as much as the LLM side: it makes this a real research question with a defensible result either way — either the LLM approach genuinely earns its place, or a purpose-built classical detector turns out to be simpler and just as good, which is itself a legitimate, publishable finding. This is genuinely unsolved either way (confirmed above), which is exactly what a final-year data-science project should be. It doubles as the dissertation's contribution *and* the product's core differentiator.
 
 ## 5. How it might work (not yet decided — this is the research)
 
@@ -134,7 +134,7 @@ The build proves the pipeline runs. This is what proves it's *right* — the par
 1. **Ground-truth test set** — real breadboard photos, wiring known and labeled hole-by-hole, across lighting/angle conditions.
 2. **Grid-render tuning** — vary line weight, transparency, labeling scheme; find what the LLM actually reads best.
 3. **Prompt/context design** — test how much domain documentation (breadboard conventions, the lesson's expected circuit) actually improves accuracy.
-4. **Baseline comparison** — raw LLM (no grid) vs. grid-augmented vs. a small custom-trained detector — justify the architecture with numbers.
+4. **Baseline comparison, the core of the thesis** — raw LLM (no grid) vs. grid-augmented LLM vs. **classical CV / a dedicated vision model built specifically for this task** (e.g. a small custom-trained keypoint/object detector, no LLM involved at all). Not a formality — this is the actual research question: does the LLM approach earn its place, or does a purpose-built classical detector do just as well or better?
 5. **Accuracy measurement** — hole-identification accuracy, false-positive/negative wiring calls, end-to-end latency.
 6. **Failure analysis** — where it actually breaks (glare, wire color, occlusion, off-axis angle) and why.
 7. **Lock the scope boundary** — decide, from the data, how much lesson complexity the accuracy can support for v1.

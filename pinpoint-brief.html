@@ -746,7 +746,8 @@
         <span class="ptag">Research — the contribution</span>
         <h3>Grid-augmented spatial grounding</h3>
         <ul>
-          <li><b>Central question:</b> does a geometry-preprocessed image + a general-purpose multimodal LLM reliably name the exact hole/pin a wire touches?</li>
+          <li><b>Central question:</b> can a general-purpose LLM, combined with our geometric preprocessing, reliably perform hole-level verification of breadboard wiring — and how does that compare against classical CV / a dedicated vision model built specifically for this task?</li>
+          <li>Either result is a real finding: the LLM approach earns its place, or a purpose-built classical detector is simpler and just as good</li>
           <li><b>Nobody has shipped it</b> for this domain — confirmed against the nearest prior art</li>
           <li>Doubles as the dissertation's contribution <em>and</em> the product's core differentiator</li>
         </ul>
@@ -830,7 +831,7 @@
       <li><span class="idx">1</span><div><h4>Ground-truth test set</h4><p>Real breadboard photos, wiring known and labeled hole-by-hole, shot across lighting and angle conditions.</p></div></li>
       <li><span class="idx">2</span><div><h4>Grid-render tuning</h4><p>Vary line weight, transparency, and labeling scheme; find what the LLM actually reads best.</p></div></li>
       <li><span class="idx">3</span><div><h4>Prompt / context design</h4><p>Test how much domain documentation — breadboard conventions, the lesson's expected circuit — actually improves accuracy.</p></div></li>
-      <li><span class="idx">4</span><div><h4>Baseline comparison</h4><p>Raw LLM (no grid) vs. grid-augmented vs. a small custom-trained detector — justify the architecture with numbers, not intuition.</p></div></li>
+      <li><span class="idx">4</span><div><h4>Baseline comparison — the core of the thesis</h4><p>Raw LLM (no grid) vs. grid-augmented LLM vs. <b>classical CV / a dedicated vision model built specifically for this task</b> (no LLM at all). Not a formality — this is the actual research question: does the LLM approach earn its place, or does a purpose-built classical detector do just as well or better?</p></div></li>
       <li><span class="idx">5</span><div><h4>Accuracy measurement</h4><p>Hole-identification accuracy, false-positive/negative wiring calls, end-to-end latency.</p></div></li>
       <li><span class="idx">6</span><div><h4>Failure analysis</h4><p>Where does it actually break — glare, wire color, occlusion, off-axis angle — and why.</p></div></li>
       <li><span class="idx">7</span><div><h4>Lock the scope boundary</h4><p>Decide, from the data, exactly how much lesson complexity the accuracy can support for v1.</p></div></li>

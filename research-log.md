@@ -6,6 +6,12 @@ Running log of everything researched and explored for this project. Newest entri
 
 ---
 
+## 2026-09-20 (sharpened the central research question: LLM vs. classical CV, not just "does the LLM idea work")
+
+Refined framing suggested and adopted: instead of "does a geometry-preprocessed image + LLM reliably identify the exact hole/pin," the central question is now **"can a general-purpose LLM, combined with our geometric preprocessing, reliably perform hole-level verification of breadboard wiring — and how does that compare against classical CV / a dedicated vision model built specifically for this task?"**
+
+Why this is better: it turns the project from "does our idea work in isolation" into a proper comparative research question with a defensible result either way — either the LLM approach earns its place over a purpose-built classical detector, or the classical approach turns out simpler and just as good, which is itself a legitimate finding. This was actually already half-present (research-plan step 4 mentioned "a small custom-trained detector" as one baseline) but buried as a checklist item rather than stated as the actual thesis question. Elevated it to the central question in the README, artifact, and made research-plan step 4 explicit that this comparison is the core of the thesis, not a formality.
+
 ## 2026-09-20 (key architecture split: pointing vs. verifying are two different problems)
 
 Worked example that surfaced this: a lesson step says "connect the red wire to pin 13" — the system needs to (a) show the learner exactly where pin 13 is, and (b) later check whether they actually put the wire there. These turned out to be two genuinely different problems, one much easier than the other:
