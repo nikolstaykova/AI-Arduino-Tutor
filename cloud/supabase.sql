@@ -11,8 +11,13 @@ create table if not exists public.profiles (
   difficulty  text default 'beginner',
   progress    jsonb default '{}'::jsonb,
   parts       jsonb default '[]'::jsonb,
+  claude_key       text,     -- the learner's own Anthropic API key, sealed (encrypted) by the app
+  claude_key_hint  text,     -- its last 4 characters, to show "connected (…abcd)"
   updated_at  timestamptz default now()
 );
+-- (if you ran an older version of this file:)
+alter table public.profiles add column if not exists claude_key text;
+alter table public.profiles add column if not exists claude_key_hint text;
 
 create table if not exists public.lessons (
   id            text primary key,

@@ -148,7 +148,7 @@ function homeMain() {
     : "Ready to build your first real circuit? I'll check every wire with you. What do you want to do today?";
   const items = [
     { icon: "map", label: "Learn", sub: "Drive the world map of lessons", go: () => partsChat() },
-    { icon: "pen", label: "Create my own lesson", sub: "Describe an idea, I'll design it", go: () => { go("create"); createIntro(); } },
+    { icon: "pen", label: "Create my own lesson", sub: F.claude && F.claude.mode === "locked" ? "🔒 Connect your own Claude to unlock" : "Describe an idea, I'll design it", go: () => { go("create"); createIntro(); } },
     { icon: "box", label: "Parts & Tools", sub: "What everything is, in 3D, with videos", go: () => go("library") },
   ];
   if (next) items.unshift({ icon: "play", label: `Continue: ${next.title}`, sub: "Pick up where you left off", primary: true, go: () => openLessonPop(next.id) });
@@ -385,9 +385,13 @@ async function createIntro() {
   const chat = $("createChat");
   await say(chat, "Tell me what you want to build ✨ — or paste a link to a tutorial and I'll follow it exactly.", 400);
   await say(chat, "I'll design the circuit, the code and the steps — then check every wire, the physics and every way a learner could build it before you get it.");
-  const ai = await api("/api/ai_status").catch(() => ({ backend: null }));
-  F.aiBackend = ai.backend; F.flowCheck = ai.flow_check;
-  await say(chat, ai.backend === "claude-code" ? "🔑 I'm using <b>your Claude Code login</b> on this computer — no API key needed. A new lesson takes a minute or two."
+  const ai = await api("/api/ai_status").catch(() => ({ backend: null, claude: { mode: "local" } }));
+  F.aiBackend = ai.backend; F.flowCheck = ai.flow_check; F.claude = ai.claude;
+  const mode = (ai.claude || {}).mode;
+  if (mode === "locked") { lockCreate(true); await connectClaudeCard(chat); }
+  else if (mode === "own") await ownClaudeNote(chat, ai.claude.hint);
+  else if (mode === "owner") await say(chat, "🔑 You're the owner here, so I'm using <b>your Claude login</b>. A new lesson takes a minute or two.", 300);
+  else await say(chat, ai.backend === "claude-code" ? "🔑 I'm using <b>your Claude Code login</b> on this computer — no API key needed. A new lesson takes a minute or two."
     : ai.backend === "api" ? "🔑 I'm using the Anthropic API key on this computer. A new lesson takes a minute or two."
     : "⚠️ I can't reach Claude from this computer yet: log in to Claude Code (run <code>claude</code> once in a terminal) or set an Anthropic API key, then restart the bench.", 300);
   const row = $("suggestRow"); row.innerHTML = "";
@@ -398,7 +402,45 @@ async function createIntro() {
     b.onclick = guarded(async () => (text === "ideas" ? ideas() : build(text)));
     row.appendChild(b);
   });
+  if (F.claude && F.claude.mode === "locked") lockCreate(true);
 }
+// ---- your own Claude (hosted, accounts on): Create stays locked until you connect it ----
+function lockCreate(locked) {
+  $("createInput").disabled = locked; $("createSend").disabled = locked;
+  $("createInput").placeholder = locked ? "🔒 Connect your Claude first (above)" : "e.g. a traffic light with three LEDs";
+  $("suggestRow").querySelectorAll("button").forEach((b) => (b.disabled = locked));
+}
+async function connectClaudeCard(chat) {
+  const card = await say(chat, `<div class="claude-lock"><b>🔒 Creating lessons uses your own Claude</b>
+    <p class="muted">Each new lesson is written by Claude, so it runs on <b>your</b> Anthropic account — you pay Anthropic directly for what you use, and you can set a monthly limit there. Playing levels is always free.</p>
+    <ol class="muted"><li>Open <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API keys ↗</a> (sign up, add a little credit).</li>
+    <li>Create a key and paste it here. It's checked with Anthropic, then stored encrypted — only its last 4 characters are ever shown.</li></ol>
+    <div class="chat-input claude-key-row"><input class="text-input" type="password" autocomplete="off" placeholder="sk-ant-…" data-key>
+    <button class="btn btn-primary" data-connect>Connect</button></div><div class="claude-msg" data-msg></div></div>`, 200);
+  const input = card.querySelector("[data-key]"), msg = card.querySelector("[data-msg]"), btn = card.querySelector("[data-connect]");
+  const connect = async () => {
+    const key = input.value.trim(); if (!key) return;
+    btn.disabled = true; msg.textContent = "Checking with Anthropic…";
+    try {
+      const r = await api("/api/claude_key", { key });
+      input.value = ""; card.querySelector(".claude-lock").innerHTML = `<b>✅ Your Claude is connected</b> <span class="muted">(key …${esc(r.hint)})</span>`;
+      F.claude = { ready: true, mode: "own", hint: r.hint }; lockCreate(false);
+      await say(chat, "Unlocked! Tell me what you want to build ✨", 200);
+    } catch (e) { msg.textContent = "⚠️ " + e.message; btn.disabled = false; }
+  };
+  btn.onclick = connect;
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") connect(); });
+}
+async function ownClaudeNote(chat, hint) {
+  const b = await say(chat, `🔑 Using <b>your own Claude</b> (key …${esc(hint)}). A new lesson takes a minute or two. <button class="linkish" data-disconnect>Disconnect</button>`, 300);
+  b.querySelector("[data-disconnect]").onclick = guarded(async () => {
+    if (!confirm("Disconnect your Claude? Its key is deleted from CircuitQuest (it stays valid on Anthropic until you delete it there).")) return;
+    await api("/api/claude_key", { remove: true });
+    F.claude = { ready: false, mode: "locked" }; lockCreate(true);
+    await connectClaudeCard(chat);
+  });
+}
+
 async function ideas() {
   const chat = $("createChat");
   if (!F.selected.size) { await say(chat, "Pick the parts you have in <b>Learn</b> first, then I'll suggest projects that fit them.", 300); return; }
@@ -584,6 +626,7 @@ async function init() {
   try {
     const [profile, catalog] = await Promise.all([api("/api/profile"), api("/api/parts_catalog"), bench.refreshLessons()]);
     F.name = profile.name; F.progress = profile.progress; F.level = profile.difficulty; F.catalog = catalog.parts;
+    if (F.auth && F.auth.enabled) F.claude = (await api("/api/ai_status").catch(() => ({}))).claude;
     renderHeader(F.progress);
     await homeChat();
   } catch (e) {

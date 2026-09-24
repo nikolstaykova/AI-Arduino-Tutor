@@ -10,6 +10,9 @@ RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
  && npm install -g @anthropic-ai/claude-code \
  && npm cache clean --force
 
+# the official Anthropic SDK: lessons made with a learner's own API key
+RUN pip install --no-cache-dir anthropic
+
 RUN useradd --create-home app
 WORKDIR /app
 COPY --chown=app:app . .

@@ -1,32 +1,45 @@
-# Accounts + shared lessons (Supabase, free)
+# Accounts, shared lessons and "bring your own Claude" (Supabase, free)
 
-With these set up, the hosted app asks people to **Sign in with Google**, keeps
-each person's stars/XP in their account, and shares every created lesson with
-everyone ("made by Mert"). Without them the app runs on local files as before.
+With this set up, the hosted app:
+- asks people to **Sign in with Google** and keeps each person's stars/XP in their account;
+- shares every created lesson with everyone ("made by Mert");
+- keeps **Create my own lesson locked** until a person connects **their own Claude**
+  (an Anthropic API key — checked with Anthropic, stored encrypted). Your own Claude
+  login is only used for the emails you list in `CQ_OWNER_EMAILS`.
 
-## 1. Supabase project (2 min)
-1. Go to **supabase.com** → sign in with GitHub → **New project** (free plan). Pick any name, a database password (keep it), and a region near you.
-2. When it's ready: **SQL Editor → New query** → paste all of [`supabase.sql`](./supabase.sql) → **Run**. (It makes the `profiles` and `lessons` tables.)
+Without it the app runs on local files as before.
 
-## 2. A Google login client (5 min)
-1. Go to **console.cloud.google.com** → create a project (e.g. "CircuitQuest").
-2. **APIs & Services → OAuth consent screen**: External, app name "CircuitQuest", your email → save. Under **Audience / Test users**, add your Gmail and your friends' (e.g. Mert's) — or press **Publish app** so any Google account can sign in (name + email only, no Google review needed).
-3. **APIs & Services → Credentials → Create credentials → OAuth client ID** → *Web application*.
-   Under **Authorized redirect URIs** add: `https://<your-project-ref>.supabase.co/auth/v1/callback`
-   (the exact address is shown in Supabase → Authentication → Sign In / Providers → Google).
-4. Copy the **Client ID** and **Client secret**.
+## 1. Supabase project (≈3 min)
+1. **supabase.com** → *Start your project* → sign in with GitHub → **New project** (Free). Any name, a database password (save it somewhere), a region near you → *Create*. Wait ~1 minute.
+2. Left menu **SQL Editor** → *New query* → paste everything from [`supabase.sql`](./supabase.sql) → **Run**. It should say *Success. No rows returned.*
+
+## 2. A Google sign-in client (≈5 min)
+1. **console.cloud.google.com** → top bar project picker → *New project* → "CircuitQuest" → *Create*, and select it.
+2. Menu **APIs & Services → OAuth consent screen** → *Get started*: app name "CircuitQuest", your email → *Audience: External* → contact email → *Create*.
+3. **Audience** → either *Add users* (your Gmail, Mert's …) or **Publish app** so any Google account can sign in (only name + email are used, so no Google review is needed).
+4. **Clients → Create client** → *Web application* → name "CircuitQuest".
+   Under **Authorized redirect URIs** → *Add URI* → `https://YOUR-PROJECT-REF.supabase.co/auth/v1/callback`
+   (copy the exact one from Supabase → **Authentication → Sign In / Providers → Google**, "Callback URL").
+   → *Create*, and copy the **Client ID** and **Client secret**.
 
 ## 3. Turn Google on in Supabase
-1. **Authentication → Sign In / Providers → Google** → enable → paste the Client ID and secret → Save.
-2. **Authentication → URL Configuration**: Site URL = your Render address (`https://circuitquest-xxxx.onrender.com`). Under Redirect URLs also add `http://localhost:8765` if you want accounts locally too.
+1. **Authentication → Sign In / Providers → Google** → enable → paste Client ID + Client secret → *Save*.
+2. **Authentication → URL Configuration** → *Site URL* = your Render address (`https://circuitquest-xxxx.onrender.com`) → *Save*.
+   (Optional, for accounts on your Mac too: under *Redirect URLs* add `http://localhost:8765`.)
 
-## 4. Give the app the keys
-In Supabase **Project Settings → API** (or *API Keys*) copy:
-- **Project URL** → `SUPABASE_URL`
-- **anon / publishable key** → `SUPABASE_ANON_KEY` (public — it's only for signing in)
-- **service_role / secret key** → `SUPABASE_SERVICE_KEY` (**secret** — server only, never in git)
+## 4. Give the app the keys (Render)
+Supabase **Project Settings → API Keys** (and **Data API** for the URL):
+| Render variable | Where from | Secret? |
+|---|---|---|
+| `SUPABASE_URL` | Project URL, `https://xxxx.supabase.co` | no |
+| `SUPABASE_ANON_KEY` | *anon / publishable* key | no (public, sign-in only) |
+| `SUPABASE_SERVICE_KEY` | *service_role / secret* key | **yes** — only ever in Render |
+| `CQ_OWNER_EMAILS` | your Google email (comma-separate several) | no |
+| `CQ_SECRET_KEY` | Render generates it (blueprint) — or any 40+ random characters | **yes** |
 
-Render → your service → **Environment** → add the three → **Save** (it redeploys).
-Locally (optional): put them in `.env`.
+Render → your **circuitquest** service → **Environment** → *Add environment variable* for each → **Save, rebuild and deploy**.
 
-The log then says `Accounts: Sign in with Google (Supabase)`.
+The log then shows `Accounts: Sign in with Google (Supabase)`.
+
+## 5. Each person's own Claude (they do this in the app)
+Create → **Connect your Claude**: get a key at **console.anthropic.com → Settings → API keys** (sign up, add a few dollars of credit, optionally set a monthly limit), paste it, *Connect*. It's checked with Anthropic, sealed with `CQ_SECRET_KEY`, and only its last 4 characters are ever shown. *Disconnect* deletes it.

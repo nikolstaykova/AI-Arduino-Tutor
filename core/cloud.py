@@ -97,11 +97,27 @@ def load_profile(user):
     if rows:
         row = rows[0]
         return {"name": row.get("name") or user["name"], "difficulty": row.get("difficulty") or "beginner",
-                "progress": row.get("progress") or {}, "parts": row.get("parts") or []}
+                "progress": row.get("progress") or {}, "parts": row.get("parts") or [],
+                "claude_key_hint": row.get("claude_key_hint")}
     return {"name": user["name"]}
 
 
+# ---- the learner's own Claude (an Anthropic API key, sealed with CQ_SECRET_KEY) ------------
+def save_claude_key(user, sealed, hint):
+    """Store (or with sealed=None, remove) a learner's key. Only the sealed
+    form and its last 4 characters ever reach the database."""
+    row = {"user_id": user["id"], "email": user.get("email"), "name": user["name"],
+           "claude_key": sealed, "claude_key_hint": hint}
+    _call("POST", "/rest/v1/profiles?on_conflict=user_id", [row], headers={"Prefer": "resolution=merge-duplicates,return=minimal"})
+
+
+def sealed_claude_key(user):
+    rows = _call("GET", f"/rest/v1/profiles?user_id=eq.{user['id']}&select=claude_key")
+    return (rows[0].get("claude_key") if rows else None) or None
+
+
 def save_profile(user, profile):
+    # (the Claude key columns are left alone: saving progress never touches them)
     row = {"user_id": user["id"], "email": user.get("email"), "name": profile.get("name") or user["name"],
            "avatar": user.get("avatar"), "difficulty": profile.get("difficulty", "beginner"),
            "progress": profile.get("progress") or {}, "parts": profile.get("parts") or [],

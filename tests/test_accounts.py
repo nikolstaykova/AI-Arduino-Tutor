@@ -161,3 +161,87 @@ def test_every_hand_made_lesson_links_the_tutorial_it_follows():
     for lid in ("blink", "digital-read-serial", "analog-read-serial"):
         data = json.loads((bench_server.ROOT / "lessons" / lid / "lesson.json").read_text())
         assert data["source"]["url"].startswith("https://docs.arduino.cc/built-in-examples/")
+
+
+# ---- your own Claude: locked until connected, stored sealed, used only for you ------------
+from core import secretbox
+
+SECRET = "x" * 40
+KEY = "sk-ant-api03-" + "A" * 40 + "wxyz"
+
+
+def test_a_key_is_sealed_and_only_the_secret_opens_it(monkeypatch):
+    monkeypatch.setenv("CQ_SECRET_KEY", SECRET)
+    sealed = secretbox.seal(KEY)
+    assert KEY not in sealed and "AAAA" not in sealed and secretbox.open_(sealed) == KEY
+    assert secretbox.seal(KEY) != sealed                                       # fresh nonce each time
+    tampered = sealed[:-3] + ("A" if sealed[-3] != "A" else "B") + sealed[-2:]
+    with pytest.raises(ValueError):
+        secretbox.open_(tampered)
+    monkeypatch.setenv("CQ_SECRET_KEY", "y" * 40)
+    with pytest.raises(ValueError):
+        secretbox.open_(sealed)
+    monkeypatch.delenv("CQ_SECRET_KEY")
+    assert not secretbox.available()
+
+
+@pytest.fixture
+def claude_setup(supabase, monkeypatch):
+    monkeypatch.setenv("CQ_SECRET_KEY", SECRET)
+    monkeypatch.setenv("CQ_OWNER_EMAILS", "nikol@example.com")
+    monkeypatch.setattr(bench_server, "_check_anthropic_key", lambda key: key == KEY)
+    seen = []
+    def fake_generate(request, inventory=None, **kw):
+        seen.append(lesson_gen._user_key.get())
+        return {"ok": False, "lesson_id": None, "attempts": [], "errors": ["(test)"]}
+    monkeypatch.setattr(lesson_gen, "generate_lesson", fake_generate)
+    return seen
+
+
+def test_create_is_locked_until_you_connect_your_own_claude(claude_setup):
+    as_user("tok-mert")
+    body, status = bench_server.api_generate({"request": "a traffic light"})
+    assert status == 403 and body["locked"] == "claude" and claude_setup == []
+    assert bench_server.api_ai_status({})["claude"] == {"ready": False, "mode": "locked"}
+
+
+def test_a_connected_key_is_stored_sealed_and_used_only_for_its_owner(claude_setup, supabase):
+    as_user("tok-mert")
+    assert bench_server.api_claude_key({"key": "sk-ant-wrong-" + "B" * 30})[1] == 400      # Anthropic says no
+    assert bench_server.api_claude_key({"key": "hello"})[1] == 400                          # not a key at all
+    assert bench_server.api_claude_key({"key": KEY}) == {"connected": True, "hint": "wxyz"}
+    row = supabase["profiles"][USERS["tok-mert"]["id"]]
+    assert KEY not in json.dumps(row) and row["claude_key_hint"] == "wxyz"                  # never in plain text
+    bench_server._save_progress({**bench_server.core.progress.empty_progress(), "xp": 10})  # saving progress keeps the key
+    assert supabase["profiles"][USERS["tok-mert"]["id"]]["claude_key"] == row["claude_key"]
+    bench_server.api_generate({"request": "a traffic light"})
+    assert claude_setup == [KEY]                                                             # Mert's lesson ran on Mert's key
+    assert bench_server.api_ai_status({})["claude"] == {"ready": True, "mode": "own", "hint": "wxyz"}
+    assert bench_server.api_claude_key({"remove": True}) == {"connected": False}
+    assert supabase["profiles"][USERS["tok-mert"]["id"]]["claude_key"] is None
+    assert bench_server.api_generate({"request": "x"})[1] == 403
+
+
+def test_the_owner_may_use_the_servers_own_claude_nobody_else(claude_setup, monkeypatch):
+    monkeypatch.setattr(lesson_gen, "backend", lambda: "claude-code")
+    as_user("tok-nikol")                                   # in CQ_OWNER_EMAILS
+    bench_server.api_generate({"request": "a traffic light"})
+    assert claude_setup == [None]                          # ran on the server's own login
+    assert bench_server.api_ai_status({})["claude"]["mode"] == "owner"
+    as_user("tok-mert")
+    assert bench_server.api_generate({"request": "a traffic light"})[1] == 403
+    assert claude_setup == [None]
+
+
+def test_keys_are_refused_when_the_server_cant_seal_them(claude_setup, monkeypatch):
+    monkeypatch.delenv("CQ_SECRET_KEY")
+    as_user("tok-mert")
+    assert bench_server.api_claude_key({"key": KEY})[1] == 503
+
+
+def test_locally_nothing_changes(monkeypatch):
+    for k in ("SUPABASE_URL", "SUPABASE_ANON_KEY", "SUPABASE_SERVICE_KEY"):
+        monkeypatch.delenv(k, raising=False)
+    bench_server._request.user = None
+    assert bench_server._claude_for_request() == (None, None)
+    assert bench_server.api_ai_status({})["claude"]["mode"] == "local"

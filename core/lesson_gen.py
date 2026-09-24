@@ -33,6 +33,8 @@ Two ways to reach Claude (`backend()` picks; CQ_AI_BACKEND forces one, or
                    running the bench locally on your own account.
 Tests inject `generate_fn` instead.
 """
+import contextlib
+import contextvars
 import json
 import os
 import re
@@ -714,8 +716,25 @@ def _call_claude_code(system, messages, schema, run=subprocess.run):
     return data, json.dumps(data)
 
 
+# A learner's own Anthropic API key for this request (hosted app, accounts
+# on): when set, every Claude call in this request uses it and nothing else.
+_user_key = contextvars.ContextVar("claude_user_key", default=None)
+
+
+@contextlib.contextmanager
+def using_key(api_key):
+    token = _user_key.set(api_key)
+    try:
+        yield
+    finally:
+        _user_key.reset(token)
+
+
 def _call_model(system, messages, schema):
-    """Whichever backend this machine has."""
+    """The learner's own key if they connected one, else whichever backend this machine has."""
+    if _user_key.get():
+        import anthropic
+        return _call_claude(system, messages, schema, client=anthropic.Anthropic(api_key=_user_key.get()))
     which = backend()
     if which == "api":
         return _call_claude(system, messages, schema)

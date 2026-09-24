@@ -25,6 +25,8 @@ import json
 import os
 import secrets
 import threading
+import urllib.error
+import urllib.request
 import sys
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -51,6 +53,7 @@ import core.build_methods
 import core.guide_import
 import core.cloud
 import core.similar
+import core.secretbox
 
 # Dependency order: engine imports checker/lesson/library/physics at module
 # level, so those must be reloaded first for engine to pick up new versions.
@@ -139,11 +142,93 @@ def _save_progress(progress):
     _store_profile(profile)
 
 
-def _need_account():
-    """Hosted with accounts: creating lessons (it spends Claude) needs a sign-in."""
-    if core.cloud.enabled() and not _user():
+def _is_owner(user):
+    """CQ_OWNER_EMAILS (comma-separated): accounts allowed to use the server's
+    own Claude login (yours). Everyone else connects their own Claude."""
+    owners = {e.strip().lower() for e in os.environ.get("CQ_OWNER_EMAILS", "").split(",") if e.strip()}
+    return bool(user and (user.get("email") or "").lower() in owners)
+
+
+def _claude_for_request():
+    """(api_key or None, error or None). Hosted with accounts: a signed-in
+    learner's own connected key; the owner may fall back to the server's
+    login; nobody else ever uses it. Locally: the server's own login."""
+    if not core.cloud.enabled():
+        return None, None
+    user = _user()
+    if not user:
+        return None, ({"error": "Sign in with Google first.", "locked": "signin"}, 401)
+    sealed = core.cloud.sealed_claude_key(user)
+    if sealed:
+        try:
+            return core.secretbox.open_(sealed), None
+        except (ValueError, core.secretbox.NoSecret):
+            return None, ({"error": "Your saved Claude key can't be read any more — connect it again.", "locked": "claude"}, 403)
+    if _is_owner(user):
+        return None, None
+    return None, ({"error": "Connect your Claude first — creating lessons uses your own Claude.", "locked": "claude"}, 403)
+
+
+def _with_claude(fn):
+    """Run fn() on the right Claude for this request, or return why not."""
+    key, blocked = _claude_for_request()
+    if blocked:
+        return blocked
+    if key:
+        with core.lesson_gen.using_key(key):
+            return fn()
+    return fn()
+
+
+def _check_anthropic_key(key, opener=urllib.request.urlopen):
+    """True if Anthropic accepts the key (a free, read-only request)."""
+    req = urllib.request.Request("https://api.anthropic.com/v1/models?limit=1",
+                                 headers={"x-api-key": key, "anthropic-version": "2023-06-01"})
+    try:
+        with opener(req, timeout=15) as res:
+            return res.status == 200
+    except urllib.error.HTTPError as exc:
+        if exc.code in (401, 403):
+            return False
+        raise
+
+
+def api_claude_key(body):
+    """Connect ({"key": "sk-ant-…"}) or disconnect ({"remove": true}) your own Claude."""
+    user = _user()
+    if not core.cloud.enabled() or not user:
         return {"error": "Sign in with Google first."}, 401
-    return None
+    if body.get("remove"):
+        core.cloud.save_claude_key(user, None, None)
+        return {"connected": False}
+    key = str(body.get("key") or "").strip()
+    if not key.startswith("sk-ant-") or len(key) < 30:
+        return {"error": "That doesn't look like an Anthropic API key (they start with sk-ant-)."}, 400
+    if not core.secretbox.available():
+        return {"error": "The server can't store keys safely yet (CQ_SECRET_KEY isn't set)."}, 503
+    try:
+        ok = _check_anthropic_key(key)
+    except OSError as exc:
+        return {"error": f"Couldn't reach Anthropic to check the key ({exc})."}, 502
+    if not ok:
+        return {"error": "Anthropic didn't accept that key — check it on console.anthropic.com."}, 400
+    core.cloud.save_claude_key(user, core.secretbox.seal(key), key[-4:])
+    return {"connected": True, "hint": key[-4:]}
+
+
+def _claude_status():
+    """What the page shows on Create: ready, or locked (and why)."""
+    if not core.cloud.enabled():
+        return {"ready": bool(core.lesson_gen.backend()), "mode": "local"}
+    user = _user()
+    if not user:
+        return {"ready": False, "mode": "signin"}
+    hint = _profile().get("claude_key_hint")
+    if hint:
+        return {"ready": True, "mode": "own", "hint": hint}
+    if _is_owner(user):
+        return {"ready": bool(core.lesson_gen.backend()), "mode": "owner"}
+    return {"ready": False, "mode": "locked"}
 
 
 def _view(session):
@@ -242,17 +327,22 @@ def _ai_unavailable(exc):
 
 
 def api_ai_status(_body):
-    """How this bench reaches Claude: "api", "claude-code" or null."""
-    return {"backend": core.lesson_gen.backend(), "flow_check": core.lesson_gen.flow_check_mode()}
+    """How this bench reaches Claude: "api", "claude-code" or null — and, with
+    accounts, whether this learner has connected their own Claude."""
+    status = _claude_status()
+    backend = core.lesson_gen.backend() if status["mode"] in ("local", "owner") else ("api" if status["ready"] else None)
+    return {"backend": backend, "flow_check": core.lesson_gen.flow_check_mode(), "claude": status}
 
 
 def api_ideas(body):
     """LLM lesson ideas from the learner's parts (needs the Anthropic SDK + a key)."""
     ids, unknown = core.lesson_finder.resolve_inventory(body.get("parts", []))
     try:
-        ideas = core.lesson_gen.suggest_ideas(ids)
+        ideas = _with_claude(lambda: core.lesson_gen.suggest_ideas(ids))
     except Exception as exc:
         return _ai_unavailable(exc)
+    if isinstance(ideas, tuple):
+        return ideas
     return {"inventory": ids, "unknown": unknown, "ideas": ideas}
 
 
@@ -260,10 +350,8 @@ def api_guide(body):
     """Read a tutorial page: every part (exact quantity/value), mapped onto the
     library — exact, or substituted only when we don't have it — for the
     learner to confirm before a lesson is built from it."""
-    if (blocked := _need_account()):
-        return blocked
     try:
-        return core.guide_import.import_guide(body["url"])
+        return _with_claude(lambda: core.guide_import.import_guide(body["url"]))
     except ValueError as exc:
         return {"error": str(exc)}, 400
     except OSError as exc:            # urllib: DNS, HTTP errors, timeouts
@@ -275,18 +363,18 @@ def api_guide(body):
 def api_generate(body):
     """Generate → validate → repair a lesson on the spot, then save it.
     With `guide` (a confirmed plan from /api/guide) it follows that tutorial exactly."""
-    if (blocked := _need_account()):
-        return blocked
     inventory = None
     if body.get("parts"):
         inventory, _ = core.lesson_finder.resolve_inventory(body["parts"])
     try:
         if body.get("guide"):
-            result = core.guide_import.generate(body["guide"], inventory=inventory)
+            result = _with_claude(lambda: core.guide_import.generate(body["guide"], inventory=inventory))
         else:
-            result = core.lesson_gen.generate_lesson(body["request"], inventory=inventory)
+            result = _with_claude(lambda: core.lesson_gen.generate_lesson(body["request"], inventory=inventory))
     except Exception as exc:
         return _ai_unavailable(exc)
+    if isinstance(result, tuple):          # locked: sign in / connect your Claude
+        return result
     if isinstance(result, dict) and result.get("ok") and result.get("lesson_id"):
         _publish(result["lesson_id"])
     return result
@@ -504,7 +592,8 @@ def api_profile(body):
 ROUTES = {"/api/lessons": api_lessons, "/api/start": api_start, "/api/event": api_event,
           "/api/find": api_find, "/api/ideas": api_ideas, "/api/generate": api_generate, "/api/part": api_part,
           "/api/parts_catalog": api_parts_catalog, "/api/plan": api_plan, "/api/guide": api_guide, "/api/ai_status": api_ai_status, "/api/profile": api_profile, "/api/library": api_library,
-          "/api/similar": api_similar, "/api/auth_config": api_auth_config}
+          "/api/similar": api_similar, "/api/auth_config": api_auth_config,
+          "/api/claude_key": api_claude_key}
 
 
 class Handler(BaseHTTPRequestHandler):
