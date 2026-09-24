@@ -207,7 +207,7 @@ def _ai_unavailable(exc):
 
 def api_ai_status(_body):
     """How this bench reaches Claude: "api", "claude-code" or null."""
-    return {"backend": core.lesson_gen.backend()}
+    return {"backend": core.lesson_gen.backend(), "flow_check": core.lesson_gen.flow_check_mode()}
 
 
 def api_ideas(body):

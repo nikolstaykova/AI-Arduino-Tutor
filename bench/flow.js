@@ -384,7 +384,7 @@ async function createIntro() {
   await say(chat, "Tell me what you want to build ✨ — or paste a link to a tutorial and I'll follow it exactly.", 400);
   await say(chat, "I'll design the circuit, the code and the steps — then check every wire, the physics and every way a learner could build it before you get it.");
   const ai = await api("/api/ai_status").catch(() => ({ backend: null }));
-  F.aiBackend = ai.backend;
+  F.aiBackend = ai.backend; F.flowCheck = ai.flow_check;
   await say(chat, ai.backend === "claude-code" ? "🔑 I'm using <b>your Claude Code login</b> on this computer — no API key needed. A new lesson takes a minute or two."
     : ai.backend === "api" ? "🔑 I'm using the Anthropic API key on this computer. A new lesson takes a minute or two."
     : "⚠️ I can't reach Claude from this computer yet: log in to Claude Code (run <code>claude</code> once in a terminal) or set an Anthropic API key, then restart the bench.", 300);
@@ -448,7 +448,8 @@ async function build(request, alreadySaid, guide) {
   if (link) return guideFlow(link, request);
   if (!alreadySaid) me(chat, request);
   $("createInput").value = "";
-  const steps = ["Writing the circuit, code and steps", "Checking every wire and pin", "Solving the physics", "Trying every way a learner could build it"];
+  const steps = ["Writing the circuit, code and steps", "Checking every wire and pin", "Solving the physics",
+    F.flowCheck === "smart" ? "Trying the main ways a learner could build it" : "Trying every way a learner could build it"];
   const b = await say(chat, `<b>On it!</b><div class="gen-steps">${steps.map((s) => `<div class="gen-step"><span class="ic">○</span>${s}</div>`).join("")}</div>`, 300);
   const els = [...b.querySelectorAll(".gen-step")];
   let i = 0;

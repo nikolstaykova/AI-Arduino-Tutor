@@ -17,8 +17,11 @@ COPY --chown=app:app . .
 RUN chown app:app /app
 USER app
 
+# CQ_FLOW_CHECK=smart: hosted, new lessons get the quick covering check of learner
+# build-ways; on your own machine (no Docker) the full check runs.
 ENV CQ_HOST=0.0.0.0 \
     PORT=8765 \
+    CQ_FLOW_CHECK=smart \
     PYTHONUNBUFFERED=1
 EXPOSE 8765
 CMD ["python3", "bench_server.py"]

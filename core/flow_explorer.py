@@ -60,16 +60,24 @@ def pin_choices(board):
     return choices
 
 
-def enumerate_flows(lesson, library=None, exhaustive_mistakes=False):
+def enumerate_flows(lesson, library=None, exhaustive_mistakes=False, mode="full"):
     """Yield flow dicts: {"pins": {old: new}, "turned": [ids], "ahead": bool,
     "mistakes": {build_step_index: kind}}. Pin moves are combined across
     pins only as "move each pin anywhere" per pin (the full product for one
-    or two signal pins; for more, each pin varies while the others stay)."""
+    or two signal pins; for more, each pin varies while the others stay).
+
+    mode="smart" plays a covering sample instead of the full product — each
+    choice varied on its own, plus everything changed at once — so the count
+    grows by adding cases, not multiplying them (tens of flows, not
+    thousands). The hosted app uses it; the full product runs locally."""
     library = library or load_library()
     board = Board(lesson, library)
     choices = pin_choices(board)
     sym = engine._symmetric_map(lesson, library)
     sym_parts = sorted(c for c in sym if any(p.split(":", 1)[0] == c for conn in board.connections for p in conn))
+    if mode == "smart":
+        yield from _smart_flows(choices, sym_parts, board.build_steps)
+        return
 
     if len(choices) <= 2:
         pin_sets = [dict(zip(choices, combo)) for combo in itertools.product(*choices.values())]
@@ -89,6 +97,31 @@ def enumerate_flows(lesson, library=None, exhaustive_mistakes=False):
         if ahead and mistakes:
             continue   # a mistake on a fully built board is the same as the step-by-step case
         yield {"pins": {k: v for k, v in pins.items() if k != v}, "turned": turned, "ahead": ahead, "mistakes": mistakes}
+
+
+def _smart_flows(choices, sym_parts, steps):
+    """The covering sample: the plain build; every alternative for each pin
+    (the others kept); every pin moved at once; each symmetric part turned
+    alone, and all of them; the board built ahead (plain, and with every
+    change at once); and every mistake at every step."""
+    # every pin moved at once — each to its own free pin (two can't share one)
+    moved_all, taken = {}, set()
+    for pin, options in choices.items():
+        free = next((o for o in options[1:] if o not in taken), None)
+        if free:
+            moved_all[pin] = free; taken.add(free)
+    flows = [{"pins": {}, "turned": [], "ahead": False, "mistakes": {}}]
+    flows += [{"pins": {pin: o}, "turned": [], "ahead": False, "mistakes": {}} for pin, options in choices.items() for o in options[1:]]
+    if len(moved_all) > 1:
+        flows.append({"pins": moved_all, "turned": [], "ahead": False, "mistakes": {}})
+    flows += [{"pins": {}, "turned": [c], "ahead": False, "mistakes": {}} for c in sym_parts]
+    if len(sym_parts) > 1:
+        flows.append({"pins": {}, "turned": list(sym_parts), "ahead": False, "mistakes": {}})
+    flows.append({"pins": {}, "turned": [], "ahead": True, "mistakes": {}})
+    if moved_all or sym_parts:
+        flows.append({"pins": moved_all, "turned": list(sym_parts), "ahead": True, "mistakes": {}})
+    flows += [{"pins": {}, "turned": [], "ahead": False, "mistakes": {s: k}} for s in steps for k in MISTAKES]
+    yield from flows
 
 
 def _physical(board, lesson, library, flow):
@@ -231,12 +264,12 @@ def run_flow(lesson, library, board, flow):
     return problems
 
 
-def explore(lesson, library=None, exhaustive_mistakes=False, stop_after=None):
-    """Play every flow. Returns {"flows": n, "failures": [(flow, problems)]}."""
+def explore(lesson, library=None, exhaustive_mistakes=False, stop_after=None, mode="full"):
+    """Play every flow (or the smart sample). Returns {"flows": n, "failures": [(flow, problems)]}."""
     library = library or load_library()
     board = Board(lesson, library)
     failures, n = [], 0
-    for flow in enumerate_flows(lesson, library, exhaustive_mistakes):
+    for flow in enumerate_flows(lesson, library, exhaustive_mistakes, mode=mode):
         n += 1
         problems = run_flow(lesson, library, board, flow)
         if problems:

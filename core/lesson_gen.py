@@ -576,13 +576,20 @@ def _check_scenarios(data, diagram, code, library, errors):
         errors.append(f"The learner scenarios couldn't run: {type(exc).__name__}: {exc}")
 
 
+def flow_check_mode():
+    """"full" (every combination — the default, on your own machine) or
+    "smart" (the covering sample — the hosted app sets CQ_FLOW_CHECK=smart,
+    because a small shared CPU would take many minutes over the full set)."""
+    return "smart" if os.environ.get("CQ_FLOW_CHECK", "").lower() == "smart" else "full"
+
+
 def _check_flows(data, diagram, code, library, errors, max_reported=3):
     """Every learner run-flow (core/flow_explorer.py): every free pin, every
     orientation, built step by step or ahead, with a mistake at any step.
     Tracking, the shown code and the physics must hold in all of them."""
     lesson = GeneratedLesson(data, diagram, code)
     try:
-        result = flow_explorer.explore(lesson, library, stop_after=max_reported)
+        result = flow_explorer.explore(lesson, library, stop_after=max_reported, mode=flow_check_mode())
     except Exception as exc:
         errors.append(f"The run-flow check couldn't run: {type(exc).__name__}: {exc}")
         return

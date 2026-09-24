@@ -49,7 +49,7 @@ Copy [`.env.example`](./.env.example) to `.env` — it's git-ignored, so tokens 
 - What it is, how to use it, what each pin does, the levels that use it, and a **video** where one is available (the tool clips in `library/tools/media/`, otherwise a YouTube search).
 
 ### Create your own lessons with Claude
-Describe a project ("a traffic light that cycles like a real one") and Claude writes the circuit (a Wokwi diagram), the sketch and the steps. The lesson is only saved once it passes **every** check a hand-made lesson passes — wiring, pin rules, code, circuit physics, a full engine run, and an explorer that tries every way a learner could build it (other pins, parts turned round, building ahead, mistakes). A failing draft goes back to Claude with the exact problems, up to three times.
+Describe a project ("a traffic light that cycles like a real one") and Claude writes the circuit (a Wokwi diagram), the sketch and the steps. The lesson is only saved once it passes **every** check a hand-made lesson passes — wiring, pin rules, code, circuit physics, a full engine run, and an explorer that tries every way a learner could build it (other pins, parts turned round, building ahead, mistakes). A failing draft goes back to Claude with the exact problems, up to three times. On your own machine the explorer plays every combination; the hosted app (`CQ_FLOW_CHECK=smart`, set in the Dockerfile) plays a covering sample — each pin, each part turned, each mistake on its own, plus everything at once — tens of builds instead of thousands, so a small shared server answers in seconds.
 
 ---
 
