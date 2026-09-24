@@ -1,0 +1,14 @@
+# Render blueprint: New → Blueprint → pick this repo. Free web service built
+# from the Dockerfile. Set CLAUDE_CODE_OAUTH_TOKEN in the dashboard (it's a
+# secret: sync false means Render asks for it and never stores it in git).
+services:
+  - type: web
+    name: circuitquest
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: CLAUDE_CODE_OAUTH_TOKEN
+        sync: false
+      - key: CQ_AI_BACKEND
+        value: claude-code

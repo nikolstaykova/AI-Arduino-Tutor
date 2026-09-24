@@ -424,12 +424,15 @@ def load_env(path=None):
 
 def main():
     loaded = load_env()
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else PORT
+    # a port on the command line wins; hosts like Render pass it as $PORT
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else int(os.environ.get("PORT", PORT))
+    # only this machine by default; a container sets CQ_HOST=0.0.0.0 to be reachable
+    host = os.environ.get("CQ_HOST", "127.0.0.1")
     route = core.lesson_gen.backend()
     how = {"claude-code": "your Claude Code login" + (" (token from .env)" if "CLAUDE_CODE_OAUTH_TOKEN" in loaded else ""),
            "api": "the Anthropic API key" + (" (from .env)" if "ANTHROPIC_API_KEY" in loaded else ""), None: "off"}[route]
     print(f"AI lessons: {how}")
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    server = ThreadingHTTPServer((host, port), Handler)
     print(f"CircuitQuest Wiring Bench running on the real engine → http://localhost:{port}  (Ctrl+C to stop)")
     try:
         server.serve_forever()

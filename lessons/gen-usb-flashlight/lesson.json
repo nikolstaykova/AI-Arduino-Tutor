@@ -1,0 +1,146 @@
+{
+  "id": "gen-usb-flashlight",
+  "title": "USB Flashlight",
+  "description": "Build the classic USB flashlight: a bright white LED, a 220 Ω resistor to protect it and a pushbutton switch, all powered from USB. The Arduino only acts as the USB power supply (5V and GND), just like the USB plug in the Build Electronic Circuits project. Hold the button down and the light comes on.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "breadboard",
+    "pushbutton",
+    "resistor-220",
+    "led",
+    "jumper-wire",
+    "usb-cable"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Gather your parts: an Arduino Uno, a breadboard, a pushbutton, a 220 Ω resistor, a white LED, some jumper wires and a USB cable.",
+      "items": [
+        "arduino-uno",
+        "breadboard",
+        "pushbutton",
+        "resistor-220",
+        "led",
+        "jumper-wire",
+        "usb-cable"
+      ]
+    },
+    {
+      "id": "step-1a",
+      "phase": "build",
+      "clip": "Press the pushbutton into the breadboard so it sits across the middle gap: two legs above the gap and two legs below it, around column 20.",
+      "expected_landing": [
+        "btn1:1.l",
+        "btn1:2.l"
+      ],
+      "strict": false,
+      "goal": "Seat the pushbutton across the centre gap of the breadboard.",
+      "hints": [
+        "If it doesn't fit easily, turn it a quarter turn.",
+        "The button is the switch of your flashlight."
+      ]
+    },
+    {
+      "id": "step-1b",
+      "phase": "build",
+      "clip": "Run a red jumper wire from an empty hole in the column of one of the button's top legs to the 5V pin on the Arduino.",
+      "expected_nets": [
+        [
+          "btn1:1.l",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "goal": "Connect one side of the button to 5V.",
+      "hints": [
+        "Use a hole above the middle gap, in the same column as a button leg.",
+        "5V is on the power header of the Arduino."
+      ]
+    },
+    {
+      "id": "step-2a",
+      "phase": "build",
+      "clip": "Put one leg of the 220 Ω resistor in the column of the button's bottom leg on that same side (below the middle gap), and its other leg in an empty column a few columns away.",
+      "expected_nets": [
+        [
+          "btn1:2.l",
+          "r1:1"
+        ]
+      ],
+      "strict": false,
+      "goal": "Connect the resistor to the other side of the button.",
+      "hints": [
+        "A resistor works either way round.",
+        "Stay below the middle gap for this leg."
+      ]
+    },
+    {
+      "id": "step-2b",
+      "phase": "build",
+      "clip": "Put the white LED's long leg in the same column as the resistor's free leg, and its short leg in an empty column next to it.",
+      "expected_nets": [
+        [
+          "led1:A",
+          "r1:2"
+        ]
+      ],
+      "strict": false,
+      "goal": "Connect the LED's long leg (+) to the free end of the resistor.",
+      "hints": [
+        "The long leg must meet the resistor, or the LED won't light.",
+        "The two LED legs need different columns."
+      ]
+    },
+    {
+      "id": "step-2c",
+      "phase": "build",
+      "clip": "Run a black jumper wire from an empty hole in the LED's short-leg column to a GND pin on the Arduino.",
+      "expected_nets": [
+        [
+          "led1:C",
+          "uno:GND.2"
+        ]
+      ],
+      "strict": false,
+      "goal": "Connect the LED's short leg (−) to ground.",
+      "hints": [
+        "Any GND pin works – they are all connected.",
+        "There are GND pins right next to 5V."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Plug in the USB cable and upload the sketch. The Arduino now powers your flashlight: hold the button down and the LED lights up.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "btn1:1.l",
+        "uno:5V"
+      ],
+      [
+        "btn1:2.l",
+        "r1:1"
+      ],
+      [
+        "led1:A",
+        "r1:2"
+      ],
+      [
+        "led1:C",
+        "uno:GND.2"
+      ]
+    ]
+  },
+  "generated": true,
+  "requires": []
+}

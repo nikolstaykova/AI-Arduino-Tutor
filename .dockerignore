@@ -1,0 +1,17 @@
+# never ship secrets or local state
+.env
+.env.*
+!.env.example
+profile.json
+logs/*
+!logs/.gitkeep
+# not needed to run the app
+.git
+**/__pycache__
+.pytest_cache
+tests
+experiments
+library/tools/media
+bench/ui_*.js
+*.md
+!README.md
