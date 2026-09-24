@@ -118,18 +118,28 @@ def _user():
     return getattr(_request, "user", None)
 
 
+def _guest():
+    """A guest's id (typed a name, no Google) — hosted with accounts only."""
+    return getattr(_request, "guest", None)
+
+
 def _profile():
     user = _user()
     if user:
         return core.cloud.load_profile(user)
-    return {} if core.cloud.enabled() else core.profile.load_profile()
+    if core.cloud.enabled():
+        return core.cloud.load_guest(_guest()) if _guest() else {}
+    return core.profile.load_profile()
 
 
 def _store_profile(profile):
     user = _user()
     if user:
         core.cloud.save_profile(user, profile)
-    elif not core.cloud.enabled():      # hosted but signed out: nothing to save to
+    elif core.cloud.enabled():
+        if _guest():
+            core.cloud.save_guest(_guest(), profile)
+    else:
         core.profile.save_profile(profile)
 
 
@@ -599,6 +609,13 @@ def api_profile(body):
     if body.get("name"):
         profile["name"] = str(body["name"]).strip()[:40]
         _store_profile(profile)
+    gid = str(body.get("adopt_guest") or "").lower()
+    if _user() and core.cloud.valid_guest_id(gid):
+        # a guest just signed in with Google: keep their progress if the account has none yet
+        guest = core.cloud.load_guest(gid)
+        if guest.get("progress", {}).get("xp") and not profile.get("progress", {}).get("xp"):
+            profile["progress"] = guest["progress"]
+            _store_profile(profile)
     user = _user()
     return {"name": profile.get("name"), "difficulty": profile.get("difficulty", "beginner"),
             "avatar": user and user.get("avatar"), "account": bool(user),
@@ -628,6 +645,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(404, {"error": "not found"})
         auth = self.headers.get("Authorization", "")
         _request.user = core.cloud.user_from_token(auth[7:]) if auth.startswith("Bearer ") else None
+        gid = (self.headers.get("X-CQ-Guest") or "").strip().lower()
+        _request.guest = gid if not _request.user and core.cloud.enabled() and core.cloud.valid_guest_id(gid) else None
         try:
             result = route(body)
         except Exception as exc:  # surface engine errors in the page, not just the terminal

@@ -15,7 +15,7 @@ USERS = {"tok-nikol": {"id": "11111111-1111-1111-1111-111111111111", "email": "n
 
 
 class FakeSupabase(BaseHTTPRequestHandler):
-    tables = {"profiles": {}, "lessons": {}}
+    tables = {"profiles": {}, "lessons": {}, "guests": {}}
 
     def log_message(self, *a):
         pass
@@ -33,8 +33,9 @@ class FakeSupabase(BaseHTTPRequestHandler):
         table = url.path.rsplit("/", 1)[1]
         q = urllib.parse.parse_qs(url.query)
         rows = list(self.tables[table].values())
-        if "user_id" in q:
-            rows = [r for r in rows if r["user_id"] == q["user_id"][0].removeprefix("eq.")]
+        for col in ("user_id", "id"):
+            if col in q:
+                rows = [r for r in rows if r[col] == q[col][0].removeprefix("eq.")]
         return self._json(200, rows)
 
     def do_POST(self):
@@ -48,7 +49,7 @@ class FakeSupabase(BaseHTTPRequestHandler):
 
 @pytest.fixture
 def supabase(monkeypatch, tmp_path):
-    FakeSupabase.tables = {"profiles": {}, "lessons": {}}
+    FakeSupabase.tables = {"profiles": {}, "lessons": {}, "guests": {}}
     server = ThreadingHTTPServer(("127.0.0.1", 0), FakeSupabase)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     monkeypatch.setenv("SUPABASE_URL", f"http://127.0.0.1:{server.server_address[1]}")
@@ -57,6 +58,7 @@ def supabase(monkeypatch, tmp_path):
     cloud._users.clear(); cloud._last_sync[0] = 0
     yield FakeSupabase.tables
     bench_server._request.user = None      # never leak a signed-in user into other tests
+    bench_server._request.guest = None
     server.shutdown()
 
 
@@ -256,3 +258,38 @@ def test_privacy_and_terms_pages_exist_for_google(monkeypatch):
     monkeypatch.delenv("CQ_CONTACT_EMAIL")
     assert "person who runs this" in bench_server._legal_page("privacy")
     assert 'href="/privacy"' in (bench_server.PAGE).read_text()      # the homepage links it
+
+
+# ---- guests: "just type my name" --------------------------------------------------------------
+GUEST = "3f2b8c1e-4d5a-4b6c-9d7e-0a1b2c3d4e5f"
+
+
+def as_guest(gid):
+    bench_server._request.user = None
+    bench_server._request.guest = gid if cloud.valid_guest_id(gid) else None
+
+
+def test_a_guest_keeps_progress_under_their_own_id_and_cannot_create(supabase):
+    as_guest(GUEST)
+    assert bench_server.api_profile({"name": "Ada"})["name"] == "Ada"
+    bench_server._save_progress({**bench_server.core.progress.empty_progress(), "xp": 30})
+    assert supabase["guests"][GUEST]["progress"]["xp"] == 30 and supabase["profiles"] == {}
+    assert bench_server._load_progress()["xp"] == 30
+    assert bench_server.api_generate({"request": "a traffic light"})[1] == 401
+    assert bench_server.api_ai_status({})["claude"]["mode"] == "signin"
+    as_guest("not-a-uuid")                                   # a made-up id is ignored: nothing saved
+    bench_server._save_progress({**bench_server.core.progress.empty_progress(), "xp": 999})
+    assert list(supabase["guests"]) == [GUEST]
+
+
+def test_a_guest_who_signs_in_brings_their_stars_along(supabase):
+    as_guest(GUEST)
+    bench_server.api_profile({"name": "Mert"})
+    bench_server._save_progress({**bench_server.core.progress.empty_progress(), "xp": 70, "completed": {"blink": {"stars": 3}}})
+    as_user("tok-mert")
+    assert bench_server._load_progress()["xp"] == 0
+    bench_server.api_profile({"adopt_guest": GUEST})
+    assert bench_server._load_progress()["xp"] == 70 and "blink" in bench_server._load_progress()["completed"]
+    bench_server._save_progress({**bench_server.core.progress.empty_progress(), "xp": 500})
+    bench_server.api_profile({"adopt_guest": GUEST})          # never overwrites real account progress
+    assert bench_server._load_progress()["xp"] == 500

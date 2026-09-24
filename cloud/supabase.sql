@@ -34,5 +34,16 @@ create table if not exists public.lessons (
 );
 create index if not exists lessons_source_url on public.lessons (source_url);
 
+-- guests: people who just typed a name (no Google). Keyed by a random id
+-- their browser keeps; progress only, no lessons.
+create table if not exists public.guests (
+  id          uuid primary key,
+  name        text,
+  difficulty  text default 'beginner',
+  progress    jsonb default '{}'::jsonb,
+  updated_at  timestamptz default now()
+);
+
 alter table public.profiles enable row level security;
+alter table public.guests   enable row level security;
 alter table public.lessons  enable row level security;

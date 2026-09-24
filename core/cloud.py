@@ -18,6 +18,7 @@ Standard library only: plain HTTPS calls to Supabase's REST API.
 """
 import json
 import os
+import re
 import threading
 import time
 import urllib.error
@@ -100,6 +101,28 @@ def load_profile(user):
                 "progress": row.get("progress") or {}, "parts": row.get("parts") or [],
                 "claude_key_hint": row.get("claude_key_hint")}
     return {"name": user["name"]}
+
+
+# ---- guests (typed a name, no Google): progress under a random id their browser keeps ----
+GUEST_ID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
+
+
+def valid_guest_id(gid):
+    return bool(gid and GUEST_ID.match(gid))
+
+
+def load_guest(gid):
+    rows = _call("GET", f"/rest/v1/guests?id=eq.{gid}&select=*")
+    if rows:
+        row = rows[0]
+        return {"name": row.get("name"), "difficulty": row.get("difficulty") or "beginner", "progress": row.get("progress") or {}}
+    return {}
+
+
+def save_guest(gid, profile):
+    row = {"id": gid, "name": (profile.get("name") or "")[:40] or None, "difficulty": profile.get("difficulty", "beginner"),
+           "progress": profile.get("progress") or {}, "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+    _call("POST", "/rest/v1/guests?on_conflict=id", [row], headers={"Prefer": "resolution=merge-duplicates,return=minimal"})
 
 
 # ---- the learner's own Claude (an Anthropic API key, sealed with CQ_SECRET_KEY) ------------

@@ -148,7 +148,7 @@ function homeMain() {
     : "Ready to build your first real circuit? I'll check every wire with you. What do you want to do today?";
   const items = [
     { icon: "map", label: "Learn", sub: "Drive the world map of lessons", go: () => partsChat() },
-    { icon: "pen", label: "Create my own lesson", sub: F.claude && F.claude.mode === "locked" ? "🔒 Connect your own Claude to unlock" : "Describe an idea, I'll design it", go: () => { go("create"); createIntro(); } },
+    { icon: "pen", label: "Create my own lesson", sub: F.guest ? "🔒 Sign in with Google to create" : F.claude && F.claude.mode === "locked" ? "🔒 Connect your own Claude to unlock" : "Describe an idea, I'll design it", go: () => { go("create"); createIntro(); } },
     { icon: "box", label: "Parts & Tools", sub: "What everything is, in 3D, with videos", go: () => go("library") },
   ];
   if (next) items.unshift({ icon: "play", label: `Continue: ${next.title}`, sub: "Pick up where you left off", primary: true, go: () => openLessonPop(next.id) });
@@ -168,6 +168,12 @@ async function homeChat() {
 async function sendName() {
   const name = $("homeInput").value.trim();
   if (!name) return;
+  if (F.becomingGuest) {                      // accounts on: a guest id this browser keeps
+    const gid = crypto.randomUUID(); store.set("guestId", gid); window.__cqGuest = gid; F.becomingGuest = false;
+    await api("/api/profile", { name });
+    $("homeInputRow").hidden = true;
+    return startApp();
+  }
   const r = await api("/api/profile", { name });
   F.name = r.name; F.progress = r.progress; renderHeader(F.progress);
   homeMain();
@@ -388,7 +394,8 @@ async function createIntro() {
   const ai = await api("/api/ai_status").catch(() => ({ backend: null, claude: { mode: "local" } }));
   F.aiBackend = ai.backend; F.flowCheck = ai.flow_check; F.claude = ai.claude;
   const mode = (ai.claude || {}).mode;
-  if (mode === "locked") { lockCreate(true); await connectClaudeCard(chat); }
+  if (mode === "signin") { F.claude.mode = "locked"; lockCreate(true); await signInToCreateCard(chat); }
+  else if (mode === "locked") { lockCreate(true); await connectClaudeCard(chat); }
   else if (mode === "own") await ownClaudeNote(chat, ai.claude.hint);
   else if (mode === "owner") await say(chat, "🔑 You're the owner here, so I'm using <b>your Claude login</b>. A new lesson takes a minute or two.", 300);
   else await say(chat, ai.backend === "claude-code" ? "🔑 I'm using <b>your Claude Code login</b> on this computer — no API key needed. A new lesson takes a minute or two."
@@ -430,6 +437,12 @@ async function connectClaudeCard(chat) {
   };
   btn.onclick = connect;
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") connect(); });
+}
+async function signInToCreateCard(chat) {
+  const card = await say(chat, `<div class="claude-lock"><b>🔒 Creating lessons needs a Google sign-in</b>
+    <p class="muted">You're playing as a guest. Sign in to create lessons (with your own Claude) — your stars and XP from this browser come with you.</p>
+    <button class="btn btn-primary" data-signin>Sign in with Google</button></div>`, 200);
+  card.querySelector("[data-signin]").onclick = () => F.auth.signIn();
 }
 async function ownClaudeNote(chat, hint) {
   const b = await say(chat, `🔑 Using <b>your own Claude</b> (key …${esc(hint)}). A new lesson takes a minute or two. <button class="linkish" data-disconnect>Disconnect</button>`, 300);
@@ -597,17 +610,33 @@ bench.onComplete = async (award) => {
 
 // ---------------------------------------------------------------------------
 // Accounts (only when the server has them on): sign in with Google first
+const GOOGLE_G = `<svg class="ic" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>`;
+// Accounts on and nobody signed in: sign in with Google, or just type a name (a guest)
 function signInScreen() {
   sparkyHop();
   $("homeTitle").textContent = "Hi! I'm Sparky";
-  $("homeSub").textContent = "Sign in to keep your stars and XP, and to see every lesson your friends create.";
+  $("homeSub").textContent = "Your circuit buddy — I'll check every wire with you. How do you want to play?";
   $("homeQ").hidden = true; $("homeBack").hidden = true; $("homeInputRow").hidden = true;
   const row = $("homeActions"); row.innerHTML = "";
-  const b = document.createElement("button");
-  b.className = "choice home-card primary google-btn";
-  b.innerHTML = `<svg class="ic" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><b>Sign in with Google</b><small>Your progress follows you to any device</small>`;
-  b.onclick = () => F.auth.signIn();
-  row.appendChild(b);
+  const google = document.createElement("button");
+  google.className = "choice home-card primary";
+  google.innerHTML = `${GOOGLE_G}<b>Sign in with Google</b><small>Your stars and XP are kept in your account, on any device — and you can create your own lessons.</small>`;
+  google.onclick = () => F.auth.signIn();
+  const guest = document.createElement("button");
+  guest.className = "choice home-card";
+  guest.innerHTML = `<svg class="ic" viewBox="0 0 24 24"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20c0-3.3 3.6-6 8-6s8 2.7 8 6"/></svg><b>Just type my name</b><small>Play straight away. Progress is saved in this browser only, and creating lessons needs a sign-in.</small>`;
+  guest.onclick = () => {
+    $("homeSub").textContent = "Great — what's your name? (You can sign in with Google any time to keep your progress everywhere.)";
+    row.innerHTML = ""; $("homeInputRow").hidden = false; $("homeInput").focus();
+    $("homeBack").hidden = false; $("homeBack").onclick = signInScreen;
+    F.becomingGuest = true;
+  };
+  row.append(google, guest);
+}
+function guestChip() {
+  const a = $("avatar");
+  a.title = "Playing as a guest — click to sign in with Google"; a.style.cursor = "pointer";
+  a.onclick = () => { if (confirm("Sign in with Google? Your stars and XP from this browser come with you, and you'll be able to create lessons.")) F.auth.signIn(); };
 }
 function accountChip(auth) {
   const a = $("avatar");
@@ -621,8 +650,22 @@ function accountChip(auth) {
 async function init() {
   bench.init();
   F.auth = await setupAuth().catch(() => ({ enabled: false, user: null }));
-  if (F.auth.enabled && !F.auth.user) return signInScreen();
-  if (F.auth.user) accountChip(F.auth);
+  const gid = store.get("guestId", null);
+  if (F.auth.enabled && !F.auth.user) {
+    if (!gid) return signInScreen();
+    window.__cqGuest = gid; F.guest = true; guestChip();         // a returning guest
+  }
+  if (F.auth.user) {
+    accountChip(F.auth);
+    if (gid) {                                                   // a guest who just signed in: bring their progress along
+      await api("/api/profile", { adopt_guest: gid }).catch(() => {});
+      store.set("guestId", null);
+    }
+  }
+  return startApp();
+}
+async function startApp() {
+  if (window.__cqGuest) { F.guest = true; guestChip(); }
   try {
     const [profile, catalog] = await Promise.all([api("/api/profile"), api("/api/parts_catalog"), bench.refreshLessons()]);
     F.name = profile.name; F.progress = profile.progress; F.level = profile.difficulty; F.catalog = catalog.parts;
