@@ -2,6 +2,10 @@
   "id": "digital-read-serial",
   "title": "Read a Digital Input",
   "description": "Read a pushbutton's state using digitalRead(), and print it to the Serial Monitor.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/basics/DigitalReadSerial/",
+    "title": "Arduino docs: Digital Read Serial"
+  },
   "difficulty": "beginner",
   "board": "arduino-uno",
   "requires": [

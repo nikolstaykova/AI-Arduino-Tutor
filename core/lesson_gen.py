@@ -802,7 +802,7 @@ def generate_lesson(request, inventory=None, library=None, generate_fn=None, max
                 errors = [f"The lesson uses parts the learner doesn't own: {', '.join(extra)}."]
         attempts.append({"errors": errors})
         if not errors:
-            lesson_id = "gen-" + _slug(data.get("id") or data.get("title", "lesson"))
+            lesson_id = _free_id("gen-" + _slug(data.get("id") or data.get("title", "lesson")))
             data = {**data, "id": lesson_id, "generated": True, "requires": [],
                     "code": "code.ino", "wokwi_diagram": "diagram.json", **(extra_data or {})}
             if save:
@@ -813,6 +813,14 @@ def generate_lesson(request, inventory=None, library=None, generate_fn=None, max
             {"role": "user", "content": "The lesson failed validation. Fix every problem and return the full corrected output:\n- " + "\n- ".join(errors)},
         ]
     return {"ok": False, "lesson_id": None, "attempts": attempts, "errors": attempts[-1]["errors"]}
+
+
+def _free_id(base):
+    """Never overwrite someone's lesson: gen-traffic-light, then -2, -3 …"""
+    lesson_id, n = base, 2
+    while (LESSONS_ROOT / lesson_id).exists():
+        lesson_id, n = f"{base}-{n}", n + 1
+    return lesson_id
 
 
 def _save(lesson_id, data, diagram, code):

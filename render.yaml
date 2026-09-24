@@ -12,3 +12,10 @@ services:
         sync: false
       - key: CQ_AI_BACKEND
         value: claude-code
+      # accounts (Sign in with Google) + shared lessons — see cloud/SETUP.md
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false

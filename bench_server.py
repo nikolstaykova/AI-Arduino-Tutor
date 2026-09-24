@@ -24,6 +24,7 @@ import importlib
 import json
 import os
 import secrets
+import threading
 import sys
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -48,6 +49,8 @@ import core.profile
 import core.worlds
 import core.build_methods
 import core.guide_import
+import core.cloud
+import core.similar
 
 # Dependency order: engine imports checker/lesson/library/physics at module
 # level, so those must be reloaded first for engine to pick up new versions.
@@ -102,14 +105,45 @@ def _progress_summary(progress):
             "badge_names": {b: core.progress.BADGES.get(b, b) for b in progress.get("badges", [])}}
 
 
+# who this request is from: with accounts on (core/cloud.py), the signed-in
+# Google user; otherwise None and everything uses the local profile.json
+_request = threading.local()
+
+
+def _user():
+    return getattr(_request, "user", None)
+
+
+def _profile():
+    user = _user()
+    if user:
+        return core.cloud.load_profile(user)
+    return {} if core.cloud.enabled() else core.profile.load_profile()
+
+
+def _store_profile(profile):
+    user = _user()
+    if user:
+        core.cloud.save_profile(user, profile)
+    elif not core.cloud.enabled():      # hosted but signed out: nothing to save to
+        core.profile.save_profile(profile)
+
+
 def _load_progress():
-    return {**core.progress.empty_progress(), **core.profile.load_profile().get("progress", {})}
+    return {**core.progress.empty_progress(), **_profile().get("progress", {})}
 
 
 def _save_progress(progress):
-    profile = core.profile.load_profile()
+    profile = _profile()
     profile["progress"] = progress
-    core.profile.save_profile(profile)
+    _store_profile(profile)
+
+
+def _need_account():
+    """Hosted with accounts: creating lessons (it spends Claude) needs a sign-in."""
+    if core.cloud.enabled() and not _user():
+        return {"error": "Sign in with Google first."}, 401
+    return None
 
 
 def _view(session):
@@ -168,6 +202,7 @@ def _award(session):
 
 
 def api_lessons(_body):
+    core.cloud.sync_lessons()          # everyone's created lessons (no-op without accounts)
     progress = _load_progress()
     lessons = []
     for path in sorted((ROOT / "lessons").glob("*/lesson.json")):
@@ -182,7 +217,8 @@ def api_lessons(_body):
                         "stars": progress["completed"].get(data["id"], {}).get("stars", 1 if data["id"] in progress["completed"] else 0),
                         "difficulty": data.get("difficulty", "beginner"),
                         "parts_used": data.get("parts_used", []),
-                        "source": data.get("source"), "substitutions": data.get("substitutions", [])})
+                        "source": data.get("source"), "substitutions": data.get("substitutions", []),
+                        "creator": data.get("creator")})
     return {"lessons": lessons, "worlds": core.worlds.build_map(lessons), "progress": _progress_summary(progress)}
 
 
@@ -224,6 +260,8 @@ def api_guide(body):
     """Read a tutorial page: every part (exact quantity/value), mapped onto the
     library — exact, or substituted only when we don't have it — for the
     learner to confirm before a lesson is built from it."""
+    if (blocked := _need_account()):
+        return blocked
     try:
         return core.guide_import.import_guide(body["url"])
     except ValueError as exc:
@@ -237,15 +275,55 @@ def api_guide(body):
 def api_generate(body):
     """Generate → validate → repair a lesson on the spot, then save it.
     With `guide` (a confirmed plan from /api/guide) it follows that tutorial exactly."""
+    if (blocked := _need_account()):
+        return blocked
     inventory = None
     if body.get("parts"):
         inventory, _ = core.lesson_finder.resolve_inventory(body["parts"])
     try:
         if body.get("guide"):
-            return core.guide_import.generate(body["guide"], inventory=inventory)
-        return core.lesson_gen.generate_lesson(body["request"], inventory=inventory)
+            result = core.guide_import.generate(body["guide"], inventory=inventory)
+        else:
+            result = core.lesson_gen.generate_lesson(body["request"], inventory=inventory)
     except Exception as exc:
         return _ai_unavailable(exc)
+    if isinstance(result, dict) and result.get("ok") and result.get("lesson_id"):
+        _publish(result["lesson_id"])
+    return result
+
+
+def _publish(lesson_id):
+    """Sign a new lesson with its maker and share it (accounts on)."""
+    user = _user()
+    if not user:
+        return
+    path = ROOT / "lessons" / lesson_id / "lesson.json"
+    data = json.loads(path.read_text())
+    data["creator"] = user["name"]
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+    try:
+        core.cloud.save_lesson(lesson_id, user)
+    except Exception as exc:          # the lesson still works here; say why it didn't share
+        print(f"couldn't share {lesson_id}: {exc}")
+
+
+def api_similar(body):
+    """Before creating: lessons that might be the same (same tutorial link, or
+    the same words) — the learner can open one or create anyway."""
+    core.cloud.sync_lessons()
+    lessons = []
+    for path in sorted((ROOT / "lessons").glob("*/lesson.json")):
+        d = json.loads(path.read_text())
+        lessons.append({"id": d["id"], "title": d.get("title", d["id"]), "description": d.get("description", ""),
+                        "source": d.get("source"), "creator": d.get("creator")})
+    matches = core.similar.find_similar(body.get("request", ""), lessons, url=body.get("url"))
+    by_id = {l["id"]: l for l in lessons}
+    return {"matches": [{**m, "creator": by_id[m["id"]].get("creator")} for m in matches]}
+
+
+def api_auth_config(_body):
+    """Whether accounts are on, and the public bits the page needs to sign in."""
+    return {**core.cloud.public_config(), "user": _user()}
 
 
 def api_start(body):
@@ -413,17 +491,20 @@ def api_library(_body):
 
 def api_profile(body):
     """GET-style (no body) returns the learner; {"name": ...} saves it."""
-    profile = core.profile.load_profile()
+    profile = _profile()
     if body.get("name"):
         profile["name"] = str(body["name"]).strip()[:40]
-        core.profile.save_profile(profile)
+        _store_profile(profile)
+    user = _user()
     return {"name": profile.get("name"), "difficulty": profile.get("difficulty", "beginner"),
+            "avatar": user and user.get("avatar"), "account": bool(user),
             "progress": _progress_summary(_load_progress())}
 
 
 ROUTES = {"/api/lessons": api_lessons, "/api/start": api_start, "/api/event": api_event,
           "/api/find": api_find, "/api/ideas": api_ideas, "/api/generate": api_generate, "/api/part": api_part,
-          "/api/parts_catalog": api_parts_catalog, "/api/plan": api_plan, "/api/guide": api_guide, "/api/ai_status": api_ai_status, "/api/profile": api_profile, "/api/library": api_library}
+          "/api/parts_catalog": api_parts_catalog, "/api/plan": api_plan, "/api/guide": api_guide, "/api/ai_status": api_ai_status, "/api/profile": api_profile, "/api/library": api_library,
+          "/api/similar": api_similar, "/api/auth_config": api_auth_config}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -440,6 +521,8 @@ class Handler(BaseHTTPRequestHandler):
         route = ROUTES.get(self.path.split("?")[0])
         if route is None:
             return self._send(404, {"error": "not found"})
+        auth = self.headers.get("Authorization", "")
+        _request.user = core.cloud.user_from_token(auth[7:]) if auth.startswith("Bearer ") else None
         try:
             result = route(body)
         except Exception as exc:  # surface engine errors in the page, not just the terminal
@@ -541,6 +624,7 @@ def main():
     route = core.lesson_gen.backend()
     how = {"claude-code": "your Claude Code login" + (" (token from .env)" if "CLAUDE_CODE_OAUTH_TOKEN" in loaded else ""),
            "api": "the Anthropic API key" + (" (from .env)" if "ANTHROPIC_API_KEY" in loaded else ""), None: "off"}[route]
+    print("Accounts: Sign in with Google (Supabase) — created lessons are shared" if core.cloud.enabled() else "Accounts: off (local profile.json; see cloud/SETUP.md)")
     print(f"AI lessons: {how}")
     ThreadingHTTPServer.request_queue_size = 128   # the page fetches many JS modules at once; the default (5) drops some
     server = ThreadingHTTPServer((host, port), Handler)

@@ -17,7 +17,9 @@ const BB_SIZE = { "wokwi-breadboard-half": "half", "wokwi-breadboard-mini": "min
 // Engine API
 // ---------------------------------------------------------------------------
 async function api(path, body) {
-  const res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+  const headers = { "Content-Type": "application/json" };
+  if (window.__cqToken) headers.Authorization = "Bearer " + window.__cqToken;     // signed in (accounts on)
+  const res = await fetch(path, { method: "POST", headers, body: JSON.stringify(body || {}) });
   const data = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
   if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
   return data;

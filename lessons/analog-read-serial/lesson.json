@@ -2,6 +2,10 @@
   "id": "analog-read-serial",
   "title": "Read an Analog Input",
   "description": "Read a varying voltage from a potentiometer using analogRead(), and print it to the Serial Monitor.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial/",
+    "title": "Arduino docs: Analog Read Serial"
+  },
   "difficulty": "beginner",
   "board": "arduino-uno",
   "requires": [

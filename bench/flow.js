@@ -5,6 +5,7 @@ import { bench } from "./app.js";
 import { thumbnailById } from "./three/models.js";
 import { createWorldMap } from "./overworld.js";
 import { renderLibrary } from "./library.js";
+import { setupAuth } from "./auth.js";
 
 const { api, esc, toast, guarded } = bench;
 const $ = (id) => document.getElementById(id);
@@ -308,6 +309,7 @@ async function openLessonPop(id) {
     ${lv ? `<div class="pop-level">WORLD ${lv.world.number} · LEVEL ${esc(lv.level)} · ${esc(lv.world.name)}</div>` : ""}
     <div class="pop-icon">${icon(l.id, "pop-ico")}</div><h2>${esc(l.title)} ${l.completed ? `<span style="color:#ffc53d">${stars}</span>` : ""}</h2>
     <p class="muted">${esc(l.description)}</p>
+    ${l.creator ? `<div class="pop-by">Made by <b>${esc(l.creator)}</b></div>` : ""}
     ${l.source ? `<div class="pop-source">From the guide <a href="${esc(l.source.url)}" target="_blank" rel="noopener">${esc(l.source.title)} ↗</a>${
       (l.substitutions || []).length ? `<br><span class="muted">Changed from the guide: ${l.substitutions.map((x) => `${esc(x.guide)} → ${esc(x.used)}`).join("; ")}</span>` : " — followed exactly."}</div>` : ""}
     ${before.length ? `<div class="pop-tip">Tip: this level builds on <b>${esc(before.join(", "))}</b>. You can still jump in now — it counts as completed either way.</div>` : ""}
@@ -415,9 +417,34 @@ function aiUnavailable(e) {
 }
 // A link to a tutorial: read it, show exactly what was found and what (if
 // anything) has to change, and build only once the learner says so.
+// Before spending Claude: a lesson that might be the same (same tutorial link,
+// or the same words). The learner decides — open it, or create anyway.
+async function existingFirst(chat, request, url) {
+  const sim = await api("/api/similar", { request, url }).catch(() => ({ matches: [] }));
+  if (!sim.matches.length) return true;
+  const where = (id) => { const lv = levelOf(id); return lv ? `Level ${lv.level} · ${lv.world.name}` : "AI Lab"; };
+  const card = await say(chat, `This might be the same as ${sim.matches.length > 1 ? "one of these" : "a level we already have"} — want to check it out?
+    <div class="similar-list">${sim.matches.map((m) => `<div class="similar">${icon(m.id, "sim-ico") ? `<div class="similar-icon">${icon(m.id, "sim-ico")}</div>` : ""}<div class="similar-text"><b>${esc(m.title)}</b>
+      <span class="muted">${esc(where(m.id))}${m.creator ? ` · made by ${esc(m.creator)}` : ""} · ${esc(m.why)}</span></div>
+      <button class="btn btn-primary" data-open="${esc(m.id)}">Open level</button></div>`).join("")}</div>
+    <div class="btn-row" style="margin-top:8px;"><button class="btn ghost" data-anyway>No, it's different — create it anyway</button></div>`, 200);
+  return new Promise((resolve) => {
+    card.querySelectorAll("[data-open]").forEach((b) => (b.onclick = () => { card.querySelectorAll("button").forEach((x) => (x.disabled = true)); resolve(false); openLevel(b.dataset.open); }));
+    card.querySelector("[data-anyway]").onclick = () => { card.querySelectorAll("button").forEach((x) => (x.disabled = true)); resolve(true); };
+  });
+}
+// go to the map, let Sparky drive to the level, then open its card
+async function openLevel(id) {
+  go("learn");
+  await wait(700);
+  try { await MAP.walkTo(id); } catch (e) { /* not on the road (yet): just open it */ }
+  openLessonPop(id);
+}
+
 async function guideFlow(url, text) {
   const chat = $("createChat");
   me(chat, text); $("createInput").value = "";
+  if (!(await existingFirst(chat, text, url))) return;
   const b = await say(chat, `<b>Reading the guide…</b><div class="gen-steps"><div class="gen-step now"><span class="ic"><span class="spin">◌</span></span>Opening the page</div><div class="gen-step"><span class="ic">○</span>Finding every part, value and connection</div></div>`, 200);
   const els = [...b.querySelectorAll(".gen-step")];
   const tick = setTimeout(() => { els[0].className = "gen-step done"; els[0].querySelector(".ic").textContent = "✓"; els[1].className = "gen-step now"; els[1].querySelector(".ic").innerHTML = '<span class="spin">◌</span>'; }, 2500);
@@ -448,6 +475,7 @@ async function build(request, alreadySaid, guide) {
   if (link) return guideFlow(link, request);
   if (!alreadySaid) me(chat, request);
   $("createInput").value = "";
+  if (!guide && !(await existingFirst(chat, request))) return;
   const steps = ["Writing the circuit, code and steps", "Checking every wire and pin", "Solving the physics",
     F.flowCheck === "smart" ? "Trying the main ways a learner could build it" : "Trying every way a learner could build it"];
   const b = await say(chat, `<b>On it!</b><div class="gen-steps">${steps.map((s) => `<div class="gen-step"><span class="ic">○</span>${s}</div>`).join("")}</div>`, 300);
@@ -526,8 +554,33 @@ bench.onComplete = async (award) => {
 };
 
 // ---------------------------------------------------------------------------
+// Accounts (only when the server has them on): sign in with Google first
+function signInScreen() {
+  sparkyHop();
+  $("homeTitle").textContent = "Hi! I'm Sparky";
+  $("homeSub").textContent = "Sign in to keep your stars and XP, and to see every lesson your friends create.";
+  $("homeQ").hidden = true; $("homeBack").hidden = true; $("homeInputRow").hidden = true;
+  const row = $("homeActions"); row.innerHTML = "";
+  const b = document.createElement("button");
+  b.className = "choice home-card primary google-btn";
+  b.innerHTML = `<svg class="ic" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><b>Sign in with Google</b><small>Your progress follows you to any device</small>`;
+  b.onclick = () => F.auth.signIn();
+  row.appendChild(b);
+}
+function accountChip(auth) {
+  const a = $("avatar");
+  if (auth.user.avatar) a.innerHTML = `<img src="${esc(auth.user.avatar)}" alt="" referrerpolicy="no-referrer">`;
+  a.title = `Signed in as ${auth.user.name} — click to sign out`;
+  a.style.cursor = "pointer";
+  a.onclick = () => { if (confirm(`Signed in as ${auth.user.name} (${auth.user.email}).\n\nSign out?`)) auth.signOut(); };
+}
+
+// ---------------------------------------------------------------------------
 async function init() {
   bench.init();
+  F.auth = await setupAuth().catch(() => ({ enabled: false, user: null }));
+  if (F.auth.enabled && !F.auth.user) return signInScreen();
+  if (F.auth.user) accountChip(F.auth);
   try {
     const [profile, catalog] = await Promise.all([api("/api/profile"), api("/api/parts_catalog"), bench.refreshLessons()]);
     F.name = profile.name; F.progress = profile.progress; F.level = profile.difficulty; F.catalog = catalog.parts;

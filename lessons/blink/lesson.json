@@ -2,6 +2,10 @@
   "id": "blink",
   "title": "Blink",
   "description": "Turn an external LED on and off, once a second, using digitalWrite().",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/basics/Blink/",
+    "title": "Arduino docs: Blink"
+  },
   "difficulty": "beginner",
   "board": "arduino-uno",
   "requires": [],
