@@ -51,7 +51,11 @@ def _call(method, path, body=None, *, token=None, headers=None, key="service"):
     req = urllib.request.Request(c["url"] + path, method=method,
                                  data=None if body is None else json.dumps(body).encode())
     req.add_header("apikey", c[key])
-    req.add_header("Authorization", f"Bearer {token or c[key]}")
+    # a user's token, or a legacy JWT key; the newer sb_publishable_/sb_secret_ keys
+    # aren't JWTs and go in the apikey header only
+    bearer = token or (c[key] if c[key].startswith("eyJ") else None)
+    if bearer:
+        req.add_header("Authorization", f"Bearer {bearer}")
     req.add_header("Content-Type", "application/json")
     for k, v in (headers or {}).items():
         req.add_header(k, v)
