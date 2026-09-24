@@ -1,0 +1,15 @@
+/*
+  AnalogReadSerial
+  Reads an analog input on pin A0, prints the result to the Serial Monitor.
+  Source: https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial/
+*/
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int sensorValue = analogRead(A0);
+  Serial.println(sensorValue);
+  delay(1);
+}

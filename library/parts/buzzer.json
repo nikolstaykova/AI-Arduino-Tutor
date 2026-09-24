@@ -1,0 +1,11 @@
+{
+  "id": "buzzer",
+  "type": "part",
+  "subtype": "buzzer",
+  "wokwi_type": "wokwi-buzzer",
+  "display_name": "Piezo Buzzer",
+  "aliases": ["buzzer", "piezo buzzer", "speaker"],
+  "description": "A piezoelectric buzzer that produces sound when driven with a signal.",
+  "how_to_use": "Pin 1 (negative, black) connects to ground; pin 2 (positive, red) connects to the signal/power pin — these are labeled by polarity, not treated as an interchangeable pair.",
+  "image": "buzzer.png"
+}

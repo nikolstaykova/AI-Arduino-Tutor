@@ -1,0 +1,18 @@
+{
+  "id": "attiny85",
+  "type": "part",
+  "subtype": "board",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "wokwi-attiny85",
+  "display_name": "ATtiny85",
+  "aliases": ["attiny85", "attiny 85"],
+  "description": "A tiny 8-pin AVR microcontroller with 6 usable GPIO pins (PB0-PB5), no dedicated UART, and no separate USB programmer — it's flashed via an external programmer, not a USB cable.",
+  "how_to_use": "PB0-PB4 are general-purpose digital I/O, also usable as analog inputs (ADC0-ADC3) and, on PB0/PB1, as PWM outputs. PB5 doubles as the chip's hardware reset line, so it's excluded from the default pool as a plain GPIO pin unless a lesson specifically repurposes it. PB0/PB1/PB2 also carry the chip's single USI peripheral, which is software-configured as either I2C or SPI (never both at once) — not marked as protocol-fixed here since which protocol (if either) applies depends on the sketch, not the hardware alone.",
+  "image": "attiny85.png",
+  "pin_domains": {
+    "analog": ["PB2", "PB3", "PB4", "PB5"],
+    "digital": ["PB0", "PB1", "PB2", "PB3", "PB4"]
+  },
+  "pin_aliases": { "mode": "prefix", "prefixes": ["GND"] }
+}

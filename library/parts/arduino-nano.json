@@ -1,0 +1,73 @@
+{
+  "id": "arduino-nano",
+  "type": "part",
+  "subtype": "board",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "wokwi-arduino-nano",
+  "display_name": "Arduino Nano",
+  "mcu_family": "avr",
+  "led_builtin": "13",
+  "spoken_name": "Arduino Nano",
+  "aliases": [
+    "nano",
+    "arduino nano"
+  ],
+  "description": "A microcontroller board built around the same ATmega328p chip as the Uno, in a smaller form factor, with two extra analog-only pins (A6/A7).",
+  "how_to_use": "Connect it to a computer over USB to upload a sketch (program); it then runs that program on its own, reading inputs and driving outputs.",
+  "image": "arduino-nano.png",
+  "pin_domains": {
+    "analog": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7"
+    ],
+    "digital": [
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13"
+    ]
+  },
+  "protocol_pins": {
+    "A4": {
+      "protocol": "I2C",
+      "role": "SDA"
+    },
+    "A5": {
+      "protocol": "I2C",
+      "role": "SCL"
+    },
+    "11": {
+      "protocol": "SPI",
+      "role": "MOSI"
+    },
+    "12": {
+      "protocol": "SPI",
+      "role": "MISO"
+    },
+    "13": {
+      "protocol": "SPI",
+      "role": "SCK"
+    }
+  },
+  "pin_aliases": {
+    "mode": "prefix",
+    "prefixes": [
+      "GND"
+    ]
+  }
+}

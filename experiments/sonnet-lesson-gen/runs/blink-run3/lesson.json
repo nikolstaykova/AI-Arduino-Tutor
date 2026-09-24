@@ -1,0 +1,76 @@
+{
+  "id": "blink-external-led",
+  "title": "Blink: External LED",
+  "description": "Blink an LED wired to a breadboard through a 220 ohm current-limiting resistor, switched on and off from pin 13.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": ["arduino-uno", "breadboard", "resistor-220", "led", "jumper-wire"],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Grab an Arduino Uno, a breadboard, a 220 ohm resistor, an LED, and two jumper wires.",
+      "items": ["arduino-uno", "breadboard", "resistor-220", "led", "jumper-wire"]
+    },
+    {
+      "id": "place-resistor",
+      "phase": "build",
+      "clip": "Push the resistor's two legs into two neighboring columns on the breadboard.",
+      "expected_landing": ["r1:1", "r1:2"],
+      "strict": false,
+      "hints": [
+        "Either leg can go in either hole — this resistor works the same either way round.",
+        "Use two columns right next to each other, both below the center gap."
+      ]
+    },
+    {
+      "id": "wire-pin-resistor",
+      "phase": "build",
+      "clip": "Connect an orange wire from pin 13 to one leg of the resistor.",
+      "expected_nets": [["r1:1", "uno:13"]],
+      "strict": false,
+      "hints": [
+        "Either leg of the resistor works for this wire.",
+        "This wire carries the on/off signal from pin 13."
+      ]
+    },
+    {
+      "id": "place-led",
+      "phase": "build",
+      "clip": "Push the LED into the breadboard so its long leg (anode) shares a column with the resistor's free leg, and its short leg (cathode) sits in a fresh column.",
+      "expected_nets": [["r1:2", "led1:A"]],
+      "strict": false,
+      "hints": [
+        "The long leg is the anode — it goes toward the resistor.",
+        "The short leg is the cathode — give it its own empty column; it lights only this way round."
+      ]
+    },
+    {
+      "id": "wire-led-gnd",
+      "phase": "build",
+      "clip": "Run a black wire from the LED's short leg to a GND pin on the Uno.",
+      "expected_nets": [["led1:C", "uno:GND.1"]],
+      "strict": false,
+      "hints": [
+        "Black wires conventionally mean ground.",
+        "Use the GND pin right next to pin 13."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Upload the sketch and watch the LED blink once a second.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      ["r1:1", "uno:13"],
+      ["r1:2", "led1:A"],
+      ["led1:C", "uno:GND.1"]
+    ]
+  }
+}

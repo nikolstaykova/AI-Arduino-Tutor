@@ -1,0 +1,12 @@
+{
+  "id": "hx711",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-hx711",
+  "display_name": "HX711 Load Cell Amplifier",
+  "aliases": ["hx711", "load cell amplifier"],
+  "description": "A load cell amplifier that digitizes a Wheatstone-bridge load cell's output over a 2-wire interface.",
+  "how_to_use": "VCC/GND power, DT (serial data) and SCK (serial clock) are the 2 pins the microcontroller drives — a bit-banged HX711-proprietary protocol, NOT the board's real SPI bus despite the 'SCK' name coincidence (deliberately not marked as a protocol leg here, to avoid falsely triggering this project's SPI-bus protection). E+/E-/A+/A-/B+/B- are the load-cell/Wheatstone-bridge connection points, not microcontroller-facing pins.",
+  "image": "hx711.png"
+}

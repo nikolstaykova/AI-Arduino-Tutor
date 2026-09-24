@@ -1,0 +1,22 @@
+{
+  "id": "breadboard",
+  "type": "part",
+  "subtype": "breadboard",
+  "wokwi_type": [
+    "wokwi-breadboard",
+    "wokwi-breadboard-half",
+    "wokwi-breadboard-mini"
+  ],
+  "display_name": "Solderless Breadboard",
+  "aliases": [
+    "breadboard",
+    "board"
+  ],
+  "description": "A reusable prototyping board: a grid of holes with metal clip strips underneath that join them in groups.",
+  "how_to_use": "Push component legs and jumper wires into the holes to build a circuit without soldering. The five holes of one numbered column in the same half (a–e, or f–j) share one metal clip strip, so they're one connection; the centre gap separates the two halves. A lettered row (like row c) runs along the board and is NOT connected. Each power rail (+ red, − blue) is one long connection.",
+  "image": "breadboard.png",
+  "connector_only": true,
+  "pin_aliases": {
+    "mode": "strip"
+  }
+}

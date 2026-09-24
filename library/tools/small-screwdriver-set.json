@@ -1,0 +1,11 @@
+{
+  "id": "small-screwdriver-set",
+  "type": "tool",
+  "tier": 1,
+  "display_name": "Small Screwdriver Set",
+  "aliases": ["screwdriver", "screwdrivers"],
+  "description": "A set of small flathead and Phillips screwdrivers, sized for electronics work.",
+  "how_to_use": "Match the tip shape and size to the screw, then turn clockwise to tighten or counterclockwise to loosen — used for screw-terminal connections rather than breadboard work.",
+  "tutorial_clip": "small-screwdriver-set-howto.mp4",
+  "image": "small-screwdriver-set.png"
+}

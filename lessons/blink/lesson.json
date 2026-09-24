@@ -1,0 +1,119 @@
+{
+  "id": "blink",
+  "title": "Blink",
+  "description": "Turn an external LED on and off, once a second, using digitalWrite().",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "led",
+    "resistor-1k",
+    "jumper-wire"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, one LED, one 1 kΩ resistor and a few jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "led",
+        "resistor-1k",
+        "jumper-wire"
+      ]
+    },
+    {
+      "id": "step-1a",
+      "phase": "build",
+      "clip": "Push the resistor into the breadboard, with its two legs in two different numbered columns.",
+      "expected_landing": "r1:1",
+      "strict": false,
+      "hints": [
+        "A resistor works either way round — it doesn't matter which leg goes where.",
+        "Each numbered column is one connection, so the two legs need two different columns."
+      ],
+      "goal": "Put the resistor on the breadboard."
+    },
+    {
+      "id": "step-1b",
+      "phase": "build",
+      "clip": "Take a jumper wire. Push one end into a free hole in the same column as one of the resistor's legs, and the other end into pin 13 on the Arduino.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "uno:13"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 13 is on the Arduino's top row of sockets, next to GND.",
+        "Any free hole in that column works — the five holes of a column (a–e) are joined."
+      ],
+      "goal": "Connect one end of the resistor to pin 13."
+    },
+    {
+      "id": "step-2",
+      "phase": "build",
+      "clip": "Now the LED. Its legs are different lengths: put the long leg in the same column as the resistor's other leg, and the short leg in an empty column next to it. Sharing a column already connects them — no wire needed.",
+      "expected_nets": [
+        [
+          "led1:A",
+          "r1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The long leg is the + side (the anode). The LED only lights if it points toward the resistor.",
+        "Two legs in the same column are already connected — you don't need a wire."
+      ],
+      "goal": "Connect the LED's long leg (+) to the free end of the resistor."
+    },
+    {
+      "id": "step-3",
+      "phase": "build",
+      "clip": "Take another jumper wire. Put one end in a free hole in the LED's short-leg column, and the other end into a GND pin on the Arduino.",
+      "expected_nets": [
+        [
+          "led1:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The short leg is the − side (the cathode). It goes to ground.",
+        "Any GND pin on the Arduino works — they're all connected inside the board."
+      ],
+      "goal": "Connect the LED's short leg (−) to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. The LED should blink: on for one second, off for one second.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "r1:1",
+        "uno:13"
+      ],
+      [
+        "led1:A",
+        "r1:2"
+      ],
+      [
+        "led1:C",
+        "uno:GND.1"
+      ]
+    ]
+  }
+}

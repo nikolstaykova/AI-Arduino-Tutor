@@ -1,0 +1,25 @@
+{
+  "id": "resistor-220",
+  "type": "part",
+  "subtype": "resistor",
+  "wokwi_type": "wokwi-resistor",
+  "wokwi_value": "220",
+  "pins": {
+    "1": "either end",
+    "2": "either end"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "display_name": "220Ω Resistor",
+  "aliases": [
+    "220 ohm resistor"
+  ],
+  "description": "Limits the amount of current allowed to flow through a circuit.",
+  "how_to_use": "Placed in series between the Arduino's output pin and the LED's anode, protecting the LED from drawing too much current.",
+  "image": "resistor-220.png",
+  "leads": "wire-lead"
+}

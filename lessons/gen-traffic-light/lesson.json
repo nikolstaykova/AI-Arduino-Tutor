@@ -1,0 +1,267 @@
+{
+  "id": "gen-traffic-light",
+  "title": "Traffic Light",
+  "description": "Build a mini traffic light with a red, a yellow and a green LED, then program the Arduino to cycle green, yellow, red just like a real crossing.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "breadboard",
+    "led",
+    "resistor-220",
+    "jumper-wire",
+    "usb-cable"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Let's build a traffic light! Grab your Arduino Uno, a breadboard, a red, a yellow and a green LED, three 220 ohm resistors, some jumper wires and the USB cable.",
+      "items": [
+        "arduino-uno",
+        "breadboard",
+        "led",
+        "resistor-220",
+        "jumper-wire",
+        "usb-cable"
+      ]
+    },
+    {
+      "id": "step-1a",
+      "phase": "build",
+      "clip": "Start with the red light. Push a 220 ohm resistor into the top half of the breadboard so its two legs sit in two different columns.",
+      "expected_landing": [
+        "r1:1",
+        "r1:2"
+      ],
+      "strict": false,
+      "hints": [
+        "Leave a couple of columns between the resistor's legs, for example columns 3 and 6.",
+        "A resistor works either way round."
+      ]
+    },
+    {
+      "id": "step-1b",
+      "phase": "build",
+      "clip": "Run a jumper wire from pin 12 on the Arduino to the column holding the resistor's left leg.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "uno:12"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any free hole in the same column-half as the resistor leg works.",
+        "Pin 12 is on the digital header, next to pin 13."
+      ]
+    },
+    {
+      "id": "step-1c",
+      "phase": "build",
+      "clip": "Take the red LED. Push its long leg into the column with the resistor's right leg, and its short leg into the next column over.",
+      "expected_nets": [
+        [
+          "led1:A",
+          "r1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The long leg is the anode: it goes toward the resistor.",
+        "Don't put both LED legs in the same column."
+      ]
+    },
+    {
+      "id": "step-1d",
+      "phase": "build",
+      "clip": "Connect the red LED's short leg to ground: run a black wire from its column to a GND pin on the Arduino.",
+      "expected_nets": [
+        [
+          "led1:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "There's a GND pin right next to pin 13.",
+        "Use a fresh hole in the short leg's column."
+      ]
+    },
+    {
+      "id": "step-2a",
+      "phase": "build",
+      "clip": "Now the yellow light. Push a second 220 ohm resistor into the top half, a few columns to the right of the red LED.",
+      "expected_landing": [
+        "r2:1",
+        "r2:2"
+      ],
+      "strict": false,
+      "hints": [
+        "Keep it well clear of the red LED's columns, for example columns 11 and 14.",
+        "Each leg in its own column."
+      ]
+    },
+    {
+      "id": "step-2b",
+      "phase": "build",
+      "clip": "Run a wire from pin 11 to the column holding this resistor's left leg.",
+      "expected_nets": [
+        [
+          "r2:1",
+          "uno:11"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 11 is right next to pin 12.",
+        "Use any free hole in that column."
+      ]
+    },
+    {
+      "id": "step-2c",
+      "phase": "build",
+      "clip": "Take the yellow LED. Long leg into the resistor's right-leg column, short leg into the next column.",
+      "expected_nets": [
+        [
+          "led2:A",
+          "r2:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Long leg toward the resistor.",
+        "Short leg in its own column."
+      ]
+    },
+    {
+      "id": "step-2d",
+      "phase": "build",
+      "clip": "Run a black wire from the yellow LED's short leg column to another GND pin.",
+      "expected_nets": [
+        [
+          "led2:C",
+          "uno:GND.2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The power header has two more GND pins.",
+        "All GND pins are the same connection."
+      ]
+    },
+    {
+      "id": "step-3a",
+      "phase": "build",
+      "clip": "Last, the green light. Push the third 220 ohm resistor into the top half, further to the right again.",
+      "expected_landing": [
+        "r3:1",
+        "r3:2"
+      ],
+      "strict": false,
+      "hints": [
+        "For example columns 19 and 22.",
+        "Each leg in its own column."
+      ]
+    },
+    {
+      "id": "step-3b",
+      "phase": "build",
+      "clip": "Run a wire from pin 10 to the column holding this resistor's left leg.",
+      "expected_nets": [
+        [
+          "r3:1",
+          "uno:10"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 10 is right next to pin 11.",
+        "Any free hole in that column works."
+      ]
+    },
+    {
+      "id": "step-3c",
+      "phase": "build",
+      "clip": "Take the green LED. Long leg into the resistor's right-leg column, short leg into the next column.",
+      "expected_nets": [
+        [
+          "led3:A",
+          "r3:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Long leg toward the resistor.",
+        "Reversed, the LED won't light."
+      ]
+    },
+    {
+      "id": "step-3d",
+      "phase": "build",
+      "clip": "Finish by running a black wire from the green LED's short leg column to the last GND pin.",
+      "expected_nets": [
+        [
+          "led3:C",
+          "uno:GND.3"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any GND pin works.",
+        "Use a fresh hole in the short leg's column."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Plug in the USB cable and upload the code. Watch your light go green, then yellow, then red, over and over!",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "r1:1",
+        "uno:12"
+      ],
+      [
+        "led1:A",
+        "r1:2"
+      ],
+      [
+        "led1:C",
+        "uno:GND.1"
+      ],
+      [
+        "r2:1",
+        "uno:11"
+      ],
+      [
+        "led2:A",
+        "r2:2"
+      ],
+      [
+        "led2:C",
+        "uno:GND.2"
+      ],
+      [
+        "r3:1",
+        "uno:10"
+      ],
+      [
+        "led3:A",
+        "r3:2"
+      ],
+      [
+        "led3:C",
+        "uno:GND.3"
+      ]
+    ]
+  },
+  "generated": true,
+  "requires": []
+}

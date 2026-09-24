@@ -1,0 +1,13 @@
+{
+  "id": "ds1307-rtc",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-ds1307",
+  "display_name": "DS1307 Real-Time Clock",
+  "aliases": ["rtc", "ds1307", "real time clock"],
+  "description": "A battery-backed real-time clock module with an I2C interface.",
+  "how_to_use": "Wire SDA/SCL to the board's real I2C pins; multiple I2C devices can share the same SDA/SCL lines.",
+  "image": "ds1307-rtc.png",
+  "protocol_legs": ["SDA", "SCL"]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "ili9341-lcd",
+  "type": "part",
+  "subtype": "display",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-ili9341",
+  "display_name": "ILI9341 TFT LCD Display",
+  "aliases": ["ili9341", "tft display", "tft lcd"],
+  "description": "A color TFT LCD display with an SPI interface. MISO can be left disconnected unless reading data back from the display.",
+  "how_to_use": "Shares its SCK/MISO/MOSI lines with any other SPI device on the same bus; give it its own, unique CS pin.",
+  "image": "ili9341-lcd.png",
+  "protocol_legs": ["SCK", "MOSI", "MISO"]
+}

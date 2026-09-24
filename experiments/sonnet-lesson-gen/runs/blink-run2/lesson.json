@@ -1,0 +1,87 @@
+{
+  "id": "blink-external-led",
+  "title": "Blink (External LED)",
+  "description": "Wire an LED and a 220 ohm resistor to your Arduino Uno on a breadboard, then run the classic Blink sketch to make it flash on and off once a second.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": ["arduino-uno", "breadboard", "led", "resistor-220", "jumper-wire"],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Let's gather what you need: an LED, a 220 ohm resistor, and a couple of jumper wires.",
+      "items": ["led", "resistor-220", "jumper-wire"]
+    },
+    {
+      "id": "place-resistor",
+      "phase": "build",
+      "clip": "Push the resistor into the breadboard so its two legs land in two different columns.",
+      "expected_landing": ["r1:1", "r1:2"],
+      "strict": false,
+      "hints": [
+        "It doesn't matter which way round you place it — either leg can go in either hole.",
+        "Leave a free column or two next to it for the LED."
+      ]
+    },
+    {
+      "id": "place-led",
+      "phase": "build",
+      "clip": "Push the LED into the breadboard next to the resistor, lining its long leg up with the resistor's free leg.",
+      "expected_landing": ["led1:A", "led1:C"],
+      "strict": false,
+      "hints": [
+        "The longer leg is the anode — put it in the same column as the resistor's free leg.",
+        "The LED only works one way round, so keep track of which leg is which."
+      ]
+    },
+    {
+      "id": "connect-resistor-led",
+      "phase": "build",
+      "clip": "The resistor's leg and the LED's long leg are already connected — they share a column on the breadboard.",
+      "expected_nets": [["r1:2", "led1:A"]],
+      "strict": false,
+      "hints": [
+        "No wire needed here, just check they're in the same column.",
+        "This is the connection between the resistor and the LED's anode."
+      ]
+    },
+    {
+      "id": "wire-pin13",
+      "phase": "build",
+      "clip": "Run a wire from the resistor's other leg to digital pin 13 on the Arduino.",
+      "expected_nets": [["r1:1", "uno:13"]],
+      "strict": false,
+      "hints": [
+        "Plug one end into the same column as the resistor's first leg.",
+        "Plug the other end into pin 13."
+      ]
+    },
+    {
+      "id": "wire-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the LED's short leg to a GND pin on the Arduino.",
+      "expected_nets": [["led1:C", "uno:GND.1"]],
+      "strict": false,
+      "hints": [
+        "Plug one end into the same column as the LED's short leg, the cathode.",
+        "Plug the other end into any GND pin on the board."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Upload the code — your LED should blink on and off once a second.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      ["r1:2", "led1:A"],
+      ["r1:1", "uno:13"],
+      ["led1:C", "uno:GND.1"]
+    ]
+  }
+}

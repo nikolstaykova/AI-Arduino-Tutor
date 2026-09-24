@@ -1,0 +1,11 @@
+{
+  "id": "servo",
+  "type": "part",
+  "subtype": "motor",
+  "wokwi_type": "wokwi-servo",
+  "display_name": "Servo Motor",
+  "aliases": ["servo", "servo motor", "micro servo"],
+  "description": "A standard micro servo motor that moves to an angular position based on a PWM control signal.",
+  "how_to_use": "PWM is the control signal (a bit-banged digital pulse, not a shared bus). V+ needs real 5V, not a toggling GPIO pin — wiring V+ to a digital pin instead of 5V is a common diagram-authoring mistake this checker won't catch, since it only judges connectivity, not electrical sanity.",
+  "image": "servo.png"
+}

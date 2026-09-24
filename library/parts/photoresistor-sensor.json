@@ -1,0 +1,12 @@
+{
+  "id": "photoresistor-sensor",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-photoresistor-sensor",
+  "display_name": "Photoresistor (LDR) Sensor Module",
+  "aliases": ["photoresistor", "ldr", "light sensor"],
+  "description": "A light-dependent-resistor sensor module with both a digital threshold output and an analog light-level output.",
+  "how_to_use": "VCC/GND power, DO is a digital output (goes low when darkness is detected, on-board LED lights up), AO is an analog output proportional to light level (read with analogRead()). DO isn't a real I2C/SPI bus pin despite the name overlap with other parts' SDA-style legs.",
+  "image": "photoresistor-sensor.png"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "pir-motion-sensor",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-pir-motion-sensor",
+  "display_name": "PIR Motion Sensor",
+  "aliases": ["pir", "pir sensor", "motion sensor"],
+  "description": "A passive infrared motion sensor with a digital output.",
+  "how_to_use": "VCC/GND power, OUT is a digital output that goes high when motion is detected and returns low after a delay.",
+  "image": "pir-motion-sensor.png"
+}

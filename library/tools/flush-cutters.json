@@ -1,0 +1,11 @@
+{
+  "id": "flush-cutters",
+  "type": "tool",
+  "tier": 1,
+  "display_name": "Flush Cutters",
+  "aliases": ["flush cutter", "wire cutters", "cutters"],
+  "description": "Cutters with blades ground flat on one side, for trimming a wire or lead close to flush without leaving a sharp stub.",
+  "how_to_use": "Position the flat side of the jaws against the surface you want the cut to be flush with, then squeeze to trim the lead to length.",
+  "tutorial_clip": "flush-cutters.mp4",
+  "image": "flush-cutters.png"
+}

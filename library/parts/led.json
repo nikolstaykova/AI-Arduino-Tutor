@@ -1,0 +1,21 @@
+{
+  "id": "led",
+  "type": "part",
+  "subtype": "led",
+  "wokwi_type": "wokwi-led",
+  "pins": {
+    "A": "anode — the longer leg, toward + (the resistor / output pin)",
+    "C": "cathode — the shorter leg, toward GND"
+  },
+  "polarized": true,
+  "display_name": "LED",
+  "aliases": [
+    "led",
+    "light emitting diode",
+    "diode"
+  ],
+  "description": "Lights up when current flows through it in the correct direction.",
+  "how_to_use": "Connect the longer leg (anode) toward positive/the resistor, and the shorter leg (cathode) toward ground — reversed, it won't light.",
+  "image": "led.png",
+  "leads": "wire-lead"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "neopixel",
+  "type": "part",
+  "subtype": "led",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-neopixel",
+  "display_name": "NeoPixel (WS2812 LED)",
+  "aliases": ["neopixel", "ws2812", "ws2812 led"],
+  "description": "A single addressable RGB LED driven over one data wire (WS2812 protocol), with its own regulated 5V/GND supply pins.",
+  "how_to_use": "VDD/VSS are power, DIN is the data input from the microcontroller (or from the previous NeoPixel's DOUT), and DOUT passes the same data stream on to the next NeoPixel in a chain — DIN/DOUT is a plain digital signal (bit-banged by the sketch), not a shared bus, so each link in a chain is its own independent connection.",
+  "image": "neopixel.png"
+}

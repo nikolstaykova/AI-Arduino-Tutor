@@ -1,0 +1,88 @@
+{
+  "id": "digital-read-serial",
+  "title": "Digital Read Serial",
+  "description": "Read a pushbutton with a pull-down resistor and print its state (0 or 1) to the Serial Monitor.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": ["arduino-uno", "breadboard", "pushbutton", "resistor-10k", "jumper-wire"],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Let's build a circuit that tells us when a button is pressed. Grab a pushbutton, a 10k resistor, and some jumper wires.",
+      "items": ["pushbutton", "resistor-10k", "jumper-wire"]
+    },
+    {
+      "id": "place-button",
+      "phase": "build",
+      "clip": "Push the pushbutton into the breadboard so it straddles the center gap, with two legs on each side.",
+      "expected_landing": ["btn1:1.l", "btn1:1.r", "btn1:2.l", "btn1:2.r"],
+      "strict": false,
+      "hints": [
+        "The button must sit across the middle gap of the breadboard so two legs land above it and two below.",
+        "The two legs on each side are already connected to each other inside the button — pressing it joins the two sides."
+      ]
+    },
+    {
+      "id": "wire-pin2-to-button",
+      "phase": "build",
+      "clip": "Run a wire from digital pin 2 to one of the button's legs.",
+      "expected_nets": [["uno:2", "btn1:1.r"]],
+      "strict": false,
+      "hints": [
+        "Connect pin 2 to any leg on one side of the button — both legs on that side are the same connection.",
+        "You'll add a resistor to this same row next."
+      ]
+    },
+    {
+      "id": "wire-resistor-to-button-leg",
+      "phase": "build",
+      "clip": "Add a 10k resistor from that same row down to a free row — this will pull pin 2 low when the button isn't pressed.",
+      "expected_nets": [["r1:1", "btn1:1.r"]],
+      "strict": false,
+      "hints": [
+        "Plug one resistor leg into the same column as the button leg and the pin 2 wire.",
+        "Leave the resistor's other leg in an empty column for now — that one goes to ground."
+      ]
+    },
+    {
+      "id": "wire-resistor-to-gnd",
+      "phase": "build",
+      "clip": "Connect the resistor's other leg to GND with a wire.",
+      "expected_nets": [["r1:2", "uno:GND.1"]],
+      "strict": false,
+      "hints": [
+        "Run a wire from the resistor's free leg to one of the Arduino's GND pins.",
+        "This pull-down resistor keeps pin 2 reading LOW whenever the button is open."
+      ]
+    },
+    {
+      "id": "wire-5v-to-button",
+      "phase": "build",
+      "clip": "Connect the button's other side to 5V.",
+      "expected_nets": [["uno:5V", "btn1:2.r"]],
+      "strict": false,
+      "hints": [
+        "Wire 5V to the pair of legs on the button you haven't used yet — the other side of the gap.",
+        "Pressing the button will now connect 5V through to pin 2, so it reads HIGH."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Upload the sketch and open the Serial Monitor — you'll see 0 when the button is released and 1 when it's pressed.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      ["uno:2", "btn1:1.r"],
+      ["r1:1", "btn1:1.r"],
+      ["r1:2", "uno:GND.1"],
+      ["uno:5V", "btn1:2.r"]
+    ]
+  }
+}

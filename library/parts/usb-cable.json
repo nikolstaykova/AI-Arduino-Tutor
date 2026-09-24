@@ -1,0 +1,10 @@
+{
+  "id": "usb-cable",
+  "type": "part",
+  "subtype": "cable",
+  "display_name": "USB Cable",
+  "aliases": ["usb", "cable"],
+  "description": "A cable connecting the Arduino board to a computer.",
+  "how_to_use": "Plug one end into the board, the other into the computer, to upload sketches and/or power the board while connected.",
+  "image": "usb-cable.png"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "hc-sr04",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-hc-sr04",
+  "display_name": "HC-SR04 Ultrasonic Distance Sensor",
+  "aliases": ["hc-sr04", "ultrasonic sensor", "distance sensor"],
+  "description": "An ultrasonic distance sensor: a TRIG pulse starts a measurement, and the ECHO pin's pulse width encodes the measured distance.",
+  "how_to_use": "VCC/GND power, TRIG is a digital output from the microcontroller (send a >=10us pulse to start a measurement), ECHO is a digital input back to the microcontroller (its pulse length in microseconds / 58 = distance in cm).",
+  "image": "hc-sr04.png"
+}

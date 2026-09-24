@@ -1,0 +1,12 @@
+{
+  "id": "led-strip",
+  "type": "part",
+  "subtype": "led",
+  "wokwi_type": "wokwi-led-strip",
+  "display_name": "WS2812 LED Strip",
+  "aliases": ["led strip", "neopixel strip", "ws2812 strip"],
+  "description": "A linear strip of addressable NeoPixel-compatible RGB LEDs, with separate input-side and output-side power/ground pins for chaining.",
+  "how_to_use": "VDD/VSS (input) and VDD.2/VSS.2 (output) are the same power/ground rail passed straight through for chaining to the next strip — same shape as a board's multiple same-net GND legs, so aliased together. DIN is data input (from the microcontroller or the previous strip's DOUT); DOUT passes the same bit-banged signal on to the next strip — not a shared bus, each link is its own independent connection.",
+  "image": "led-strip.png",
+  "pin_aliases": { "mode": "prefix", "prefixes": ["VDD", "VSS"] }
+}

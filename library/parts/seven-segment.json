@@ -1,0 +1,14 @@
+{
+  "id": "seven-segment",
+  "type": "part",
+  "subtype": "display",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "wokwi-7segment",
+  "display_name": "Seven-Segment Display",
+  "aliases": ["seven segment", "7 segment display", "7-segment"],
+  "description": "An LED display made of seven segments plus a decimal point, in 1/2/3/4-digit variants (the `digits` attribute).",
+  "how_to_use": "1-digit variant: COM.1/COM.2 are two physical legs (top and bottom) always tied together internally — either one works identically. Multi-digit variants (verified via docs.wokwi.com/parts/wokwi-7segment) drop COM entirely in favor of one DIG1..DIGN pin per digit (the segment lines A-G/DP are a single shared bus across all digits, driven one digit at a time by multiplexing); a 4-digit clock-style display can also expose a CLN (colon) pin when its `colon` attribute is set.",
+  "image": "seven-segment.png",
+  "pin_aliases": { "mode": "prefix", "prefixes": ["COM"] }
+}

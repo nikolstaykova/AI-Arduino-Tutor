@@ -1,0 +1,43 @@
+{
+  "id": "esp32-c3-devkitm1",
+  "type": "part",
+  "subtype": "board",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "board-esp32-c3-devkitm-1",
+  "display_name": "ESP32-C3 DevKitM-1",
+  "mcu_family": "esp32",
+  "spoken_name": "ESP32-C3 DevKitM-1",
+  "aliases": [
+    "esp32-c3",
+    "esp32 c3"
+  ],
+  "description": "An ESP32-C3 dev board (single-core RISC-V, Wi-Fi + Bluetooth LE). Legs are labeled by silkscreen number, not raw GPIO number, except RX/TX (UART0) which keep their named labels.",
+  "how_to_use": "Peripherals (I2C, SPI, UART) can each be mapped to nearly any GPIO in software (the ESP32's GPIO matrix), so no bus pin is hardware-fixed the way it is on an AVR board \u2014 only RX/TX (UART0, used for USB flashing/Serial Monitor) are excluded by default. ADC-capable pins for this variant aren't catalogued yet \u2014 verify before relying on analogRead-specific substitution.",
+  "image": "esp32-c3-devkitm1.png",
+  "pin_domains": {
+    "digital": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "18",
+      "19"
+    ]
+  },
+  "pin_aliases": {
+    "mode": "prefix",
+    "prefixes": [
+      "GND",
+      "3V3",
+      "5V"
+    ]
+  }
+}

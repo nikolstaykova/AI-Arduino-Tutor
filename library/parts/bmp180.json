@@ -1,0 +1,13 @@
+{
+  "id": "bmp180",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "board-bmp180",
+  "display_name": "BMP180 Barometric Pressure Sensor",
+  "aliases": ["bmp180", "barometric sensor", "pressure sensor"],
+  "description": "A barometric pressure and temperature sensor with an I2C interface (address 0x77).",
+  "how_to_use": "VCC and 3.3V are two separate power-pin options (use whichever matches your supply), GND ground, SCL/SCA are real I2C — wire to the board's real I2C pins.",
+  "image": "bmp180.png",
+  "protocol_legs": ["SDA", "SCL"]
+}

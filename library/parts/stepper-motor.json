@@ -1,0 +1,11 @@
+{
+  "id": "stepper-motor",
+  "type": "part",
+  "subtype": "motor",
+  "wokwi_type": "wokwi-stepper-motor",
+  "display_name": "Bipolar Stepper Motor",
+  "aliases": ["stepper motor", "stepper"],
+  "description": "A bipolar stepper motor with two coils (A, B) — needs a driver chip (e.g. A4988) to supply real current, doesn't connect straight to microcontroller pins.",
+  "how_to_use": "A+/A- and B+/B- are the two coil pairs, wired to a driver's motor-output pins (e.g. an A4988's 1A/1B/2A/2B) — not directly to the microcontroller.",
+  "image": "stepper-motor.png"
+}

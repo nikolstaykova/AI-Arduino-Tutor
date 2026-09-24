@@ -1,0 +1,12 @@
+{
+  "id": "led-matrix",
+  "type": "part",
+  "subtype": "led",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-led-matrix",
+  "display_name": "WS2812 LED Matrix",
+  "aliases": ["led matrix", "neopixel matrix", "ws2812 matrix"],
+  "description": "A grid of addressable NeoPixel-compatible RGB LEDs (rows/columns configurable via attributes).",
+  "how_to_use": "VDD/VSS are power, DIN is the data input from the microcontroller (or from the previous panel's DOUT), and DOUT passes the same bit-banged signal on to the next chained panel — not a shared bus, each link is its own independent connection.",
+  "image": "led-matrix.png"
+}

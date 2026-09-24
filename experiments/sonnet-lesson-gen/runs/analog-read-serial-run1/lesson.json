@@ -1,0 +1,76 @@
+{
+  "id": "analog-read-serial",
+  "title": "Analog Read Serial",
+  "description": "Read a potentiometer and print its changing value to the Serial Monitor, using analogRead() and Serial.println().",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": ["arduino-uno", "breadboard", "potentiometer-10k", "jumper-wire"],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Let's read a potentiometer! Grab your Arduino Uno, a breadboard, a 10k potentiometer, and some jumper wires.",
+      "items": ["arduino-uno", "breadboard", "potentiometer-10k", "jumper-wire"]
+    },
+    {
+      "id": "step-1a",
+      "phase": "build",
+      "clip": "Push the potentiometer's three legs into the breadboard, straddling three neighboring columns.",
+      "expected_landing": ["pot1:GND", "pot1:SIG", "pot1:VCC"],
+      "strict": false,
+      "hints": [
+        "All three legs go in at once — it's one part.",
+        "Make sure each leg lands in its own column so they don't touch each other."
+      ]
+    },
+    {
+      "id": "step-1b",
+      "phase": "build",
+      "clip": "Run a black wire from one of the potentiometer's outer legs to a GND pin on the Arduino.",
+      "expected_nets": [["pot1:GND", "uno:GND.1"]],
+      "strict": false,
+      "hints": [
+        "Either outer leg can be the ground side — they're interchangeable.",
+        "Black is the traditional color for ground wires."
+      ]
+    },
+    {
+      "id": "step-1c",
+      "phase": "build",
+      "clip": "Now run a red wire from the potentiometer's other outer leg to the 5V pin on the Arduino.",
+      "expected_nets": [["pot1:VCC", "uno:5V"]],
+      "strict": false,
+      "hints": [
+        "This is the remaining outer leg — whichever one you haven't wired yet.",
+        "This powers the potentiometer so it can produce a voltage to read."
+      ]
+    },
+    {
+      "id": "step-1d",
+      "phase": "build",
+      "clip": "Finally, run a yellow wire from the potentiometer's middle leg — the wiper — to pin A0.",
+      "expected_nets": [["pot1:SIG", "uno:A0"]],
+      "strict": false,
+      "hints": [
+        "The middle leg is the signal pin — its voltage changes as you turn the knob.",
+        "A0 is one of the analog input pins, labeled on the board near the bottom."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Time to upload the code! Open the Serial Monitor afterward and watch the numbers change as you turn the knob.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      ["pot1:GND", "uno:GND.1"],
+      ["pot1:VCC", "uno:5V"],
+      ["pot1:SIG", "uno:A0"]
+    ]
+  }
+}

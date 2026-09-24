@@ -1,0 +1,13 @@
+{
+  "id": "nlsf595",
+  "type": "part",
+  "subtype": "logic",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "wokwi-nlsf595",
+  "display_name": "NLSF595 Tri-Color LED Driver",
+  "aliases": ["nlsf595", "led driver"],
+  "description": "An 8-channel serial (shift-register style) LED driver — one unit drives 2 RGB LEDs.",
+  "how_to_use": "SI (serial data), SCK (serial clock), RCK (storage/latch) are the minimum 3 pins the microcontroller drives — a bit-banged shift-register protocol, NOT the board's real SPI bus despite the 'SCK' name coincidence (deliberately not marked as a protocol leg here, to avoid falsely triggering this project's SPI-bus protection). QA-QH are the 8 parallel outputs (not interchangeable). SQH chains to the next unit's SI. OE (tie to GND if unused) and SCLR (tie to VCC if unused) are usually tied off.",
+  "image": "nlsf595.png"
+}

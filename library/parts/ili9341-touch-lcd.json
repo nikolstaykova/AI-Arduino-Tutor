@@ -1,0 +1,13 @@
+{
+  "id": "ili9341-touch-lcd",
+  "type": "part",
+  "subtype": "display",
+  "legs_placed_together": true,
+  "wokwi_type": "board-ili9341-cap-touch",
+  "display_name": "ILI9341 Capacitive Touch LCD Display",
+  "aliases": ["ili9341 touch", "touch lcd", "capacitive touch display"],
+  "description": "A color TFT LCD display (SPI) combined with a separate capacitive touch controller (I2C) on the same board.",
+  "how_to_use": "The display's SCK/MISO/MOSI share an SPI bus with any other SPI device (give it its own CS pin); the touch controller's SDA/SCL share an I2C bus with any other I2C device.",
+  "image": "ili9341-touch-lcd.png",
+  "protocol_legs": ["SCK", "MOSI", "MISO", "SDA", "SCL"]
+}

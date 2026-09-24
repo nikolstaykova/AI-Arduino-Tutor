@@ -1,0 +1,11 @@
+{
+  "id": "tweezers",
+  "type": "tool",
+  "tier": 1,
+  "display_name": "Tweezers",
+  "aliases": ["tweezer"],
+  "description": "A pinching tool for gripping small components.",
+  "how_to_use": "Pinch a component's thin leg between the tips to place it precisely into a breadboard hole, or to retrieve a small dropped part.",
+  "tutorial_clip": "tweezers.mp4",
+  "image": "tweezers.png"
+}

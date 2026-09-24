@@ -1,0 +1,76 @@
+{
+  "id": "blink-external-led",
+  "title": "Blink: External LED",
+  "description": "Wire an LED and a 220 ohm resistor to pin 13 of an Arduino Uno and run the classic Blink sketch to turn it on and off once a second.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": ["arduino-uno", "breadboard", "resistor-220", "led"],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Let's grab everything we need: an Arduino Uno, a breadboard, a 220 ohm resistor, and an LED.",
+      "items": ["arduino-uno", "breadboard", "resistor-220", "led"]
+    },
+    {
+      "id": "step-1",
+      "phase": "build",
+      "clip": "Push one leg of the resistor into the breadboard, then run a wire from that same column to pin 13 on the Arduino.",
+      "expected_nets": [["r1:1", "uno:13"]],
+      "strict": false,
+      "hints": [
+        "Either leg of the resistor works first — it has no direction.",
+        "Run the wire from the resistor's column straight to digital pin 13."
+      ]
+    },
+    {
+      "id": "step-2",
+      "phase": "build",
+      "clip": "Bend the resistor's other leg down into a fresh column further along the breadboard.",
+      "expected_landing": "r1:2",
+      "strict": false,
+      "hints": [
+        "Give it its own column — don't reuse the column pin 13 is wired to.",
+        "No wire needed yet, just seat the leg."
+      ]
+    },
+    {
+      "id": "step-3",
+      "phase": "build",
+      "clip": "Push the LED's long leg, the anode, into that same column as the resistor's free leg.",
+      "expected_nets": [["led1:A", "r1:2"]],
+      "strict": false,
+      "hints": [
+        "The longer leg is the anode — it goes toward the resistor, not GND.",
+        "Sharing a column with the resistor's leg wires them together automatically."
+      ]
+    },
+    {
+      "id": "step-4",
+      "phase": "build",
+      "clip": "Push the LED's short leg into a new column, then wire that column to GND on the Arduino.",
+      "expected_nets": [["led1:C", "uno:GND.1"]],
+      "strict": false,
+      "hints": [
+        "The shorter leg is the cathode — it must reach ground or the LED won't light.",
+        "Any GND pin on the Uno works."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Now let's upload the code and watch the LED blink on and off once a second.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      ["r1:1", "uno:13"],
+      ["led1:A", "r1:2"],
+      ["led1:C", "uno:GND.1"]
+    ]
+  }
+}

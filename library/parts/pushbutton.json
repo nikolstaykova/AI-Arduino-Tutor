@@ -1,0 +1,40 @@
+{
+  "id": "pushbutton",
+  "type": "part",
+  "subtype": "pushbutton",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": [
+    "wokwi-pushbutton",
+    "wokwi-pushbutton-6mm"
+  ],
+  "pins": {
+    "1.l": "contact group 1, left leg",
+    "1.r": "contact group 1, right leg",
+    "2.l": "contact group 2, left leg",
+    "2.r": "contact group 2, right leg"
+  },
+  "display_name": "Momentary Pushbutton",
+  "aliases": [
+    "button",
+    "pushbutton",
+    "push button"
+  ],
+  "description": "A momentary switch.",
+  "how_to_use": "Has two contact groups, each with two legs (1.l/1.r are always tied together internally, and separately 2.l/2.r are always tied together — either leg of a group works identically, it's not a wiring choice). Pressing the button bridges the two groups together; releasing separates them. Wire one leg from each group: one group to a digital input (with a pull-down resistor to ground, or use INPUT_PULLUP and skip the resistor), the other group to 5V or GND depending on which style you're using.",
+  "image": "pushbutton.png",
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "pin_aliases": {
+    "mode": "prefix",
+    "prefixes": [
+      "1",
+      "2"
+    ]
+  },
+  "leads": "short-leg"
+}

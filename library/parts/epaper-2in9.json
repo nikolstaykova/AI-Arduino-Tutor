@@ -1,0 +1,12 @@
+{
+  "id": "epaper-2in9",
+  "type": "part",
+  "subtype": "display",
+  "legs_placed_together": true,
+  "wokwi_type": "board-epaper-2in9",
+  "display_name": "2.9\" e-Paper Display",
+  "aliases": ["e-paper", "epaper", "2.9 e-paper"],
+  "description": "A 2.9\" black/white(/red/yellow) e-Paper display module with an SPI-style interface. Pinout confirmed directly from Wokwi's own community board source (github.com/wokwi/wokwi-boards), not the docs site (its docs page 404s).",
+  "how_to_use": "VCC/GND power. BUSY/RST/DC/CS/CLK/DIN are the control/data/clock lines the microcontroller drives — an SPI-style protocol, but named DIN/CLK rather than MOSI/SCK, so NOT recognized by (or protected by) this project's SPI-bus mechanism, which only matches the exact names MOSI/MISO/SCK/DO/DI.",
+  "image": "epaper-2in9.png"
+}

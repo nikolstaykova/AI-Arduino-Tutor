@@ -1,0 +1,12 @@
+{
+  "id": "ir-receiver",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-ir-receiver",
+  "display_name": "IR Receiver",
+  "aliases": ["ir receiver", "infrared receiver"],
+  "description": "A 38kHz infrared receiver — decodes IR remote signals (or direct NEC-encoded commands sent through the simulator UI) into a digital output.",
+  "how_to_use": "VCC/GND power, DAT is a digital output the microcontroller reads (decoded with an IR-remote library, not raw digitalRead logic).",
+  "image": "ir-receiver.png"
+}

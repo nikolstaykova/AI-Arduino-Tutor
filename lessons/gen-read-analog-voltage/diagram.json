@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "author": "generated",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 200,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot1",
+      "top": -60,
+      "left": 90,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "pot1:GND",
+      "bb1:10t.e",
+      "",
+      []
+    ],
+    [
+      "pot1:SIG",
+      "bb1:11t.e",
+      "",
+      []
+    ],
+    [
+      "pot1:VCC",
+      "bb1:12t.e",
+      "",
+      []
+    ],
+    [
+      "bb1:10t.a",
+      "uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "bb1:12t.a",
+      "uno:5V",
+      "red",
+      []
+    ],
+    [
+      "bb1:11t.a",
+      "uno:A0",
+      "green",
+      []
+    ]
+  ],
+  "dependencies": {}
+}

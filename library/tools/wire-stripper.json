@@ -1,0 +1,11 @@
+{
+  "id": "wire-stripper",
+  "type": "tool",
+  "tier": 1,
+  "display_name": "Wire Stripper",
+  "aliases": ["stripper", "wire strippers"],
+  "description": "Removes insulation from a wire's end without cutting the copper inside.",
+  "how_to_use": "Open the jaws, seat the wire in the notch matching its gauge, squeeze, and pull to strip the insulation.",
+  "tutorial_clip": "wire_stripper.mp4",
+  "image": "wire-stripper.png"
+}

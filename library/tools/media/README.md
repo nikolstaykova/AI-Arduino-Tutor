@@ -1,0 +1,5 @@
+# Tool media
+
+Video/image assets referenced by `library/tools/*.json`'s `tutorial_clip` and `image` fields go here, named to match whatever the card actually references (the card is the source of truth for the exact filename, not a fixed naming convention — e.g. `wire-stripper.json`'s `tutorial_clip` currently points at `wire_stripper.mp4`).
+
+**`wire_stripper.mp4`**, **`digital-multimeter.mp4`**, **`flush-cutters.mp4`**, **`tweezers.mp4`** — real tool videos, user-provided (most arrived as raw downloaded filenames — `How to Measure Voltage with a Multimeter.mp4`, `Flush Cut Pliers Basics.mp4`, `Tool Tip Series 2_ Applications & Types of Tweezers.mp4` — and were renamed to match their card's id exactly). The remaining two tools (needle-nose pliers, small screwdriver set) are still unpopulated. See `PLAN.md`'s notes on video sourcing (self-hosted vs. YouTube-linked, and the licensing distinction between embedding someone else's video vs. downloading/redistributing it) before adding more.

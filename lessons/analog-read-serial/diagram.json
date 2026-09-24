@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "author": "Nikol Staykova",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-breadboard-mini", "id": "bb2", "top": 8.2, "left": -40.8, "attrs": {} },
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 202.2, "left": -77.4, "attrs": {} },
+    { "type": "wokwi-potentiometer", "id": "pot1", "top": -78.1, "left": -0.2, "attrs": {} }
+  ],
+  "connections": [
+    [ "bb2:6b.f", "pot1:GND", "gray", [ "v0" ] ],
+    [ "bb2:7b.f", "pot1:VCC", "gray", [ "h38.4", "v-96" ] ],
+    [ "pot1:SIG", "bb2:7t.e", "gray", [ "v0" ] ],
+    [ "uno:A0", "bb2:7t.e", "gold", [ "v-249.7", "h-140.2" ] ],
+    [ "bb2:6b.h", "uno:GND.3", "green", [ "v38.4", "h220.8", "v163.2" ] ],
+    [ "bb2:7b.h", "uno:5V", "green", [ "v76.8", "h-124.8", "v230.4" ] ]
+  ],
+  "dependencies": {}
+}

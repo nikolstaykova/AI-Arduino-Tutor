@@ -1,0 +1,76 @@
+{
+  "id": "analog-read-serial",
+  "title": "Analog Read Serial",
+  "description": "Wire a potentiometer to an analog input and watch its value stream into the Serial Monitor as you turn the knob.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": ["arduino-uno", "breadboard", "potentiometer-10k", "jumper-wire"],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Let's gather what you need: an Arduino Uno, a breadboard, a 10k potentiometer, and a few jumper wires.",
+      "items": ["arduino-uno", "breadboard", "potentiometer-10k", "jumper-wire"]
+    },
+    {
+      "id": "place-pot",
+      "phase": "build",
+      "clip": "Pick up the potentiometer and push all three legs into the breadboard, each in its own column.",
+      "expected_landing": ["pot1:GND", "pot1:SIG", "pot1:VCC"],
+      "strict": false,
+      "hints": [
+        "The middle leg is the wiper — its voltage is what changes when you turn the knob.",
+        "Give each leg its own column so they don't touch each other."
+      ]
+    },
+    {
+      "id": "wire-pot-ground",
+      "phase": "build",
+      "clip": "Run a wire from one of the potentiometer's outer legs to GND.",
+      "expected_nets": [["pot1:GND", "uno:GND.2"]],
+      "strict": false,
+      "hints": [
+        "Either outer leg works — they're interchangeable.",
+        "Black is the usual color for a ground wire."
+      ]
+    },
+    {
+      "id": "wire-pot-power",
+      "phase": "build",
+      "clip": "Run a wire from the potentiometer's other outer leg to 5V.",
+      "expected_nets": [["pot1:VCC", "uno:5V"]],
+      "strict": false,
+      "hints": [
+        "This is the outer leg you didn't just wire to GND.",
+        "Red is the usual color for a 5V wire."
+      ]
+    },
+    {
+      "id": "wire-pot-signal",
+      "phase": "build",
+      "clip": "Run a wire from the potentiometer's middle leg to pin A0.",
+      "expected_nets": [["pot1:SIG", "uno:A0"]],
+      "strict": false,
+      "hints": [
+        "The middle leg is the wiper — this is the signal the Arduino will read.",
+        "Turning the knob changes the voltage on pin A0."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Upload the sketch, then open the Serial Monitor and watch the numbers change as you turn the knob.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      ["pot1:GND", "uno:GND.2"],
+      ["pot1:VCC", "uno:5V"],
+      ["pot1:SIG", "uno:A0"]
+    ]
+  }
+}

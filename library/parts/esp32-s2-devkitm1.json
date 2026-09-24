@@ -1,0 +1,64 @@
+{
+  "id": "esp32-s2-devkitm1",
+  "type": "part",
+  "subtype": "board",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "board-esp32-s2-devkitm-1",
+  "display_name": "ESP32-S2 DevKitM-1",
+  "mcu_family": "esp32",
+  "spoken_name": "ESP32-S2 DevKitM-1",
+  "aliases": [
+    "esp32-s2",
+    "esp32 s2"
+  ],
+  "description": "An ESP32-S2 dev board (single-core Xtensa, Wi-Fi only, native USB). Legs are labeled by silkscreen number, not raw GPIO number, except TX/RX (UART0) which keep their named labels.",
+  "how_to_use": "Peripherals (I2C, SPI, UART) can each be mapped to nearly any GPIO in software (the ESP32's GPIO matrix), so no bus pin is hardware-fixed the way it is on an AVR board \u2014 only TX/RX (UART0, used for USB flashing/Serial Monitor unless native USB mode is used instead) are excluded by default. ADC-capable pins for this variant aren't catalogued yet \u2014 verify before relying on analogRead-specific substitution.",
+  "image": "esp32-s2-devkitm1.png",
+  "pin_domains": {
+    "digital": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "26",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "45",
+      "46"
+    ]
+  },
+  "pin_aliases": {
+    "mode": "prefix",
+    "prefixes": [
+      "GND",
+      "3V3"
+    ]
+  }
+}

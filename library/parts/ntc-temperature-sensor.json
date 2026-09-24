@@ -1,0 +1,11 @@
+{
+  "id": "ntc-temperature-sensor",
+  "type": "part",
+  "subtype": "sensor",
+  "wokwi_type": "wokwi-ntc-temperature-sensor",
+  "display_name": "NTC Analog Temperature Sensor",
+  "aliases": ["ntc", "ntc sensor", "analog temperature sensor", "thermistor"],
+  "description": "An analog temperature sensor module using an NTC thermistor.",
+  "how_to_use": "VCC/GND power, OUT is an analog output read with analogRead() — the three pins are not interchangeable.",
+  "image": "ntc-temperature-sensor.png"
+}

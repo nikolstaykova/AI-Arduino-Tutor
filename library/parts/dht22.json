@@ -1,0 +1,12 @@
+{
+  "id": "dht22",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-dht22",
+  "display_name": "DHT22 Temperature & Humidity Sensor",
+  "aliases": ["dht22", "temperature sensor", "humidity sensor"],
+  "description": "A digital temperature and humidity sensor using a proprietary one-wire protocol.",
+  "how_to_use": "Wire the SDA pin to any digital pin — despite the name, this is NOT I2C, just a one-wire data line, and works on any ordinary digital pin.",
+  "image": "dht22.png"
+}

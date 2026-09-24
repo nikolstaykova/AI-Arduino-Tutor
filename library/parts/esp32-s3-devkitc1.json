@@ -1,0 +1,63 @@
+{
+  "id": "esp32-s3-devkitc1",
+  "type": "part",
+  "subtype": "board",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "board-esp32-s3-devkitc-1",
+  "display_name": "ESP32-S3 DevKitC-1",
+  "mcu_family": "esp32",
+  "spoken_name": "ESP32-S3 DevKitC-1",
+  "aliases": [
+    "esp32-s3",
+    "esp32 s3"
+  ],
+  "description": "An ESP32-S3 dev board (dual-core Xtensa, Wi-Fi + Bluetooth LE, native USB). Legs are labeled by silkscreen number, not raw GPIO number, except TX/RX (UART0) which keep their named labels.",
+  "how_to_use": "Peripherals (I2C, SPI, UART) can each be mapped to nearly any GPIO in software (the ESP32's GPIO matrix), so no bus pin is hardware-fixed the way it is on an AVR board \u2014 only TX/RX (UART0, used for USB flashing/Serial Monitor unless native USB mode is used instead) are excluded by default. ADC-capable pins for this variant aren't catalogued yet \u2014 verify before relying on analogRead-specific substitution.",
+  "image": "esp32-s3-devkitc1.png",
+  "pin_domains": {
+    "digital": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "45",
+      "46",
+      "47",
+      "48"
+    ]
+  },
+  "pin_aliases": {
+    "mode": "prefix",
+    "prefixes": [
+      "GND",
+      "3V3"
+    ]
+  }
+}

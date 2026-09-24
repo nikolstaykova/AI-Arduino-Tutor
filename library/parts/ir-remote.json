@@ -1,0 +1,11 @@
+{
+  "id": "ir-remote",
+  "type": "part",
+  "subtype": "input",
+  "wokwi_type": "wokwi-ir-remote",
+  "display_name": "IR Remote",
+  "aliases": ["ir remote", "infrared remote"],
+  "description": "A 38kHz infrared remote control with 20 function keys, used purely as a simulator UI control — it sends IR commands to an IR receiver wirelessly within the simulation.",
+  "how_to_use": "No documented pinout was found (docs.wokwi.com's own reference page for it lists only its function keys, not pins) — this part appears to have no diagram-wireable legs at all, since it isn't physically connected to anything (a real IR remote isn't wired into a circuit either). Do not assume any pin names for it without confirming first.",
+  "image": "ir-remote.png"
+}

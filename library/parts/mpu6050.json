@@ -1,0 +1,13 @@
+{
+  "id": "mpu6050",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-mpu6050",
+  "display_name": "MPU6050 Accelerometer/Gyroscope",
+  "aliases": ["mpu6050", "accelerometer", "gyroscope"],
+  "description": "A 3-axis accelerometer + 3-axis gyroscope + temperature sensor with an I2C interface (default address 0x68, or 0x69 with AD0 tied to VCC).",
+  "how_to_use": "VCC/GND power, SDA/SCL are real I2C — wire to the board's real I2C pins. XDA/XCL (auxiliary I2C bus) aren't implemented in Wokwi's simulation, and AD0/INT are usually left unconnected unless changing the I2C address or using the interrupt pin.",
+  "image": "mpu6050.png",
+  "protocol_legs": ["SDA", "SCL"]
+}

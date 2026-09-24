@@ -1,0 +1,32 @@
+{
+  "id": "potentiometer-10k",
+  "type": "part",
+  "subtype": "potentiometer",
+  "legs_placed_together": true,
+  "wokwi_type": [
+    "wokwi-potentiometer",
+    "wokwi-slide-potentiometer"
+  ],
+  "pins": {
+    "GND": "outer leg",
+    "SIG": "wiper — the middle leg; its voltage changes as the knob turns",
+    "VCC": "outer leg"
+  },
+  "symmetric_pins": [
+    [
+      "GND",
+      "VCC"
+    ]
+  ],
+  "display_name": "10k Ohm Potentiometer (linear, \"B10K\")",
+  "aliases": [
+    "potentiometer",
+    "pot",
+    "10k pot",
+    "slide potentiometer"
+  ],
+  "description": "A variable resistor with a rotating shaft; turning it changes its resistance.",
+  "how_to_use": "Wire the two outer pins to 5V and ground, and the center pin to an analog input — turning the shaft changes the voltage read on that pin. Either outer pin can go to 5V or ground; swapping them just reverses which way the reading changes as you turn the shaft.",
+  "image": "potentiometer-10k.png",
+  "leads": "lug"
+}

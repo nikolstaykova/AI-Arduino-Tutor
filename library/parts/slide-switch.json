@@ -1,0 +1,12 @@
+{
+  "id": "slide-switch",
+  "type": "part",
+  "subtype": "switch",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-slide-switch",
+  "display_name": "Slide Switch",
+  "aliases": ["slide switch", "spdt switch", "toggle switch"],
+  "description": "A 3-pin SPDT (single-pole double-throw) switch: pin 2 (common) is always connected to either pin 1 or pin 3, depending on the handle position.",
+  "how_to_use": "Pin 2 is the common terminal, always live. Pins 1 and 3 are the two throw positions — NOT a harmless swap like a resistor's legs: swapping which one is wired changes which handle position reads active, so this isn't treated as symmetric. Many uses only wire one of pin 1/pin 3 plus pin 2, leaving the other throw position unconnected.",
+  "image": "slide-switch.png"
+}

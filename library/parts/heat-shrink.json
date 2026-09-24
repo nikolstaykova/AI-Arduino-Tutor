@@ -1,0 +1,14 @@
+{
+  "id": "heat-shrink",
+  "type": "part",
+  "subtype": "consumable",
+  "display_name": "Heat-Shrink Tubing",
+  "aliases": [
+    "heat shrink",
+    "heatshrink",
+    "shrink tube"
+  ],
+  "description": "Plastic sleeves that shrink tight when heated, insulating a bare joint.",
+  "how_to_use": "Slide a piece onto the wire BEFORE soldering, then push it over the finished joint and warm it with the iron's side or a lighter held at a distance.",
+  "image": "heat-shrink.png"
+}

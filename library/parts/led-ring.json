@@ -1,0 +1,12 @@
+{
+  "id": "led-ring",
+  "type": "part",
+  "subtype": "led",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-led-ring",
+  "display_name": "LED Ring",
+  "aliases": ["led ring", "neopixel ring", "ws2812 ring"],
+  "description": "A ring of addressable NeoPixel-compatible RGB LEDs (default 16 pixels), with its own regulated power/ground pins.",
+  "how_to_use": "GND/VCC are power, DIN is the data input from the microcontroller (or from the previous unit's DOUT), and DOUT passes the same data stream on to the next unit in a chain — DIN/DOUT is a plain digital signal (bit-banged by the sketch), not a shared bus, so each link in a chain is its own independent connection.",
+  "image": "led-ring.png"
+}

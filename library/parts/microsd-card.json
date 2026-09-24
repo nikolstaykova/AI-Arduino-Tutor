@@ -1,0 +1,13 @@
+{
+  "id": "microsd-card",
+  "type": "part",
+  "subtype": "storage",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-microsd-card",
+  "display_name": "microSD Card Module",
+  "aliases": ["microsd", "sd card", "sd card module"],
+  "description": "A microSD card reader/writer with an SPI interface.",
+  "how_to_use": "Shares its SCK/DO/DI lines with any other SPI device on the same bus; give it its own, unique CS pin.",
+  "image": "microsd-card.png",
+  "protocol_legs": ["SCK", "DO", "DI"]
+}

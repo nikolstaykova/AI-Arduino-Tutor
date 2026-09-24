@@ -1,0 +1,10 @@
+{
+  "id": "soldering-iron",
+  "type": "tool",
+  "tier": 2,
+  "display_name": "Soldering Iron",
+  "aliases": ["solder iron", "soldering station", "iron"],
+  "description": "Heats solder to melt it, permanently bonding a wire to a component leg or another wire.",
+  "how_to_use": "Heat the joint itself (the leg and the wire together), not the solder directly — touch the solder to the heated joint and let it flow in, then hold both parts still until it cools. An advanced, permanent alternative to an alligator clip test lead for a direct-to-leg connection (no breadboard involved): the clip is solderless and reversible, this is permanent and requires this tool.",
+  "image": "soldering-iron.png"
+}

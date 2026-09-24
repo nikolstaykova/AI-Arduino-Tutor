@@ -1,0 +1,26 @@
+{
+  "id": "resistor-10k",
+  "type": "part",
+  "subtype": "resistor",
+  "wokwi_type": "wokwi-resistor",
+  "wokwi_value": "10000",
+  "pins": {
+    "1": "either end",
+    "2": "either end"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "display_name": "10k Ohm Resistor",
+  "aliases": [
+    "10k resistor",
+    "10 kilohm resistor"
+  ],
+  "description": "A fixed resistor.",
+  "how_to_use": "Wired as a pull-down between the pushbutton's input-side leg and ground, so the input pin reads a steady LOW when the button isn't pressed instead of floating.",
+  "image": "resistor-10k.png",
+  "leads": "wire-lead"
+}

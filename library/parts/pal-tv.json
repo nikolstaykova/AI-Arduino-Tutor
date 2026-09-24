@@ -1,0 +1,11 @@
+{
+  "id": "pal-tv",
+  "type": "part",
+  "subtype": "display",
+  "wokwi_type": "wokwi-tv",
+  "display_name": "PAL TV (composite video)",
+  "aliases": ["pal tv", "tv", "composite video"],
+  "description": "A black-and-white analog PAL composite-video display.",
+  "how_to_use": "IN carries the bit-banged pixel/data signal, SYNC carries the field/line timing pulses, GND is ground — both IN and SYNC are driven directly by the sketch (software composite-video generation), not a standard bus.",
+  "image": "pal-tv.png"
+}

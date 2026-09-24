@@ -1,0 +1,13 @@
+{
+  "id": "solder",
+  "type": "part",
+  "subtype": "consumable",
+  "display_name": "Solder (lead-free, rosin core)",
+  "aliases": [
+    "solder wire",
+    "lead-free solder"
+  ],
+  "description": "A soft metal wire that melts under a soldering iron and sets into a permanent electrical joint.",
+  "how_to_use": "Heat the joint with the iron, then touch the solder to the joint (not the iron) so it flows around both metals. Use in a ventilated space.",
+  "image": "solder.png"
+}

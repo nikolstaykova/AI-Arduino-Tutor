@@ -1,0 +1,317 @@
+{
+  "_comment": "The Learn map. One world per group of the official Arduino built-in examples (docs.arduino.cc/built-in-examples), every example a level in order. `lesson` names the lesson folder once it exists; levels without one show as 'coming soon' so numbering never changes. Lessons in no world land in the Workshop; AI-generated lessons land in the AI Lab.",
+  "source": "https://docs.arduino.cc/built-in-examples/",
+  "worlds": [
+    {
+      "id": "basics",
+      "group": "Basics",
+      "name": "First Light Garden",
+      "theme": "basics",
+      "blurb": "Your first circuits: blink, read a button, read a knob.",
+      "levels": [
+        {
+          "title": "Bare Minimum"
+        },
+        {
+          "title": "Blink",
+          "lesson": "blink"
+        },
+        {
+          "title": "Digital Read Serial",
+          "lesson": "digital-read-serial"
+        },
+        {
+          "title": "Analog Read Serial",
+          "lesson": "analog-read-serial"
+        },
+        {
+          "title": "Read Analog Voltage"
+        },
+        {
+          "title": "Fading an LED"
+        }
+      ]
+    },
+    {
+      "id": "digital",
+      "group": "Digital",
+      "name": "Button Arcade",
+      "theme": "arcade",
+      "blurb": "On and off: buttons, timing and tones.",
+      "levels": [
+        {
+          "title": "Blink Without Delay"
+        },
+        {
+          "title": "Button"
+        },
+        {
+          "title": "Debounce"
+        },
+        {
+          "title": "Input Pullup Serial"
+        },
+        {
+          "title": "State Change Detection"
+        },
+        {
+          "title": "Tone Keyboard"
+        },
+        {
+          "title": "Tone Melody"
+        },
+        {
+          "title": "Tone on Multiple Speakers"
+        },
+        {
+          "title": "Pitch Follower"
+        }
+      ]
+    },
+    {
+      "id": "analog",
+      "group": "Analog",
+      "name": "Dial Desert",
+      "theme": "desert",
+      "blurb": "Everything in between: knobs, dimming, smoothing.",
+      "levels": [
+        {
+          "title": "Analog In, Out Serial"
+        },
+        {
+          "title": "Analog Input"
+        },
+        {
+          "title": "Analog Write (Mega)"
+        },
+        {
+          "title": "Calibration"
+        },
+        {
+          "title": "Fading"
+        },
+        {
+          "title": "Smoothing"
+        }
+      ]
+    },
+    {
+      "id": "communication",
+      "group": "Communication",
+      "name": "Lighthouse Bay",
+      "theme": "ocean",
+      "blurb": "Talk to the computer over serial — send, receive, reply.",
+      "levels": [
+        {
+          "title": "ASCII Table"
+        },
+        {
+          "title": "Dimmer"
+        },
+        {
+          "title": "Graph"
+        },
+        {
+          "title": "MIDI Note Player"
+        },
+        {
+          "title": "Multi Serial (Mega)"
+        },
+        {
+          "title": "Physical Pixel"
+        },
+        {
+          "title": "Read ASCII String"
+        },
+        {
+          "title": "Serial Call and Response"
+        },
+        {
+          "title": "Serial Call and Response ASCII"
+        },
+        {
+          "title": "SerialEvent"
+        },
+        {
+          "title": "Serial Passthrough"
+        },
+        {
+          "title": "Virtual Color Mixer"
+        }
+      ]
+    },
+    {
+      "id": "control",
+      "group": "Control Structures",
+      "name": "Switchyard",
+      "theme": "rail",
+      "blurb": "Arrays, loops, if and switch — steering your program.",
+      "levels": [
+        {
+          "title": "Arrays"
+        },
+        {
+          "title": "For Loop (Knight Rider)"
+        },
+        {
+          "title": "Switch Case (sensor)"
+        },
+        {
+          "title": "Switch Case (serial)"
+        },
+        {
+          "title": "While Loop"
+        },
+        {
+          "title": "If Statement"
+        }
+      ]
+    },
+    {
+      "id": "sensors",
+      "group": "Sensors",
+      "name": "Sensor Forest",
+      "theme": "forest",
+      "blurb": "Measure the world: tilt, knocks, distance.",
+      "levels": [
+        {
+          "title": "ADXL3xx Accelerometer"
+        },
+        {
+          "title": "Knock"
+        },
+        {
+          "title": "Memsic 2125 Accelerometer"
+        },
+        {
+          "title": "Ping Range Finder"
+        }
+      ]
+    },
+    {
+      "id": "display",
+      "group": "Display",
+      "name": "Pixel Plaza",
+      "theme": "city",
+      "blurb": "Show things with lots of LEDs.",
+      "levels": [
+        {
+          "title": "LED Bar Graph"
+        },
+        {
+          "title": "8x8 LED Matrix"
+        }
+      ]
+    },
+    {
+      "id": "strings",
+      "group": "Strings",
+      "name": "Letter Library",
+      "theme": "library",
+      "blurb": "Work with text: join it, search it, change it.",
+      "levels": [
+        {
+          "title": "Character Analysis"
+        },
+        {
+          "title": "String Addition Operator"
+        },
+        {
+          "title": "String Appending Operators"
+        },
+        {
+          "title": "String Case Changes"
+        },
+        {
+          "title": "String Characters"
+        },
+        {
+          "title": "String Comparison Operators"
+        },
+        {
+          "title": "String Constructors"
+        },
+        {
+          "title": "String indexOf"
+        },
+        {
+          "title": "String Length"
+        },
+        {
+          "title": "String Length and Trim"
+        },
+        {
+          "title": "String Replace"
+        },
+        {
+          "title": "String startsWith / endsWith"
+        },
+        {
+          "title": "String Substring"
+        },
+        {
+          "title": "String to Int"
+        }
+      ]
+    },
+    {
+      "id": "usb",
+      "group": "USB",
+      "name": "Keyboard Cove",
+      "theme": "desk",
+      "blurb": "Make the board act as a keyboard or mouse (Leonardo / Micro boards).",
+      "levels": [
+        {
+          "title": "Button Mouse Control"
+        },
+        {
+          "title": "Joystick Mouse Control"
+        },
+        {
+          "title": "Keyboard and Mouse Control"
+        },
+        {
+          "title": "Keyboard Logout"
+        },
+        {
+          "title": "Keyboard Message"
+        },
+        {
+          "title": "Keyboard Reprogram"
+        },
+        {
+          "title": "Keyboard Serial"
+        }
+      ]
+    },
+    {
+      "id": "isp",
+      "group": "Arduino ISP",
+      "name": "Chip Factory",
+      "theme": "factory",
+      "blurb": "Program bare chips and burn bootloaders.",
+      "levels": [
+        {
+          "title": "Arduino as ISP"
+        },
+        {
+          "title": "Microcontroller on a Breadboard"
+        }
+      ]
+    }
+  ],
+  "workshop": {
+    "id": "workshop",
+    "group": "Extra",
+    "name": "The Workshop",
+    "theme": "workshop",
+    "blurb": "Extra levels."
+  },
+  "ai_lab": {
+    "id": "ai-lab",
+    "group": "Your lessons",
+    "name": "AI Lab",
+    "theme": "lab",
+    "blurb": "Levels you invented with Sparky."
+  }
+}

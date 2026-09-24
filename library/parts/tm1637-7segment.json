@@ -1,0 +1,12 @@
+{
+  "id": "tm1637-7segment",
+  "type": "part",
+  "subtype": "display",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-tm1637-7segment",
+  "display_name": "TM1637 Seven-Segment Display",
+  "aliases": ["tm1637", "tm1637 display"],
+  "description": "A 4-digit seven-segment display module driven by a TM1637 controller over a 2-wire interface.",
+  "how_to_use": "CLK/DIO are a bit-banged, TM1637-proprietary protocol — it resembles I2C but isn't real I2C, and is confirmed NOT caught by this project's SDA/SCL-name protocol-bus guard. VCC/GND are power.",
+  "image": "tm1637-7segment.png"
+}

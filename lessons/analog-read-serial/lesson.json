@@ -1,0 +1,122 @@
+{
+  "id": "analog-read-serial",
+  "title": "Read an Analog Input",
+  "description": "Read a varying voltage from a potentiometer using analogRead(), and print it to the Serial Monitor.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "blink"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "potentiometer-10k",
+    "jumper-wire"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, a 10 kΩ potentiometer (a turning knob) and three jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "potentiometer-10k",
+        "jumper-wire"
+      ]
+    },
+    {
+      "id": "step-1a",
+      "phase": "build",
+      "clip": "Push the knob into the breadboard so each of its three legs is in a different numbered column.",
+      "expected_landing": [
+        "pot1:GND",
+        "pot1:VCC",
+        "pot1:SIG"
+      ],
+      "strict": false,
+      "hints": [
+        "The two outer legs are for power; the middle leg gives the reading.",
+        "Two legs in the same column would be connected to each other, so use three different columns."
+      ],
+      "goal": "Put the knob on the breadboard."
+    },
+    {
+      "id": "step-1b",
+      "phase": "build",
+      "clip": "Take a jumper wire from one of the outer legs' columns to a GND pin on the Arduino.",
+      "expected_nets": [
+        [
+          "pot1:GND",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either outer leg works — swapping them only makes the reading go the other way when you turn the knob.",
+        "Any GND pin on the Arduino works."
+      ],
+      "goal": "Connect one outer leg of the knob to GND."
+    },
+    {
+      "id": "step-2b",
+      "phase": "build",
+      "clip": "Take a wire from the other outer leg's column to the 5V pin on the Arduino.",
+      "expected_nets": [
+        [
+          "pot1:VCC",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "It's the outer leg you haven't wired yet."
+      ],
+      "goal": "Connect the other outer leg to 5V."
+    },
+    {
+      "id": "step-3b",
+      "phase": "build",
+      "clip": "Take the last wire from the middle leg's column to pin A0 on the Arduino.",
+      "expected_nets": [
+        [
+          "pot1:SIG",
+          "uno:A0"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The middle leg's voltage changes as you turn the knob; pin A0 measures it.",
+        "Pin A0 is on the Arduino's bottom-right row of sockets, marked ANALOG IN."
+      ],
+      "goal": "Connect the middle leg to pin A0."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Upload the code, then open the Serial Monitor. You'll see a number from 0 to 1023 that changes as you turn the knob.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "pot1:GND",
+        "uno:GND.1"
+      ],
+      [
+        "pot1:VCC",
+        "uno:5V"
+      ],
+      [
+        "pot1:SIG",
+        "uno:A0"
+      ]
+    ]
+  }
+}

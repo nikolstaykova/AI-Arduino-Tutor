@@ -1,0 +1,12 @@
+{
+  "id": "relay-module",
+  "type": "part",
+  "subtype": "driver",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-relay-module",
+  "display_name": "Relay Module",
+  "aliases": ["relay", "relay module"],
+  "description": "A single-pole electronic relay module (transistor-driven) — IN is a logic-level signal from the microcontroller, switching a separate NC/COM/NO circuit.",
+  "how_to_use": "VCC/GND power, IN is the digital control signal from the microcontroller. COM is the common switched contact; with the default NPN transistor, driving IN high connects COM to NO (and low/disconnected leaves it on NC) — a PNP-transistor variant reverses this. COM/NC/NO are the switched-circuit side, electrically isolated from VCC/GND/IN.",
+  "image": "relay-module.png"
+}

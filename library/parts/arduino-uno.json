@@ -1,0 +1,72 @@
+{
+  "id": "arduino-uno",
+  "type": "part",
+  "subtype": "board",
+  "wokwi_type": "wokwi-arduino-uno",
+  "display_name": "Arduino Uno R3",
+  "mcu_family": "avr",
+  "led_builtin": "13",
+  "spoken_name": "Arduino Uno",
+  "aliases": [
+    "arduino",
+    "uno",
+    "the board"
+  ],
+  "description": "A microcontroller board built around the ATmega328P, with 14 digital I/O pins (6 usable as PWM outputs) and 6 analog inputs.",
+  "how_to_use": "Connect it to a computer over USB to upload a sketch (program); it then runs that program on its own, reading inputs and driving outputs.",
+  "image": "arduino-uno.png",
+  "pin_domains": {
+    "analog": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+    ],
+    "digital": [
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13"
+    ]
+  },
+  "protocol_pins": {
+    "A4": {
+      "protocol": "I2C",
+      "role": "SDA"
+    },
+    "A5": {
+      "protocol": "I2C",
+      "role": "SCL"
+    },
+    "11": {
+      "protocol": "SPI",
+      "role": "MOSI"
+    },
+    "12": {
+      "protocol": "SPI",
+      "role": "MISO"
+    },
+    "13": {
+      "protocol": "SPI",
+      "role": "SCK"
+    }
+  },
+  "pin_aliases": {
+    "mode": "prefix",
+    "prefixes": [
+      "GND",
+      "A4",
+      "A5"
+    ]
+  }
+}

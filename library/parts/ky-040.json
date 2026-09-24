@@ -1,0 +1,12 @@
+{
+  "id": "ky-040",
+  "type": "part",
+  "subtype": "input",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-ky-040",
+  "display_name": "KY-040 Rotary Encoder",
+  "aliases": ["rotary encoder", "ky-040", "encoder"],
+  "description": "A rotary encoder module (20 steps/revolution) with an integrated push button.",
+  "how_to_use": "VCC/GND power, CLK/DT are the two quadrature outputs (bit-banged, not a shared bus — which one pulses low first indicates rotation direction), SW is the button — normally open, shorts to GND when pressed.",
+  "image": "ky-040.png"
+}

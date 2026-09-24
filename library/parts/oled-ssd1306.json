@@ -1,0 +1,13 @@
+{
+  "id": "oled-ssd1306",
+  "type": "part",
+  "subtype": "display",
+  "legs_placed_together": true,
+  "wokwi_type": ["board-ssd1306", "wokwi-ssd1306"],
+  "display_name": "SSD1306 OLED Display",
+  "aliases": ["oled", "ssd1306", "oled display"],
+  "description": "A small monochrome OLED display with an I2C interface. TWO different Wokwi part variants exist with DIFFERENT leg names for the same real product, confirmed via real official examples: `board-ssd1306` uses GND/VCC/SDA/SCL, `wokwi-ssd1306` (an older/simpler simulation model) uses GND/VIN/DATA/CLK.",
+  "how_to_use": "Wire SDA/SCL (or DATA/CLK on the `wokwi-ssd1306` variant) to the board's real I2C pins; multiple I2C devices can share the same lines.",
+  "image": "oled-ssd1306.png",
+  "protocol_legs": ["SDA", "SCL", "DATA", "CLK"]
+}

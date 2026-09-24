@@ -1,0 +1,18 @@
+{
+  "id": "stm32-bluepill",
+  "type": "part",
+  "subtype": "board",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "board-stm32-bluepill",
+  "display_name": "STM32 Blue Pill (STM32F103C8)",
+  "aliases": ["blue pill", "bluepill", "stm32f103", "stm32 bluepill"],
+  "description": "A compact ARM Cortex-M3 board. Legs use the chip's own port-pin names (A0-A15, B0-B15, C13-C15), not Arduino-style numbering.",
+  "how_to_use": "A0-A7 are the board's ADC1 channels; I2C/SPI/UART can each be remapped in software to more than one physical pin group, so no bus pin is treated as hardware-fixed here the way it is on an AVR board.",
+  "image": "stm32-bluepill.png",
+  "pin_domains": {
+    "analog": ["A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7"],
+    "digital": ["A8", "A9", "A10", "A11", "A12", "A15", "B0", "B1", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10", "B11", "B12", "B13", "B14", "B15", "C13", "C14", "C15"]
+  },
+  "pin_aliases": { "mode": "prefix", "prefixes": ["GND", "3V3", "5V"] }
+}

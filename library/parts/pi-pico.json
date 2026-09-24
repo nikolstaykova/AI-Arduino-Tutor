@@ -1,0 +1,18 @@
+{
+  "id": "pi-pico",
+  "type": "part",
+  "subtype": "board",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "wokwi-pi-pico",
+  "display_name": "Raspberry Pi Pico",
+  "aliases": ["pi pico", "raspberry pi pico", "rp2040", "pico"],
+  "description": "A dual-core ARM Cortex-M0+ (RP2040) board with GP0-GP28 broken out (minus GP23/GP24, used internally and not exposed as diagram pins), 3 of which (GP26-28) double as analog inputs.",
+  "how_to_use": "I2C/SPI/UART peripherals can each be mapped to more than one physical GP pin by the sketch itself, so no single pin is hardware-fixed to a bus the way it is on an AVR board — treat any bus pin as ordinary GPIO unless the lesson's own code pins it down.",
+  "image": "pi-pico.png",
+  "pin_domains": {
+    "analog": ["GP26", "GP27", "GP28"],
+    "digital": ["GP0", "GP1", "GP2", "GP3", "GP4", "GP5", "GP6", "GP7", "GP8", "GP9", "GP10", "GP11", "GP12", "GP13", "GP14", "GP15", "GP16", "GP17", "GP18", "GP19", "GP20", "GP21", "GP22", "GP25", "GP26", "GP27", "GP28"]
+  },
+  "pin_aliases": { "mode": "prefix", "prefixes": ["GND"] }
+}

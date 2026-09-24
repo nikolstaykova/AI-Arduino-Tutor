@@ -1,0 +1,12 @@
+{
+  "id": "membrane-keypad",
+  "type": "part",
+  "subtype": "input",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-membrane-keypad",
+  "display_name": "4x4 Membrane Keypad",
+  "aliases": ["keypad", "membrane keypad", "4x4 keypad"],
+  "description": "A 4x4 matrix keypad: 4 row pins and 4 column pins, scanned in software to detect which key is pressed.",
+  "how_to_use": "R1-R4 (rows) and C1-C4 (columns) are all ordinary digital I/O pins, matrix-scanned by the sketch — not interchangeable with each other (which row/column a pin is wired to determines which key maps where), and not a shared bus.",
+  "image": "membrane-keypad.png"
+}

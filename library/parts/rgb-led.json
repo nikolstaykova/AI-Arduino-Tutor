@@ -1,0 +1,12 @@
+{
+  "id": "rgb-led",
+  "type": "part",
+  "subtype": "led",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-rgb-led",
+  "display_name": "RGB LED",
+  "aliases": ["rgb led", "tri-color led"],
+  "description": "A single LED package with independent red, green, and blue elements, plus one shared pin.",
+  "how_to_use": "R/G/B are each a separate color channel (not interchangeable with each other — swapping which color goes where changes what the diagram actually does). COM is the shared pin: common anode (tie to 5V/3V3) by default, or common cathode (tie to GND) if the `common` attribute is set — check which mode a given diagram uses before assuming COM's role.",
+  "image": "rgb-led.png"
+}

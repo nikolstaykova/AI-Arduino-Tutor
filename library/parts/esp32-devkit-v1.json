@@ -1,0 +1,56 @@
+{
+  "id": "esp32-devkit-v1",
+  "type": "part",
+  "subtype": "board",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "wokwi-esp32-devkit-v1",
+  "display_name": "ESP32 DevKit V1",
+  "mcu_family": "esp32",
+  "spoken_name": "ESP32 DevKit V1",
+  "aliases": [
+    "esp32",
+    "esp32 devkit",
+    "esp32 devkit v1"
+  ],
+  "description": "A common ESP32 dev board (Xtensa dual-core, Wi-Fi + Bluetooth). Legs are labeled by silkscreen (D2, D4, ... VP, VN), not by raw GPIO number.",
+  "how_to_use": "VN/VP/D34/D35 are input-only (no output driver, no internal pull resistors) \u2014 real hardware, not a lesson-specific restriction. Peripherals (I2C, SPI, UART) can each be mapped to nearly any GPIO in software (the ESP32's GPIO matrix), so no bus pin is hardware-fixed the way it is on an AVR board \u2014 only RX0/TX0 (UART0, used for USB flashing/Serial Monitor) are excluded by default, for the same reason as the Uno's pins 0/1.",
+  "image": "esp32-devkit-v1.png",
+  "pin_domains": {
+    "analog": [
+      "VN",
+      "VP",
+      "D34",
+      "D35",
+      "D32",
+      "D33"
+    ],
+    "digital": [
+      "D2",
+      "D4",
+      "D5",
+      "D12",
+      "D13",
+      "D14",
+      "D15",
+      "D18",
+      "D19",
+      "D21",
+      "D22",
+      "D23",
+      "D25",
+      "D26",
+      "D27",
+      "D32",
+      "D33",
+      "RX2",
+      "TX2"
+    ]
+  },
+  "pin_aliases": {
+    "mode": "prefix",
+    "prefixes": [
+      "GND"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "biaxial-stepper",
+  "type": "part",
+  "subtype": "motor",
+  "wokwi_type": "wokwi-biaxial-stepper",
+  "display_name": "Biaxial Stepper Motor",
+  "aliases": ["biaxial stepper", "dual stepper"],
+  "description": "Two independent bipolar stepper motors (inner and outer shaft) packaged concentrically in one part.",
+  "how_to_use": "A1+/A1-/B1+/B1- are the outer shaft motor's two coils, A2+/A2-/B2+/B2- are the inner shaft motor's two coils — each pair needs its own driver (e.g. two A4988s), same as a plain stepper-motor.",
+  "image": "biaxial-stepper.png"
+}

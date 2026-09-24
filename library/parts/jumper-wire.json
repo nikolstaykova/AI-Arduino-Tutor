@@ -1,0 +1,10 @@
+{
+  "id": "jumper-wire",
+  "type": "part",
+  "subtype": "wire",
+  "display_name": "Jumper / Hook-up Wire",
+  "aliases": ["jumper", "jumper wire", "wire"],
+  "description": "A short wire with a connector pin on each end.",
+  "how_to_use": "Plug the ends into breadboard holes or Arduino pins to make a connection between them.",
+  "image": "jumper-wire.png"
+}

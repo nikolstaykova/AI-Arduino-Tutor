@@ -1,0 +1,12 @@
+{
+  "id": "analog-joystick",
+  "type": "part",
+  "subtype": "input",
+  "legs_placed_together": true,
+  "wokwi_type": "wokwi-analog-joystick",
+  "display_name": "Analog Joystick",
+  "aliases": ["joystick", "analog joystick"],
+  "description": "A 2-axis analog joystick with an integrated push button.",
+  "how_to_use": "VCC/GND power, VERT/HORZ are analog outputs (each axis reads ~VCC/2 at rest/center), SEL is the button — normally open, shorts to GND when the stick is pressed straight down.",
+  "image": "analog-joystick.png"
+}

@@ -1,0 +1,118 @@
+{
+  "id": "gen-read-analog-voltage",
+  "title": "Read Analog Voltage",
+  "description": "Turn a potentiometer knob and watch the Arduino measure the voltage on pin A0, from 0 to 5 volts, in the Serial Monitor.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "breadboard",
+    "potentiometer-10k",
+    "jumper-wire",
+    "usb-cable"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Let's gather our parts: an Arduino Uno, a breadboard, a 10k potentiometer, three jumper wires and a USB cable.",
+      "items": [
+        "arduino-uno",
+        "breadboard",
+        "potentiometer-10k",
+        "jumper-wire",
+        "usb-cable"
+      ]
+    },
+    {
+      "id": "step-1a",
+      "phase": "build",
+      "clip": "Push the potentiometer into the top half of the breadboard, so each of its three legs sits in its own column.",
+      "expected_landing": [
+        "pot1:GND",
+        "pot1:SIG",
+        "pot1:VCC"
+      ],
+      "strict": false,
+      "hints": [
+        "Three neighbouring columns, all in rows a to e, work well.",
+        "Make sure no two legs share the same column."
+      ]
+    },
+    {
+      "id": "step-1b",
+      "phase": "build",
+      "clip": "Take a black wire and connect one outer leg of the potentiometer to a GND pin on the Arduino.",
+      "expected_nets": [
+        [
+          "pot1:GND",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Put the wire in a free hole in the same column as an outer leg.",
+        "Any GND pin on the Arduino works."
+      ]
+    },
+    {
+      "id": "step-1c",
+      "phase": "build",
+      "clip": "Now take a red wire and connect the other outer leg to the 5V pin on the Arduino.",
+      "expected_nets": [
+        [
+          "pot1:VCC",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Use the outer leg you haven't wired yet.",
+        "The 5V pin is on the power header, next to the GND pins."
+      ]
+    },
+    {
+      "id": "step-1d",
+      "phase": "build",
+      "clip": "Finally, use a green wire to connect the middle leg of the potentiometer to pin A0.",
+      "expected_nets": [
+        [
+          "pot1:SIG",
+          "uno:A0"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The middle leg is the wiper; its voltage changes as you turn the knob.",
+        "Pin A0 is on the analog header, near the power pins."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Upload the sketch, open the Serial Monitor at 9600 baud, and turn the knob. You'll see the voltage go from 0 up to 5 volts.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "pot1:GND",
+        "uno:GND.1"
+      ],
+      [
+        "pot1:VCC",
+        "uno:5V"
+      ],
+      [
+        "pot1:SIG",
+        "uno:A0"
+      ]
+    ]
+  },
+  "generated": true,
+  "requires": []
+}

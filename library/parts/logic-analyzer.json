@@ -1,0 +1,11 @@
+{
+  "id": "logic-analyzer",
+  "type": "part",
+  "subtype": "utility",
+  "wokwi_type": "wokwi-logic-analyzer",
+  "display_name": "Logic Analyzer (8-channel)",
+  "aliases": ["logic analyzer"],
+  "description": "An 8-channel digital logic analyzer for recording/inspecting signals during simulation (exports a VCD file); a debugging tool, not a functional circuit component.",
+  "how_to_use": "D0-D7 are the 8 input channels (each independently named via the `channelNames` attribute), GND is ground — purely observes whatever signals are wired to it, never drives anything.",
+  "image": "logic-analyzer.png"
+}

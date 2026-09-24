@@ -1,0 +1,16 @@
+{
+  "id": "jumper-wire-mf",
+  "type": "part",
+  "subtype": "wire",
+  "display_name": "Male-to-Female Jumper Wire",
+  "aliases": [
+    "male female jumper",
+    "m-f jumper",
+    "male to female jumper",
+    "dupont male female",
+    "m/f jumper"
+  ],
+  "description": "A jumper wire with a pin on one end and a socket on the other.",
+  "how_to_use": "Slide the socket end over a stiff component pin (a potentiometer or module pin) and push the pin end into an Arduino header socket — a solderless connection with no breadboard.",
+  "image": "jumper-wire.png"
+}

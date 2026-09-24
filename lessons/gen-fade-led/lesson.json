@@ -1,0 +1,119 @@
+{
+  "id": "gen-fade-led",
+  "title": "Fade an LED",
+  "description": "Make an LED smoothly glow brighter and dimmer using analogWrite() and PWM on pin 9.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "breadboard",
+    "led",
+    "resistor-220",
+    "jumper-wire",
+    "usb-cable"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Let's gather our parts: an Arduino Uno, a breadboard, one LED, a 220 ohm resistor, two jumper wires and a USB cable.",
+      "items": [
+        "arduino-uno",
+        "breadboard",
+        "led",
+        "resistor-220",
+        "jumper-wire",
+        "usb-cable"
+      ]
+    },
+    {
+      "id": "step-1a",
+      "phase": "build",
+      "clip": "Push the LED into the top half of the breadboard, with each leg in its own column. Note which column has the longer leg: that's the anode.",
+      "expected_landing": [
+        "led1:A",
+        "led1:C"
+      ],
+      "strict": false,
+      "hints": [
+        "The longer leg is the anode (plus), the shorter leg is the cathode (minus).",
+        "Put the two legs in neighbouring columns, not the same column."
+      ]
+    },
+    {
+      "id": "step-1b",
+      "phase": "build",
+      "clip": "Now take the 220 ohm resistor. Push one leg into the same column as the LED's long leg, and the other leg into a free column further along.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "led1:A"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Resistors work either way round.",
+        "Same column and same side of the centre gap as the long leg means they're connected."
+      ]
+    },
+    {
+      "id": "step-1c",
+      "phase": "build",
+      "clip": "Run a jumper wire from the resistor's free leg to pin 9 on the Arduino.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "uno:9"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 9 has a little ~ mark next to it, so it can do PWM fading.",
+        "If you use a different pin, pick one marked with ~."
+      ]
+    },
+    {
+      "id": "step-1d",
+      "phase": "build",
+      "clip": "Last wire: connect the LED's short leg column to a GND pin on the Arduino.",
+      "expected_nets": [
+        [
+          "led1:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any GND pin on the Arduino works.",
+        "Use a black wire for ground so it's easy to spot."
+      ]
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Plug in the USB cable and upload the sketch. Watch your LED slowly breathe brighter and dimmer!",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "r1:2",
+        "led1:A"
+      ],
+      [
+        "r1:1",
+        "uno:9"
+      ],
+      [
+        "led1:C",
+        "uno:GND.1"
+      ]
+    ]
+  },
+  "generated": true,
+  "requires": []
+}

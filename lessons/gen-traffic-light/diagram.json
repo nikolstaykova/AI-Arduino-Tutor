@@ -1,0 +1,189 @@
+{
+  "version": 1,
+  "author": "generated",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 250,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 40,
+      "left": 40,
+      "rotate": 0,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": -20,
+      "left": 80,
+      "attrs": {
+        "color": "red"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 40,
+      "left": 115,
+      "rotate": 0,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": -20,
+      "left": 155,
+      "attrs": {
+        "color": "yellow"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": 40,
+      "left": 190,
+      "rotate": 0,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": -20,
+      "left": 230,
+      "attrs": {
+        "color": "green"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "r1:1",
+      "bb1:3t.c",
+      "",
+      []
+    ],
+    [
+      "r1:2",
+      "bb1:6t.c",
+      "",
+      []
+    ],
+    [
+      "bb1:3t.a",
+      "uno:12",
+      "orange",
+      []
+    ],
+    [
+      "led1:A",
+      "bb1:6t.e",
+      "",
+      []
+    ],
+    [
+      "led1:C",
+      "bb1:7t.e",
+      "",
+      []
+    ],
+    [
+      "bb1:7t.a",
+      "uno:GND.1",
+      "black",
+      []
+    ],
+    [
+      "r2:1",
+      "bb1:11t.c",
+      "",
+      []
+    ],
+    [
+      "r2:2",
+      "bb1:14t.c",
+      "",
+      []
+    ],
+    [
+      "bb1:11t.a",
+      "uno:11",
+      "yellow",
+      []
+    ],
+    [
+      "led2:A",
+      "bb1:14t.e",
+      "",
+      []
+    ],
+    [
+      "led2:C",
+      "bb1:15t.e",
+      "",
+      []
+    ],
+    [
+      "bb1:15t.a",
+      "uno:GND.2",
+      "black",
+      []
+    ],
+    [
+      "r3:1",
+      "bb1:19t.c",
+      "",
+      []
+    ],
+    [
+      "r3:2",
+      "bb1:22t.c",
+      "",
+      []
+    ],
+    [
+      "bb1:19t.a",
+      "uno:10",
+      "green",
+      []
+    ],
+    [
+      "led3:A",
+      "bb1:22t.e",
+      "",
+      []
+    ],
+    [
+      "led3:C",
+      "bb1:23t.e",
+      "",
+      []
+    ],
+    [
+      "bb1:23t.a",
+      "uno:GND.3",
+      "black",
+      []
+    ]
+  ],
+  "dependencies": {}
+}
