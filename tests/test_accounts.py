@@ -331,3 +331,27 @@ def test_one_creation_at_a_time_and_the_slot_frees_even_after_a_crash(claude_set
     monkeypatch.setattr(lesson_gen, "generate_lesson", boom)
     assert bench_server.api_generate({"request": "x"})[1] in (502, 503)
     assert bench_server._creates[user["id"]]["busy"] is False
+
+
+def test_no_route_ever_sends_a_connected_key_back(claude_setup, supabase, monkeypatch, capsys):
+    """Connect a key, then call every API route — including ones that fail —
+    and look for the key (or any long piece of it) in every answer and in the log."""
+    bench_server._creates.clear()
+    as_user("tok-mert")
+    answers = [bench_server.api_claude_key({"key": KEY})]
+    def boom(*a, **k):
+        raise RuntimeError("Claude fell over")               # an error path too
+    monkeypatch.setattr(lesson_gen, "generate_lesson", boom)
+    for path, route in bench_server.ROUTES.items():
+        if path in ("/api/claude_key",):
+            continue
+        for body in ({}, {"request": "a traffic light", "lesson_id": "blink", "parts": ["led"], "url": "https://example.com"}):
+            try:
+                answers.append(route(body))
+            except Exception as exc:                          # a route rejecting a thin body is fine — its message counts too
+                answers.append(str(exc))
+            bench_server._creates.clear()
+    text = json.dumps(answers, default=str) + capsys.readouterr().out + capsys.readouterr().err
+    secret = KEY[len("sk-ant-api03-"):-4]
+    assert KEY not in text and secret not in text and secret[:12] not in text
+    assert "wxyz" in text                                     # only the last 4 are ever shown
