@@ -44,6 +44,10 @@ Copy [`.env.example`](./.env.example) to `.env` — it's git-ignored, so tokens 
 - **Beginner or advanced.** Beginner steps say exactly which leg goes where, in plain words; advanced shows only the goal ("Connect the LED's long leg to the free end of the resistor") and the hints reveal the how.
 - **Reveal step** marks in red exactly which holes and sockets to connect — on *your* board, with *your* swapped pins.
 
+### Parts & Tools
+- **Every part (80) and tool (17) in the library**, in two tabs with search and categories. Each one has a **detailed 3D model** you can turn and zoom right into: printed pin names, chip markings, solder joints, SMD resistors and capacitors, crystals, connectors, the antenna trace on a Wi-Fi module, the colour bands on each resistor value, the dial on the multimeter (`bench/three/detail/`).
+- What it is, how to use it, what each pin does, the levels that use it, and a **video** where one is available (the tool clips in `library/tools/media/`, otherwise a YouTube search).
+
 ### Create your own lessons with Claude
 Describe a project ("a traffic light that cycles like a real one") and Claude writes the circuit (a Wokwi diagram), the sketch and the steps. The lesson is only saved once it passes **every** check a hand-made lesson passes — wiring, pin rules, code, circuit physics, a full engine run, and an explorer that tries every way a learner could build it (other pins, parts turned round, building ahead, mistakes). A failing draft goes back to Claude with the exact problems, up to three times.
 
@@ -80,7 +84,7 @@ Principles (full list in [`PLAN.md`](./PLAN.md)):
 
 ```bash
 CQ_PROFILE=/tmp/test_profile.json CQ_AI_BACKEND=none python3 bench_server.py 8799 &
-node bench/ui_3d_smoke.js /tmp/shots        # also ui_flow_smoke, ui_nobb_smoke, ui_reveal_smoke
+node bench/ui_3d_smoke.js /tmp/shots        # also ui_flow_smoke, ui_nobb_smoke, ui_reveal_smoke, ui_library_smoke
 ```
 
 `CQ_PROFILE` keeps tests away from your real progress; `CQ_AI_BACKEND=none` keeps them from calling Claude.

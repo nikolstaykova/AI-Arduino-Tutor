@@ -70,7 +70,7 @@ export class Bench3D {
     this.controls.enableDamping = true; this.controls.dampingFactor = 0.12;
     this.controls.minDistance = 40; this.controls.maxDistance = 600;
     this.controls.maxPolarAngle = Math.PI * 0.47;
-    this.controls.screenSpacePanning = true;
+    this.controls.screenSpacePanning = false;     // panning slides across the tabletop, never into it
     this.canvas.addEventListener("pointermove", (e) => this._move(e));
     window.addEventListener("pointerup", (e) => this._up(e));
     this.canvas.addEventListener("dblclick", (e) => this._dbl(e));
@@ -90,10 +90,25 @@ export class Bench3D {
     this.resize();
     this.revealLayer = document.createElement("div"); this.revealLayer.className = "reveal-layer"; container.appendChild(this.revealLayer);
     this.revealLabels = [];
-    const loop = () => { requestAnimationFrame(loop); if (this.canvas.offsetParent) { this.controls.update(); this._tickReveal(); this.renderer.render(this.scene, this.camera); } };
+    const loop = () => {
+      requestAnimationFrame(loop);
+      if (!this.canvas.offsetParent) return;
+      this.controls.update();
+      // don't let panning slide the view off the table
+      const t = this.controls.target, lim = 140, cx = Math.max(-lim, Math.min(lim, t.x)), cz = Math.max(-lim - 60, Math.min(lim, t.z));
+      if (cx !== t.x || cz !== t.z) { const dx = cx - t.x, dz = cz - t.z; t.x = cx; t.z = cz; this.camera.position.x += dx; this.camera.position.z += dz; }
+      if (Math.abs(t.y) > 1e-3) { this.camera.position.y -= t.y; t.y = 0; }   // the view stays on the table
+      this._tickReveal(); this.renderer.render(this.scene, this.camera);
+    };
     loop();
   }
 
+  // hand tool: left-drag slides the table around instead of turning it
+  setHand(on) {
+    this.handMode = !!on;
+    this.controls.mouseButtons.LEFT = on ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
+    this.canvas.classList.toggle("hand", !!on);
+  }
   on(name, fn) { this.handlers[name] = fn; }
   emit(name, ...a) { return this.handlers[name] && this.handlers[name](...a); }
 
@@ -391,7 +406,8 @@ export class Bench3D {
     if (o.userData.partId) {
       const id = o.userData.partId;
       let k = o; while (k && !k.userData.kind && k.userData.partId) k = k.parent;
-      const kind = o.userData.kind === "knob" || (k && k.userData.kind === "knob") ? "knob" : o.userData.kind === "buttonCap" ? "buttonCap" : "part";
+      const kind = o.userData.kind === "knob" || (k && k.userData.kind === "knob") ? "knob"
+        : o.userData.kind === "buttonCap" ? "buttonCap" : o.userData.kind === "slider" ? "slider" : "part";
       return { kind, id, point };
     }
     if (this.bb && this._within(o, this.bb)) {
@@ -421,6 +437,7 @@ export class Bench3D {
   }
 
   _down(e) {
+    if (this.handMode) return;                    // the hand only moves the view
     const p = this.pick(e.clientX, e.clientY);
     const takes = this.emit("down", p, e);
     if (takes) { this.controls.enabled = false; this._grab = true; }

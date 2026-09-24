@@ -50,7 +50,7 @@ MAX_ATTEMPTS = 3
 # Part types the engine AND the physics solver fully model. Their physical
 # facts (pins, internal connections, interchangeable legs, polarity, how
 # they're placed) are read from the library cards — see part_facts().
-MODELLED_TYPES = ["wokwi-led", "wokwi-resistor", "wokwi-potentiometer", "wokwi-pushbutton"]
+MODELLED_TYPES = ["wokwi-led", "wokwi-resistor", "wokwi-potentiometer", "wokwi-pushbutton", "wokwi-slide-switch", "wokwi-buzzer"]
 UNO_PINS = ({str(n) for n in range(14)} | {f"A{n}" for n in range(6)}
             | {"5V", "3.3V", "VIN", "GND.1", "GND.2", "GND.3", "AREF", "IOREF", "RESET"})
 BREADBOARD_TYPES = {"wokwi-breadboard", "wokwi-breadboard-half", "wokwi-breadboard-mini"}
@@ -332,6 +332,14 @@ def _check_structure(data, errors):
     ids = [s.get("id") for s in steps]
     if len(ids) != len(set(ids)):
         errors.append("Step ids must be unique.")
+    # every expected connection is exactly two pins — a net of three or more is written as pairs
+    nets = [(s.get("id"), n) for s in steps for n in (s.get("expected_nets") or [])]
+    nets += [("final_check", n) for n in ((data.get("final_check") or {}).get("expected_nets") or [])]
+    for where, net in nets:
+        if not (isinstance(net, list) and len(net) == 2 and all(isinstance(x, str) and ":" in x for x in net)):
+            errors.append(f"In '{where}', {json.dumps(net)} isn't a pair of two pins. Every expected_nets entry is exactly "
+                          f"[\"part:pin\", \"part:pin\"]; to join three or more pins, write it as several pairs "
+                          f"(e.g. [[\"a:1\", \"b:1\"], [\"b:1\", \"uno:2\"]]).")
     for step in steps:
         if step.get("phase") == "build":
             if not step.get("expected_nets") and not step.get("expected_landing"):
@@ -584,7 +592,17 @@ def _check_flows(data, diagram, code, library, errors, max_reported=3):
 
 def validate(data, diagram, code, library=None):
     """Every check a playable lesson must pass. Returns a list of plain
-    error strings, written to be sent straight back to the model."""
+    error strings, written to be sent straight back to the model. A check
+    that crashes on unexpected input becomes one of those errors too — the
+    model gets to fix its lesson instead of the whole generation failing."""
+    try:
+        return _validate(data, diagram, code, library)
+    except Exception as exc:          # malformed output a check didn't anticipate
+        return [f"The lesson made a check fail with {type(exc).__name__}: {exc}. Re-check its structure against the "
+                f"schema: steps, expected_nets as pairs of \"part:pin\" strings, diagram parts and connections."]
+
+
+def _validate(data, diagram, code, library=None):
     library = library or load_library()
     errors = []
     _check_structure(data, errors)
@@ -743,13 +761,18 @@ def _slug(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:40] or "lesson"
 
 
-def generate_lesson(request, inventory=None, library=None, generate_fn=None, max_attempts=MAX_ATTEMPTS, save=True):
+def generate_lesson(request, inventory=None, library=None, generate_fn=None, max_attempts=MAX_ATTEMPTS, save=True,
+                    extra_check=None, extra_data=None):
     """Generate → validate → repair, up to `max_attempts` model calls.
 
     `generate_fn(system, messages) -> (dict, raw_text)` defaults to a real
     Claude call; tests pass a fake. Returns {"ok", "lesson_id", "attempts":
     [{"errors": [...]}], "errors"} and, when ok and `save`, writes
-    lessons/<lesson_id>/{lesson.json, diagram.json, code.ino}."""
+    lessons/<lesson_id>/{lesson.json, diagram.json, code.ino}.
+
+    `extra_check(data, diagram) -> [errors]` adds a caller's own rule (e.g.
+    guide_import: exactly the guide's parts); `extra_data` is merged into the
+    saved lesson.json (e.g. where the lesson came from)."""
     library = library or load_library()
     generate_fn = generate_fn or (lambda system, messages: _call_model(system, messages, OUTPUT_SCHEMA))
     system = _system_prompt(library)
@@ -764,6 +787,8 @@ def generate_lesson(request, inventory=None, library=None, generate_fn=None, max
             errors = validate(data, diagram, code, library)
         except (json.JSONDecodeError, KeyError, TypeError, AttributeError) as exc:
             errors = [f"The output couldn't be parsed: {type(exc).__name__}: {exc}"]
+        if not errors and extra_check:
+            errors = extra_check(data, diagram)
         if not errors and inventory:
             extra = [p for p in data.get("parts_used", []) if p not in inventory]
             if extra:
@@ -772,7 +797,7 @@ def generate_lesson(request, inventory=None, library=None, generate_fn=None, max
         if not errors:
             lesson_id = "gen-" + _slug(data.get("id") or data.get("title", "lesson"))
             data = {**data, "id": lesson_id, "generated": True, "requires": [],
-                    "code": "code.ino", "wokwi_diagram": "diagram.json"}
+                    "code": "code.ino", "wokwi_diagram": "diagram.json", **(extra_data or {})}
             if save:
                 _save(lesson_id, data, diagram, code)
             return {"ok": True, "lesson_id": lesson_id, "attempts": attempts, "errors": []}

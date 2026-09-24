@@ -1,0 +1,29 @@
+{
+  "id": "resistor-330",
+  "type": "part",
+  "subtype": "resistor",
+  "wokwi_type": "wokwi-resistor",
+  "wokwi_value": "330",
+  "pins": {
+    "1": "either end",
+    "2": "either end"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "display_name": "330Ω Resistor",
+  "aliases": [
+    "330 resistor",
+    "330 ohm resistor",
+    "330ohm",
+    "330 ω",
+    "330 ohm resistor"
+  ],
+  "description": "A fixed 330Ω resistor.",
+  "how_to_use": "Put it in series to limit current (e.g. before an LED), or use it as a pull-up / pull-down or in a voltage divider. It works either way round.",
+  "image": "resistor-1k.png",
+  "leads": "wire-lead"
+}

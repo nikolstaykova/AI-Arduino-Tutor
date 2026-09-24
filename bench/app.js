@@ -5,7 +5,7 @@
 // parts where their real legs fall (0.1" pitch), draws wires between exact
 // holes / header sockets, and sends the whole board to the engine on every check.
 import { Bench3D, Inspector3D } from "./three/scene.js";
-import { PITCH, pinsFor, makePart, makeBoard, makeBreadboard, thumbnail, thumbnailById, UNO_COMPONENTS } from "./three/models.js";
+import { PITCH, pinsFor, makePart, makeBoard, makeBreadboard, thumbnail, thumbnailById, iconThumb, UNO_COMPONENTS } from "./three/models.js";
 import { buildModel, hasModel } from "./three/catalog3d.js";
 import * as THREE from "three";
 
@@ -330,6 +330,10 @@ function wireStage() {
       press = p.id; S.pressed[p.id] = true; B.parts[p.id].userData.setPressed(true); applyPhysics(); return true;
     }
     if (p.kind === "knob") { knob = { id: p.id, x: e.clientX, v: S.pot[p.id] ?? 512 }; return true; }
+    if (p.kind === "slider") {                       // slide switch: a click flips it, and it stays
+      S.pressed[p.id] = !S.pressed[p.id]; B.parts[p.id].userData.setPosition(S.pressed[p.id]); applyPhysics();
+      toast(`Switch slid toward pin ${S.pressed[p.id] ? 3 : 1}.`); return true;
+    }
     if (p.kind === "part") { partDown = { id: p.id, x: e.clientX, y: e.clientY }; return true; }
     if (p.kind === "wire") { selectWire(p.index); return true; }
     select(null);
@@ -370,7 +374,7 @@ function wireStage() {
   });
   B.on("hover", (p, e) => { if (!drag && !knob) hover(p, e); });
   B.on("dbl", (p) => {
-    if (p.kind === "part" || p.kind === "knob" || p.kind === "buttonCap" || p.kind === "leg") openInspector(partTarget(p.id));
+    if (["part", "knob", "buttonCap", "slider", "leg"].includes(p.kind)) openInspector(partTarget(p.id));
     else if (p.kind === "board" || p.kind === "boardPin") openInspector({ kind: "board", wokwiType: G.boardType, label: G.boardType.replace("wokwi-", "").replace(/-/g, " "), instance: G.boardId, focus: p.component, pin: p.pin });
     else if (p.kind === "hole" || p.kind === "breadboard") openInspector({ kind: "breadboard", wokwiType: G.bbType, label: "Breadboard", cardId: "breadboard" });
   });
@@ -442,9 +446,9 @@ async function hover(p, e) {
     const data = await cardFor(part.def.wokwi_type, part.def.attrs, part.def.card_id);
     const meaning = data && data.card.pins && data.card.pins[p.pin];
     html = `<b>${esc(part.def.label)} · ${esc(p.pin)}</b>${meaning ? " — " + esc(meaning) : ""}<br>${leads.length ? "connected to " + esc(leads.join(", ")) : "bare leg — drag from here to connect it"}`;
-  } else if (p.kind === "part" || p.kind === "knob" || p.kind === "buttonCap") {
+  } else if (p.kind === "part" || p.kind === "knob" || p.kind === "buttonCap" || p.kind === "slider") {
     const part = S.placed[p.id];
-    const extra = p.kind === "knob" ? "drag the knob sideways to turn it" : p.kind === "buttonCap" ? "hold to press" : "drag to move · double-click to inspect";
+    const extra = p.kind === "knob" ? "drag the knob sideways to turn it" : p.kind === "buttonCap" ? "hold to press" : p.kind === "slider" ? `click to slide it (now toward pin ${S.pressed[p.id] ? 3 : 1})` : "drag to move · double-click to inspect";
     html = `<b>${esc(part.def.label)}</b> — ${extra}${part.at ? "" : `<br>${Object.entries(part.legs).map(([k, v]) => `${esc(k)}→${esc(v || "air")}`).join(" · ")}`}`;
   } else if (p.kind === "board" && UNO_COMPONENTS[p.component] && G.boardType === "wokwi-arduino-uno") {
     const c = UNO_COMPONENTS[p.component];
@@ -765,6 +769,7 @@ function renderPhysics(result, scenario) {
   if (sc) {
     out.push(`<div class="panel-title" style="margin-top:6px;">${esc(sc.label)}</div>`);
     Object.entries(sc.leds).forEach(([id, l]) => out.push(`<div class="phys-item">${esc(id)}: <b>${esc(l.state)}</b>${l.current_ma ? ` · ${l.current_ma} mA` : ""}</div>`));
+    Object.entries(sc.buzzers || {}).forEach(([id, bz]) => out.push(`<div class="phys-item">${esc(id)}: <b>${bz.state === "sounding" ? "sounding" : bz.state === "reversed" ? "wired backwards (+ and − swapped)" : "silent"}</b></div>`));
     Object.entries(sc.pins).forEach(([pin, info]) => {
       if (info.reading !== undefined) {
         let reading = info.reading;
@@ -810,6 +815,11 @@ function setupBenchControls() {
   $("levelPills").onclick = guarded(async (e) => { const b = e.target.closest(".pill"); if (b) await startLesson(S.lessonId, b.dataset.level, S.build); });
   $("hintBtn").onclick = guarded(async () => { await engineEvent({ command: "hint" }); renderStep(); });
   $("revealBtn").onclick = guarded(revealStep);
+  // the solder / clip / push buttons show a render of the real item
+  $("connectWith").querySelectorAll("button[data-with]").forEach((b) => {
+    if (b.dataset.with === "planned") return;
+    iconThumb(b.dataset.with).then((url) => { if (url) b.querySelector(".ic").outerHTML = `<img class="ic-3d" src="${url}" alt="">`; }).catch(() => {});
+  });
   $("connectWith").onclick = (e) => {
     const b = e.target.closest("button[data-with]"); if (!b) return;
     S.connectWith = b.dataset.with;
@@ -818,6 +828,16 @@ function setupBenchControls() {
   $("circuitBtn").onclick = () => $("circuitSheet").classList.toggle("open");
   $("circuitClose").onclick = () => $("circuitSheet").classList.remove("open");
   $("helpBtn").onclick = () => $("stageHint").classList.toggle("show");
+  // the hand tool: a toggle, or hold Space for a quick move
+  const setHand = (on) => { if (!B) return; B.setHand(on); $("handBtn").setAttribute("aria-pressed", on); };
+  $("handBtn").onclick = () => setHand(!(B && B.handMode));
+  let spaceHand = false;
+  window.addEventListener("keydown", (e) => {
+    if (e.code !== "Space" || e.repeat || (e.target.matches && e.target.matches("input, textarea, select, button"))) return;
+    if ($("lessonScreen").hidden || (B && B.handMode)) return;
+    e.preventDefault(); spaceHand = true; setHand(true);
+  });
+  window.addEventListener("keyup", (e) => { if (e.code === "Space" && spaceHand) { spaceHand = false; setHand(false); } });
   $("prevBtn").onclick = guarded(async () => { await engineEvent({ command: "previous" }); renderStep(); });
   $("checkBtn").onclick = guarded(() => check(false));
   $("finishBtn").onclick = guarded(() => check(true));

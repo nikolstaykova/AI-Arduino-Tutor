@@ -1,7 +1,7 @@
 {
   "id": "gen-usb-flashlight",
-  "title": "USB Flashlight",
-  "description": "Build the classic USB flashlight: a bright white LED, a 220 Ω resistor to protect it and a pushbutton switch, all powered from USB. The Arduino only acts as the USB power supply (5V and GND), just like the USB plug in the Build Electronic Circuits project. Hold the button down and the light comes on.",
+  "title": "USB Flashlight: Five LEDs on USB Power",
+  "description": "Build the classic DIY USB flashlight from build-electronic-circuits.com: five LEDs, each with its own 100 Ω resistor, all side by side (in parallel) between the 5V and GND of a USB supply, with a slide switch to turn the light on and off. The Arduino's 5V and GND pins stand in for the USB breakout board, and a breadboard stands in for the perfboard. No program runs; the Arduino only supplies power.",
   "difficulty": "beginner",
   "board": "arduino-uno",
   "code": "code.ino",
@@ -10,9 +10,9 @@
   "parts_used": [
     "arduino-uno",
     "breadboard",
-    "pushbutton",
-    "resistor-220",
     "led",
+    "resistor-100",
+    "slide-switch",
     "jumper-wire",
     "usb-cable"
   ],
@@ -20,127 +20,367 @@
     {
       "id": "gather",
       "phase": "gather",
-      "clip": "Gather your parts: an Arduino Uno, a breadboard, a pushbutton, a 220 Ω resistor, a white LED, some jumper wires and a USB cable.",
+      "clip": "Gather your Arduino Uno and USB cable, a breadboard, five LEDs, five 100 Ω resistors, a slide switch and some jumper wires. The Arduino's 5V and GND pins take the place of the USB breakout board.",
       "items": [
         "arduino-uno",
+        "usb-cable",
         "breadboard",
-        "pushbutton",
-        "resistor-220",
         "led",
-        "jumper-wire",
-        "usb-cable"
+        "resistor-100",
+        "slide-switch",
+        "jumper-wire"
       ]
     },
     {
       "id": "step-1a",
       "phase": "build",
-      "clip": "Press the pushbutton into the breadboard so it sits across the middle gap: two legs above the gap and two legs below it, around column 20.",
+      "clip": "Push the slide switch into the top half of the breadboard so its three legs sit in three side-by-side columns (for example columns 2, 3 and 4).",
       "expected_landing": [
-        "btn1:1.l",
-        "btn1:2.l"
+        "sw1:1",
+        "sw1:2",
+        "sw1:3"
       ],
       "strict": false,
-      "goal": "Seat the pushbutton across the centre gap of the breadboard.",
+      "goal": "Seat the slide switch on the breadboard with each of its three legs in its own column.",
       "hints": [
-        "If it doesn't fit easily, turn it a quarter turn.",
-        "The button is the switch of your flashlight."
+        "Each leg needs its own column, so the switch goes along the board, not across it.",
+        "Keep it in the top half, above the middle gap."
       ]
     },
     {
       "id": "step-1b",
       "phase": "build",
-      "clip": "Run a red jumper wire from an empty hole in the column of one of the button's top legs to the 5V pin on the Arduino.",
+      "clip": "Run a red jumper wire from the Arduino's 5V pin to the column of the switch's middle leg.",
       "expected_nets": [
         [
-          "btn1:1.l",
-          "uno:5V"
+          "uno:5V",
+          "sw1:2"
         ]
       ],
       "strict": false,
-      "goal": "Connect one side of the button to 5V.",
+      "goal": "Feed the USB 5V supply (the Arduino's 5V pin) into the switch's middle leg.",
       "hints": [
-        "Use a hole above the middle gap, in the same column as a button leg.",
-        "5V is on the power header of the Arduino."
+        "The middle leg is the switch's common leg: it connects to one end leg or the other.",
+        "Use a free hole in the same column as the middle leg."
       ]
     },
     {
       "id": "step-2a",
       "phase": "build",
-      "clip": "Put one leg of the 220 Ω resistor in the column of the button's bottom leg on that same side (below the middle gap), and its other leg in an empty column a few columns away.",
-      "expected_nets": [
-        [
-          "btn1:2.l",
-          "r1:1"
-        ]
+      "clip": "Take the first 100 Ω resistor. Push one leg (either one) into the red + line along the top edge of the breadboard, and the other leg into an empty column in the top half, e.g. column 8.",
+      "expected_landing": [
+        "r1:1",
+        "r1:2"
       ],
       "strict": false,
-      "goal": "Connect the resistor to the other side of the button.",
+      "goal": "Place the first resistor between the + power line and an empty column.",
       "hints": [
-        "A resistor works either way round.",
-        "Stay below the middle gap for this leg."
+        "Resistors have no direction, so either leg can go in the + line.",
+        "The + line is the long strip marked with a red line and +."
       ]
     },
     {
       "id": "step-2b",
       "phase": "build",
-      "clip": "Put the white LED's long leg in the same column as the resistor's free leg, and its short leg in an empty column next to it.",
+      "clip": "Run a jumper wire from the column of one end leg of the switch (the leg next to the middle one) to the red + line. Now the switch decides whether 5V reaches the + line.",
       "expected_nets": [
         [
-          "led1:A",
-          "r1:2"
+          "sw1:1",
+          "r1:1"
         ]
       ],
       "strict": false,
-      "goal": "Connect the LED's long leg (+) to the free end of the resistor.",
+      "goal": "Connect one end leg of the switch to the + line that feeds the resistors.",
       "hints": [
-        "The long leg must meet the resistor, or the LED won't light.",
-        "The two LED legs need different columns."
+        "Leave the switch's third leg unconnected; only the middle leg and one end leg are used.",
+        "Use a free hole of the end leg's column."
       ]
     },
     {
       "id": "step-2c",
       "phase": "build",
-      "clip": "Run a black jumper wire from an empty hole in the LED's short-leg column to a GND pin on the Arduino.",
+      "clip": "Take the first LED. Put its long leg in the same column as the resistor's free leg, and its short leg into the blue − line along the top edge.",
       "expected_nets": [
         [
-          "led1:C",
-          "uno:GND.2"
+          "r1:2",
+          "led1:A"
         ]
       ],
       "strict": false,
-      "goal": "Connect the LED's short leg (−) to ground.",
+      "goal": "Connect the first LED's long leg (+) to the free end of its resistor, with the short leg on the − line.",
       "hints": [
-        "Any GND pin works – they are all connected.",
-        "There are GND pins right next to 5V."
+        "The long leg is the + side; the LED won't light if it's reversed.",
+        "The − line is the strip marked with a blue line and −."
+      ]
+    },
+    {
+      "id": "step-2d",
+      "phase": "build",
+      "clip": "Run a black jumper wire from the blue − line to a GND pin on the Arduino.",
+      "expected_nets": [
+        [
+          "led1:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "goal": "Connect the − line (the LEDs' short legs) to GND.",
+      "hints": [
+        "Any GND pin on the Arduino works; they are all the same.",
+        "This is the USB supply's GND."
+      ]
+    },
+    {
+      "id": "step-3a",
+      "phase": "build",
+      "clip": "Take the second 100 Ω resistor. Push one leg into the red + line and the other leg into a new empty column in the top half, e.g. column 12.",
+      "expected_nets": [
+        [
+          "r2:1",
+          "r1:1"
+        ]
+      ],
+      "strict": false,
+      "goal": "Add a second resistor from the + line to its own empty column.",
+      "hints": [
+        "Use a column no other part is in yet.",
+        "Either resistor leg can go in the + line."
+      ]
+    },
+    {
+      "id": "step-3b",
+      "phase": "build",
+      "clip": "Put the second LED's long leg in the same column as the second resistor's free leg, and its short leg in the blue − line.",
+      "expected_nets": [
+        [
+          "r2:2",
+          "led2:A"
+        ],
+        [
+          "led2:C",
+          "led1:C"
+        ]
+      ],
+      "strict": false,
+      "goal": "Connect the second LED between its resistor and the − line, long leg toward the resistor.",
+      "hints": [
+        "Long leg to the resistor, short leg to the − line.",
+        "Each LED + resistor pair sits side by side (in parallel) with the others."
+      ]
+    },
+    {
+      "id": "step-4a",
+      "phase": "build",
+      "clip": "Take the third 100 Ω resistor. Push one leg into the red + line and the other leg into a new empty column, e.g. column 16.",
+      "expected_nets": [
+        [
+          "r3:1",
+          "r2:1"
+        ]
+      ],
+      "strict": false,
+      "goal": "Add a third resistor from the + line to its own empty column.",
+      "hints": [
+        "Use a column no other part is in yet.",
+        "Either resistor leg can go in the + line."
+      ]
+    },
+    {
+      "id": "step-4b",
+      "phase": "build",
+      "clip": "Put the third LED's long leg in the same column as the third resistor's free leg, and its short leg in the blue − line.",
+      "expected_nets": [
+        [
+          "r3:2",
+          "led3:A"
+        ],
+        [
+          "led3:C",
+          "led2:C"
+        ]
+      ],
+      "strict": false,
+      "goal": "Connect the third LED between its resistor and the − line, long leg toward the resistor.",
+      "hints": [
+        "Long leg to the resistor, short leg to the − line."
+      ]
+    },
+    {
+      "id": "step-5a",
+      "phase": "build",
+      "clip": "Take the fourth 100 Ω resistor. Push one leg into the red + line and the other leg into a new empty column, e.g. column 20.",
+      "expected_nets": [
+        [
+          "r4:1",
+          "r3:1"
+        ]
+      ],
+      "strict": false,
+      "goal": "Add a fourth resistor from the + line to its own empty column.",
+      "hints": [
+        "Use a column no other part is in yet.",
+        "Either resistor leg can go in the + line."
+      ]
+    },
+    {
+      "id": "step-5b",
+      "phase": "build",
+      "clip": "Put the fourth LED's long leg in the same column as the fourth resistor's free leg, and its short leg in the blue − line.",
+      "expected_nets": [
+        [
+          "r4:2",
+          "led4:A"
+        ],
+        [
+          "led4:C",
+          "led3:C"
+        ]
+      ],
+      "strict": false,
+      "goal": "Connect the fourth LED between its resistor and the − line, long leg toward the resistor.",
+      "hints": [
+        "Long leg to the resistor, short leg to the − line."
+      ]
+    },
+    {
+      "id": "step-6a",
+      "phase": "build",
+      "clip": "Take the fifth 100 Ω resistor. Push one leg into the red + line and the other leg into a new empty column, e.g. column 24.",
+      "expected_nets": [
+        [
+          "r5:1",
+          "r4:1"
+        ]
+      ],
+      "strict": false,
+      "goal": "Add the fifth resistor from the + line to its own empty column.",
+      "hints": [
+        "Use a column no other part is in yet.",
+        "Either resistor leg can go in the + line."
+      ]
+    },
+    {
+      "id": "step-6b",
+      "phase": "build",
+      "clip": "Put the fifth LED's long leg in the same column as the fifth resistor's free leg, and its short leg in the blue − line. Before plugging in USB, check that the + line and − line don't touch anywhere (the guide uses a multimeter continuity check).",
+      "expected_nets": [
+        [
+          "r5:2",
+          "led5:A"
+        ],
+        [
+          "led5:C",
+          "led4:C"
+        ]
+      ],
+      "strict": false,
+      "goal": "Connect the last LED between its resistor and the − line, then make sure 5V is not shorted to GND.",
+      "hints": [
+        "Long leg to the resistor, short leg to the − line.",
+        "No wire or leg should go straight from the + line to the − line."
       ]
     },
     {
       "id": "upload-code",
       "phase": "upload",
-      "clip": "Plug in the USB cable and upload the sketch. The Arduino now powers your flashlight: hold the button down and the LED lights up.",
+      "clip": "Upload the empty sketch; the Arduino is only a USB power supply here. Slide the switch one way and all five LEDs light up, slide it back and they go off.",
       "code": "code.ino"
     }
   ],
   "final_check": {
     "expected_nets": [
       [
-        "btn1:1.l",
-        "uno:5V"
+        "uno:5V",
+        "sw1:2"
       ],
       [
-        "btn1:2.l",
+        "sw1:1",
         "r1:1"
       ],
       [
-        "led1:A",
-        "r1:2"
+        "r1:2",
+        "led1:A"
       ],
       [
         "led1:C",
-        "uno:GND.2"
+        "uno:GND.1"
+      ],
+      [
+        "r2:1",
+        "r1:1"
+      ],
+      [
+        "r2:2",
+        "led2:A"
+      ],
+      [
+        "led2:C",
+        "led1:C"
+      ],
+      [
+        "r3:1",
+        "r2:1"
+      ],
+      [
+        "r3:2",
+        "led3:A"
+      ],
+      [
+        "led3:C",
+        "led2:C"
+      ],
+      [
+        "r4:1",
+        "r3:1"
+      ],
+      [
+        "r4:2",
+        "led4:A"
+      ],
+      [
+        "led4:C",
+        "led3:C"
+      ],
+      [
+        "r5:1",
+        "r4:1"
+      ],
+      [
+        "r5:2",
+        "led5:A"
+      ],
+      [
+        "led5:C",
+        "led4:C"
       ]
     ]
   },
   "generated": true,
-  "requires": []
+  "requires": [],
+  "source": {
+    "url": "https://www.build-electronic-circuits.com/usb-flashlight/",
+    "title": "How To Build a USB Flashlight: A Simple DIY Tutorial"
+  },
+  "substitutions": [
+    {
+      "guide": "1× USB breakout board",
+      "used": "Arduino Uno R3",
+      "why": "The Arduino's 5V and GND pins stand in for the USB breakout — they are the USB port's 5V supply."
+    },
+    {
+      "guide": "1× Prototyping board for soldering (e.g. perfboard)",
+      "used": "Solderless Breadboard",
+      "why": "A breadboard stands in for the perfboard. To build it the guide's way, pick No breadboard → Solder on the level card."
+    },
+    {
+      "guide": "1× Switch (to turn the light ON and OFF)",
+      "used": "Slide Switch",
+      "why": "A slide switch, as the guide's on/off switch."
+    },
+    {
+      "guide": "1× USB power source (computer, wall adapter or power bank)",
+      "used": "Arduino Uno R3",
+      "why": "The Arduino's 5V and GND pins stand in for the USB breakout — they are the USB port's 5V supply."
+    }
+  ]
 }

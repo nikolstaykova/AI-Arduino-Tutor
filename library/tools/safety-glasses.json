@@ -1,0 +1,14 @@
+{
+  "id": "safety-glasses",
+  "type": "tool",
+  "tier": 1,
+  "display_name": "Safety Glasses",
+  "aliases": [
+    "safety goggles",
+    "eye protection",
+    "goggles"
+  ],
+  "description": "Clear glasses that protect your eyes from flying clipped leads and splashes of hot solder.",
+  "how_to_use": "Wear them whenever you solder or clip component legs — a trimmed lead can fly surprisingly far.",
+  "image": "safety-glasses.png"
+}

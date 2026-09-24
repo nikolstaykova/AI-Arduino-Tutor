@@ -4,6 +4,7 @@
 import { bench } from "./app.js";
 import { thumbnailById } from "./three/models.js";
 import { createWorldMap } from "./overworld.js";
+import { renderLibrary } from "./library.js";
 
 const { api, esc, toast, guarded } = bench;
 const $ = (id) => document.getElementById(id);
@@ -86,9 +87,10 @@ let current = "home";
 function go(screen) {
   const from = current; current = screen;
   $("tip").classList.remove("show");
-  ["home", "learn", "create", "lesson"].forEach((s) => ($(`${s}Screen`).hidden = s !== screen));
+  ["home", "learn", "create", "lesson", "library"].forEach((s) => ($(`${s}Screen`).hidden = s !== screen));
   window.scrollTo({ top: 0 });
   if (screen === "learn") renderLearn();
+  if (screen === "library") renderLibrary((id) => openLessonPop(id));
   if (screen === "home" && from !== "home") homeChat();   // a fresh hello each time you come back
 }
 document.querySelectorAll("[data-go]").forEach((b) => (b.onclick = () => go(b.dataset.go)));
@@ -123,7 +125,6 @@ const ICON = {
   pen: '<path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/>',
   box: '<path d="M3 7l9-4 9 4v10l-9 4-9-4V7zM3 7l9 4 9-4M12 11v10"/>',
   list: '<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',
-  nobb: '<path d="M4 8h16v8H4zM7 11h.01M10 11h.01M13 11h.01M16 11h.01M3 3l18 18"/>',
   skip: '<path d="M5 12h14M13 6l6 6-6 6"/>',
 };
 const svg = (name) => `<svg class="ic" viewBox="0 0 24 24">${ICON[name]}</svg>`;
@@ -147,6 +148,7 @@ function homeMain() {
   const items = [
     { icon: "map", label: "Learn", sub: "Drive the world map of lessons", go: () => partsChat() },
     { icon: "pen", label: "Create my own lesson", sub: "Describe an idea, I'll design it", go: () => { go("create"); createIntro(); } },
+    { icon: "box", label: "Parts & Tools", sub: "What everything is, in 3D, with videos", go: () => go("library") },
   ];
   if (next) items.unshift({ icon: "play", label: `Continue: ${next.title}`, sub: "Pick up where you left off", primary: true, go: () => openLessonPop(next.id) });
   homeCards(items);
@@ -198,7 +200,6 @@ function partsChat() {
   homeCards([
     { icon: "box", label: "A starter kit", sub: "Uno, breadboard, wires, LEDs, resistors, a button and a knob", primary: true, go: () => { setParts(STARTER_KIT); toMap(); } },
     { icon: "list", label: "Let me pick my parts", sub: "Tap them on a list", go: () => toMap(true) },
-    { icon: "nobb", label: "No breadboard", sub: "Just an Arduino and a few parts", go: () => { setParts(["arduino-uno", "usb-cable"]); toMap(true, "No breadboard — no problem. Tap what else you have (clip leads? a soldering iron?) and I'll find builds that skip the breadboard."); } },
     { icon: "skip", label: "Skip — show me the map", sub: "I'll pick parts later", go: () => toMap() },
   ]);
 }
@@ -307,14 +308,16 @@ async function openLessonPop(id) {
     ${lv ? `<div class="pop-level">WORLD ${lv.world.number} · LEVEL ${esc(lv.level)} · ${esc(lv.world.name)}</div>` : ""}
     <div class="pop-icon">${icon(l.id, "pop-ico")}</div><h2>${esc(l.title)} ${l.completed ? `<span style="color:#ffc53d">${stars}</span>` : ""}</h2>
     <p class="muted">${esc(l.description)}</p>
+    ${l.source ? `<div class="pop-source">From the guide <a href="${esc(l.source.url)}" target="_blank" rel="noopener">${esc(l.source.title)} ↗</a>${
+      (l.substitutions || []).length ? `<br><span class="muted">Changed from the guide: ${l.substitutions.map((x) => `${esc(x.guide)} → ${esc(x.used)}`).join("; ")}</span>` : " — followed exactly."}</div>` : ""}
     ${before.length ? `<div class="pop-tip">Tip: this level builds on <b>${esc(before.join(", "))}</b>. You can still jump in now — it counts as completed either way.</div>` : ""}
     <div class="seg-label" style="margin-top:12px;">Build it</div>
     <div id="popWays"><span class="muted">Working out every way…</span></div>
     <div class="plan-box" id="popPlan"></div>
     <div class="pill-row" id="popLevel" style="display:inline-flex;margin-bottom:14px;">
       <button class="pill" data-level="beginner">Beginner</button><button class="pill" data-level="advanced">Advanced</button></div>
-    <div class="btn-row"><button class="btn btn-primary" id="popStart">${l.completed ? "Play again" : before.length ? "Play anyway" : "Start level"} →</button><button class="btn ghost" data-close>Not now</button></div>
-    <p class="muted" style="font-size:11.5px;margin:10px 0 0;">Three stars: finish it · use no hints · get every step right first time</p>`;
+    <p class="muted" style="font-size:11.5px;margin:0;">Three stars: finish it · use no hints · get every step right first time</p>
+    <div class="btn-row"><button class="btn btn-primary" id="popStart">${l.completed ? "Play again" : before.length ? "Play anyway" : "Start level"} →</button><button class="btn ghost" data-close>Not now</button></div>`;
   $("lessonPop").hidden = false;
   const pills = () => document.querySelectorAll("#popLevel .pill").forEach((b) => b.setAttribute("aria-pressed", b.dataset.level === level));
   document.querySelectorAll("#popLevel .pill").forEach((b) => (b.onclick = () => { level = b.dataset.level; F.level = level; pills(); }));
@@ -378,7 +381,7 @@ async function createIntro() {
   if (createStarted) return;
   createStarted = true;
   const chat = $("createChat");
-  await say(chat, "Tell me what you want to build ✨", 400);
+  await say(chat, "Tell me what you want to build ✨ — or paste a link to a tutorial and I'll follow it exactly.", 400);
   await say(chat, "I'll design the circuit, the code and the steps — then check every wire, the physics and every way a learner could build it before you get it.");
   const ai = await api("/api/ai_status").catch(() => ({ backend: null }));
   F.aiBackend = ai.backend;
@@ -410,8 +413,39 @@ function aiUnavailable(e) {
     ? `I can't reach Claude right now — ${esc(e.message.replace(/^AI unavailable:\s*/, ""))} Everything else works without it!`
     : `Something went wrong: ${esc(e.message)}`;
 }
-async function build(request, alreadySaid) {
+// A link to a tutorial: read it, show exactly what was found and what (if
+// anything) has to change, and build only once the learner says so.
+async function guideFlow(url, text) {
   const chat = $("createChat");
+  me(chat, text); $("createInput").value = "";
+  const b = await say(chat, `<b>Reading the guide…</b><div class="gen-steps"><div class="gen-step now"><span class="ic"><span class="spin">◌</span></span>Opening the page</div><div class="gen-step"><span class="ic">○</span>Finding every part, value and connection</div></div>`, 200);
+  const els = [...b.querySelectorAll(".gen-step")];
+  const tick = setTimeout(() => { els[0].className = "gen-step done"; els[0].querySelector(".ic").textContent = "✓"; els[1].className = "gen-step now"; els[1].querySelector(".ic").innerHTML = '<span class="spin">◌</span>'; }, 2500);
+  let plan;
+  try { plan = await api("/api/guide", { url }); }
+  catch (e) { clearTimeout(tick); await say(chat, aiUnavailable(e)); return; }
+  clearTimeout(tick); els.forEach((x) => { x.className = "gen-step done"; x.querySelector(".ic").textContent = "✓"; });
+  const mark = { exact: "✓", substitute: "↔", skipped: "–", unsupported: "✗" };
+  // parts, then (tidily) the tools; row classes are gp-* so they never clash with other styles
+  const partRows = plan.parts.filter((r) => r.status !== "tool").map((r) => `<li class="gp gp-${r.status}"><span class="gp-mark">${mark[r.status]}</span><span class="gp-text"><b>${esc(r.guide)}</b>${
+    r.status === "substitute" ? ` → <b>${esc(r.card_name || r.card)}</b>` : ""}${r.note ? `<small>${esc(r.note)}</small>` : ""}</span></li>`).join("");
+  const tools = plan.parts.filter((r) => r.status === "tool").map((r) => esc(r.guide.replace(/^1× /, "")));
+  const rows = partRows + (tools.length ? `<li class="gp gp-tools"><span class="gp-mark">·</span><span class="gp-text"><b>Tools:</b> ${tools.join(", ")}<small>Listed for the real build — not simulated.</small></span></li>` : "");
+  const card = await say(chat, `<div class="result-card guide-plan"><b>${esc(plan.title)}</b><br><span class="muted">${esc(plan.behaviour)}</span>
+    <ul class="gp-list">${rows}</ul>
+    ${plan.ok ? `<span class="muted">✓ = exactly as in the guide · ↔ = we don't have it, so this stands in</span>
+      <div class="btn-row" style="margin-top:10px;"><button class="btn btn-primary" data-go-build>Build this lesson →</button><button class="btn ghost" data-no>Not now</button></div>`
+      : `<span class="muted">This guide needs parts CircuitQuest can't simulate yet, so I can't build it faithfully.</span>`}</div>`, 300);
+  const go = card.querySelector("[data-go-build]");
+  if (!go) return;
+  card.querySelector("[data-no]").onclick = () => card.querySelector(".btn-row").remove();
+  go.onclick = guarded(async () => { card.querySelector(".btn-row").remove(); await build(`the guide "${plan.title}"`, true, { ...plan, url }); });
+}
+
+async function build(request, alreadySaid, guide) {
+  const chat = $("createChat");
+  const link = !guide && (request.match(/https?:\/\/\S+/) || [])[0];
+  if (link) return guideFlow(link, request);
   if (!alreadySaid) me(chat, request);
   $("createInput").value = "";
   const steps = ["Writing the circuit, code and steps", "Checking every wire and pin", "Solving the physics", "Trying every way a learner could build it"];
@@ -424,7 +458,7 @@ async function build(request, alreadySaid) {
     i = Math.min(i + 1, els.length - 1);
   }, 1800);
   try {
-    const r = await api("/api/generate", { request, parts: $("onlyMine").checked ? [...F.selected] : [] });
+    const r = await api("/api/generate", { request, guide, parts: $("onlyMine").checked ? [...F.selected] : [] });
     clearInterval(tick);
     els.forEach((e) => { e.className = r.ok ? "gen-step done" : "gen-step"; e.querySelector(".ic").textContent = r.ok ? "✓" : "○"; });
     if (r.ok) {

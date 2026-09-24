@@ -7,7 +7,7 @@
 // so a leg dropped into a hole is exactly the connection the engine checks.
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import { buildModel, hasModel } from "./catalog3d.js";
+import { buildModel, hasModel, iconModel } from "./catalog3d.js";
 
 export const PITCH = 2.54;
 const BB_TOP = 8.5;                         // breadboard surface height
@@ -404,8 +404,10 @@ export const PART_PINS = {
   "wokwi-pushbutton": [["1.l", 0, 0], ["1.r", 0, 3], ["2.l", 2, 0], ["2.r", 2, 3]],
   "wokwi-pushbutton-6mm": [["1.l", 0, 0], ["1.r", 0, 3], ["2.l", 2, 0], ["2.r", 2, 3]],
   "wokwi-potentiometer": [["GND", 0, 0], ["SIG", 1, 0], ["VCC", 2, 0]],
+  "wokwi-slide-switch": [["1", 0, 0], ["2", 1, 0], ["3", 2, 0]],
+  "wokwi-buzzer": [["1", 0, 0], ["2", 3, 0]],
 };
-export const LIFT = { "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
+export const LIFT = { "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
 
 function resistorBands(value) {
   const ohms = Math.round(Number(String(value || "1000").replace(/k/i, "e3").replace(/M/, "e6")) || 1000);
@@ -538,8 +540,35 @@ function makeGeneric(wokwiType) {
   return g;
 }
 
+// A mini SPDT slide switch: black body over its three pins, a handle you
+// click to slide toward pin 1 or pin 3 (it stays where you put it).
+function makeSlideSwitch() {
+  const g = new THREE.Group();
+  const y0 = BB_TOP + LIFT["wokwi-slide-switch"];
+  const body = mesh(new RoundedBoxGeometry(8.6, 3.6, 3.6, 2, 0.3), M.blackPlastic); body.position.set(PITCH, y0 + 1.8, 0); g.add(body);
+  const plate = mesh(new THREE.BoxGeometry(8.7, 0.25, 3.7), M.metal); plate.position.set(PITCH, y0 + 3.7, 0); g.add(plate);
+  const slot = mesh(new THREE.BoxGeometry(4.6, 0.1, 1.4), M.chip, false); slot.position.set(PITCH, y0 + 3.86, 0); g.add(slot);
+  const handle = mesh(new RoundedBoxGeometry(1.8, 3, 1.3, 2, 0.3), M.blackPlastic); handle.userData.kind = "slider"; g.add(handle);
+  for (let i = 0; i < 3; i++) g.add(lead([[i * PITCH, BB_TOP - 1.2, 0], [i * PITCH, y0 + 0.3, 0]], 0.3));
+  g.userData.setPosition = (atPin3) => { handle.position.set(PITCH + (atPin3 ? 1.35 : -1.35), y0 + 5.2, 0); };
+  g.userData.setPosition(false);
+  return g;
+}
+
+// A 12 mm piezo buzzer over its two legs (7.6 mm apart), + marked on pin 2's side.
+function makeBuzzer() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["wokwi-buzzer"], cx = 1.5 * PITCH;
+  const body = mesh(new THREE.CylinderGeometry(6, 6, 9.5, 40), M.blackPlastic); body.position.set(cx, y0 + 4.75, 0); g.add(body);
+  const hole = mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.2, 20), M.chip, false); hole.position.set(cx, y0 + 9.55, 0); g.add(hole);
+  const plus = mesh(new THREE.BoxGeometry(1.6, 0.1, 0.4), M.whitePlastic, false); plus.position.set(cx + 3.6, y0 + 9.56, 0); g.add(plus);
+  const plus2 = mesh(new THREE.BoxGeometry(0.4, 0.1, 1.6), M.whitePlastic, false); plus2.position.copy(plus.position); g.add(plus2);
+  for (const x of [0, 3 * PITCH]) g.add(lead([[x, BB_TOP - 1.2, 0], [x, y0 + 0.3, 0]], 0.3));
+  g.userData.setSounding = (on) => { body.material = on ? M.chip : M.blackPlastic; };
+  return g;
+}
+
 export function makePart(wokwiType, attrs = {}) {
-  const build = { "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
+  const build = { "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
                   "wokwi-pushbutton-6mm": makePushbutton, "wokwi-potentiometer": makePotentiometer }[wokwiType]
                 || (() => makeGeneric(wokwiType));
   const g = build(attrs);
@@ -657,9 +686,9 @@ let thumbRenderer = null;
 const thumbCache = new Map();
 // the bench's own detailed models (they know their legs); everything else
 // comes from the catalogue in catalog3d.js
-const BENCH_MODELLED = new Set(["led", "resistor-220", "resistor-1k", "resistor-10k", "pushbutton", "potentiometer-10k", "breadboard", "arduino-uno"]);
+const BENCH_MODELLED = new Set(["led", "resistor-220", "resistor-1k", "resistor-10k", "pushbutton", "potentiometer-10k", "slide-switch", "buzzer", "breadboard", "arduino-uno"]);
 
-function renderThumb(obj, size) {
+function renderThumb(obj, size, zoom = 1) {
   if (!thumbRenderer) {
     thumbRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
     thumbRenderer.setPixelRatio(2); thumbRenderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -673,7 +702,7 @@ function renderThumb(obj, size) {
   const box = new THREE.Box3().setFromObject(obj), c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
   const r = Math.max(s.x, s.y, s.z);
   const cam = new THREE.PerspectiveCamera(30, 1, r / 100, r * 20);
-  cam.position.copy(c).add(new THREE.Vector3(r * 1.1, r * 1.05, r * 1.35)); cam.lookAt(c);
+  cam.position.copy(c).add(new THREE.Vector3(r * 1.1, r * 1.05, r * 1.35).multiplyScalar(1 / zoom)); cam.lookAt(c);
   thumbRenderer.render(scene, cam);
   return thumbRenderer.domElement.toDataURL("image/png");
 }
@@ -697,4 +726,20 @@ export function thumbnailById(id, wokwiType, attrs = {}, size = 160) {
   const key = "id:" + id + size;
   if (!thumbCache.has(key)) thumbCache.set(key, Promise.resolve().then(() => renderThumb(buildModel(id), size)));
   return thumbCache.get(key);
+}
+
+// a close-up render of a tool-switch icon (see iconModel in catalog3d.js)
+export function iconThumb(name, size = 64) {
+  const key = "icon:" + name + size;
+  if (!thumbCache.has(key)) thumbCache.set(key, Promise.resolve().then(() => { const m = iconModel(name); return m ? renderThumb(m, size, 1.3) : null; }));
+  return thumbCache.get(key);
+}
+
+// the 3D object for a library part or tool by its id (for the Parts & Tools viewer)
+export async function modelById(id, wokwiType, attrs = {}) {
+  if (!BENCH_MODELLED.has(id) && hasModel(id)) return buildModel(id);
+  if (/arduino-uno/.test(wokwiType || "")) return makeBoard(wokwiType);
+  if (wokwiType && wokwiType.startsWith("wokwi-breadboard")) return makeBreadboard("half");
+  if (wokwiType && customElements.get(wokwiType)) return makePart(wokwiType, attrs);
+  return null;
 }

@@ -290,6 +290,12 @@ body{overflow-x:hidden;}
 .drawer.open{transform:none;}
 .drawer-veil{position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.35);animation:fadeIn .2s;}
 @keyframes fadeIn{from{opacity:0}}
+.gp-list{list-style:none;padding:0;margin:10px 0 8px;display:flex;flex-direction:column;gap:7px;}
+.gp{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.4;width:auto;height:auto;}
+.gp-text{flex:1;min-width:0;} .gp-text small{display:block;color:var(--text-dim);font-size:11.5px;margin-top:1px;}
+.gp-mark{width:16px;flex:none;text-align:center;font-weight:700;line-height:1.4;}
+.gp-exact .gp-mark{color:var(--good);} .gp-substitute .gp-mark{color:var(--info);} .gp-unsupported .gp-mark{color:var(--bad);} .gp-skipped,.gp-tools{color:var(--text-dim);}
+.pop-source{font-size:12.5px;margin:8px 0;padding:8px 10px;border-radius:10px;background:var(--surface-2);} .pop-source a{color:var(--accent);font-weight:600;}
 .pop-level{font:800 11.5px var(--font-mono);letter-spacing:.1em;color:var(--accent);text-transform:uppercase;}
 .pop-tip{font-size:13px;background:var(--warn-bg);border-radius:10px;padding:8px 10px;margin:10px 0;}
 /* lesson icons: renders of the lesson's key part */
@@ -375,6 +381,8 @@ body{overflow-x:hidden;}
   background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(8px);border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,.1);}
 .tool{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:none;background:none;color:var(--text-dim);border-radius:10px;}
 .tool:hover{background:var(--surface-2);color:var(--text);} .tool .ic{width:18px;height:18px;}
+.tool[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);}
+.bench-canvas.hand{cursor:grab;} .bench-canvas.hand:active{cursor:grabbing;}
 .tool-sep{width:1px;height:20px;background:var(--border-soft);margin:0 3px;}
 .help-pop{display:none;position:absolute;right:0;top:46px;width:260px;padding:10px 12px;border-radius:12px;background:var(--surface);box-shadow:0 8px 24px rgba(0,0,0,.15);font-size:12px;line-height:1.6;color:var(--text-dim);}
 .tool-cluster:has(#helpBtn:hover) .help-pop,.help-pop.show{display:block;}
@@ -383,6 +391,7 @@ body{overflow-x:hidden;}
 .connect-with[hidden]{display:none;}
 .connect-with button{position:relative;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border:none;background:none;color:var(--text-dim);border-radius:10px;transition:background .15s,color .15s;}
 .connect-with button .ic{width:18px;height:18px;}
+.connect-with button .ic-3d{width:30px;height:30px;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18));}
 .connect-with button:hover{background:var(--surface-2);color:var(--text);}
 .connect-with button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);}
 .connect-with button::after{content:attr(data-tip);position:absolute;right:0;top:42px;width:230px;padding:9px 11px;border-radius:10px;background:var(--text);color:var(--bg);
@@ -413,6 +422,8 @@ body{overflow-x:hidden;}
 /* ---------- pop-ups ---------- */
 .popcard{background:var(--surface);border:1px solid var(--border-soft);border-radius:22px;padding:24px;max-width:460px;width:100%;animation:popIn .4s cubic-bezier(.2,1.4,.4,1);text-align:left;}
 @keyframes popIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:none}}
+.popcard{max-height:calc(100vh - 36px);max-height:calc(100dvh - 36px);overflow-y:auto;overscroll-behavior:contain;}
+#lessonPopCard > .btn-row{position:sticky;bottom:-24px;margin:12px -24px -24px;padding:14px 24px;background:var(--surface);border-top:1px solid var(--border-soft);}
 .popcard h2{margin:6px 0;font-size:21px;} .pop-emoji{font-size:44px;}
 .need{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px;}
 .need span{font-size:12px;padding:4px 9px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);}
@@ -436,6 +447,41 @@ body{overflow-x:hidden;}
 .spin{display:inline-block;animation:spin 1s linear infinite;} @keyframes spin{to{transform:rotate(360deg)}}
 .result-card{border:1.5px solid var(--good);background:var(--good-bg);border-radius:14px;padding:12px 14px;margin-top:8px;}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important;}}
+
+/* Parts & Tools */
+.lib-wrap{max-width:1180px;margin:0 auto;padding:6px 18px 40px;}
+.lib-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.lib-tabs{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--border-soft);padding:4px;border-radius:12px;}
+.lib-tabs button{border:none;background:none;color:var(--text-dim);font-weight:700;font-size:14px;padding:8px 16px;border-radius:9px;}
+.lib-tabs button small{font-weight:600;font-size:11px;color:var(--text-faint);margin-left:4px;}
+.lib-tabs button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.lib-search{flex:1;min-width:200px;max-width:360px;}
+.lib-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.lib-chip{border:1px solid var(--border-soft);background:var(--surface);color:var(--text-dim);font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;}
+.lib-chip:hover{color:var(--text);border-color:var(--accent-dim);}
+.lib-chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;}
+.lib-tile{position:relative;border:1.5px solid var(--border-soft);background:var(--surface);border-radius:14px;padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:transform .15s,border-color .15s;}
+.lib-tile:hover{transform:translateY(-2px);border-color:var(--accent-dim);}
+.lib-tile .art{height:70px;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.lib-tile .art img{height:70px;width:auto;filter:drop-shadow(0 4px 5px rgba(0,0,0,.3));}
+.lib-tile .nm{font-size:12px;font-weight:600;text-align:center;line-height:1.25;color:var(--text);}
+.lib-badge{position:absolute;top:7px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:9px;display:flex;align-items:center;justify-content:center;}
+.lib-card{max-width:640px;padding:0;position:relative;}
+.lib-close{position:absolute;top:10px;right:10px;z-index:2;width:32px;height:32px;border-radius:50%;border:none;background:var(--surface);color:var(--text-dim);font-size:14px;box-shadow:0 1px 4px rgba(0,0,0,.15);}
+.lib-view{position:relative;height:340px;background:radial-gradient(ellipse at 50% 40%,var(--surface) 0%,var(--surface-2) 75%);border-radius:22px 22px 0 0;overflow:hidden;cursor:grab;}
+.lib-view canvas{display:block;}
+.lib-drag{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text-faint);pointer-events:none;}
+.lib-body{padding:16px 24px 24px;}
+.lib-body h2{margin:4px 0 6px;}
+.lib-body p{margin:4px 0 8px;line-height:1.5;}
+.lib-how{color:var(--text-dim);}
+.lib-pins{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:6px 0 10px;font-size:13px;}
+.lib-pins dt{font-family:var(--font-mono);font-weight:600;background:var(--surface-2);padding:1px 7px;border-radius:6px;justify-self:start;}
+.lib-pins dd{margin:0;color:var(--text-dim);}
+.lib-video{width:100%;border-radius:12px;margin:6px 0 10px;background:#000;max-height:300px;}
+.lib-yt{display:inline-flex;margin:6px 0 10px;text-decoration:none;}
+.lib-used{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
 </style>
 </head>
 <body>
@@ -511,6 +557,22 @@ body{overflow-x:hidden;}
   </div>
 </section>
 
+<!-- PARTS & TOOLS: browse and learn every part and tool -->
+<section class="screen" id="libraryScreen" hidden>
+  <div class="screen-head"><button class="btn ghost" data-go="home">← Chat</button><h1>Parts &amp; Tools</h1><span></span></div>
+  <div class="lib-wrap">
+    <div class="lib-bar">
+      <div class="lib-tabs" id="libTabs" role="tablist">
+        <button data-kind="part" aria-pressed="true">Parts <small></small></button><button data-kind="tool">Tools <small></small></button>
+      </div>
+      <input class="text-input lib-search" id="libSearch" placeholder="Search — e.g. LED, pliers, sensor" autocomplete="off">
+    </div>
+    <div class="lib-cats" id="libCats"></div>
+    <div class="lib-grid" id="libGrid"></div>
+  </div>
+</section>
+<div class="modal" id="libDetail" hidden><div class="popcard lib-card" id="libDetailCard"></div></div>
+
 <!-- LESSON: the workbench -->
 <section class="screen lesson-screen" id="lessonScreen" hidden>
 <div class="lvl" id="app">
@@ -546,13 +608,14 @@ body{overflow-x:hidden;}
   <!-- view tools, top-right -->
   <div class="tool-cluster">
     <button class="tool" id="view3dBtn" title="3D view"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3zM12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></button>
+    <button class="tool" id="handBtn" title="Hand: drag to move around the table (or hold Space)"><svg class="ic" viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 013 0V12M11 11V4.5a1.5 1.5 0 013 0V12M14 11.5V6a1.5 1.5 0 013 0v7.5M8 13V9.5a1.5 1.5 0 00-3 0V15a6 6 0 006 6h1a6 6 0 006-6v-1.5"/></svg></button>
     <button class="tool" id="viewTopBtn" title="Top view"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 12h16M12 4v16"/></svg></button>
     <span class="tool-sep"></span>
     <button class="tool" id="undoWireBtn" title="Undo the last wire"><svg class="ic" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3"/></svg></button>
     <button class="tool" id="resetBoardBtn" title="Clear the board"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
     <span class="tool-sep"></span>
     <button class="tool" id="helpBtn" title="Controls"><svg class="ic" viewBox="0 0 24 24"><path d="M9.5 9a2.5 2.5 0 115 .5c0 1.5-2.5 2-2.5 3.5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></button>
-    <div class="help-pop" id="stageHint">drag the table to orbit · right-drag to pan · scroll to zoom · drag from any hole or header socket to wire · double-click to inspect</div>
+    <div class="help-pop" id="stageHint">drag the table to orbit · ✋ hand tool, Space-drag or right-drag to move around · scroll to zoom · drag from any hole or header socket to wire · double-click to inspect</div>
   </div>
   <div class="connect-with" id="connectWith" hidden role="radiogroup" aria-label="Connect with">
     <button data-with="planned" aria-pressed="true" data-tip="As planned — each connection is made the way this lesson's build says."><svg class="ic" viewBox="0 0 24 24"><path d="M9 4h6v3H9zM8 5.5H5.5V20h13V5.5H16M9 13l2 2 4-4"/></svg></button>

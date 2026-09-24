@@ -8,7 +8,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   const browser = browserRef = await puppeteer.launch({executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: 'new', protocolTimeout: 120000, args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader']});
   const page = await browser.newPage(); await page.setViewport({width:1440, height:900});
   const errors=[]; page.on('pageerror', e=>errors.push(e.message)); page.on('console', m=>{ if(m.type()==='error') errors.push(m.text()); });
-  await page.goto('http://localhost:8799/', {waitUntil:'networkidle0'});
+  await page.goto('http://localhost:' + (process.env.PORT || 8799) + '/', {waitUntil:'networkidle0'});
   await page.waitForSelector('.choice', {timeout:30000, polling:500}); await sleep(600);
   console.log('HOME:', await page.evaluate(()=>document.getElementById('homeTitle').innerText + ' | ' + document.getElementById('homeSub').innerText));
   console.log('choices:', await page.evaluate(()=>[...document.querySelectorAll('.choice')].map(c=>c.innerText.replace(/\n/g,' '))));

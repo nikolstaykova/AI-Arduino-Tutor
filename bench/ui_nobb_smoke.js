@@ -1,5 +1,5 @@
 // No-breadboard + Learn-map smoke test (real Chrome):
-//  1. Home → Learn → the quick parts chat ("No breadboard") → map with coloured levels
+//  1. Home → Learn → the quick parts chat ("Let me pick my parts") → map with coloured levels
 //  2. Blink's level card offers every build way; pick "Clip leads"
 //  3. Play Blink with parts on the table: legs clipped to header pins / each other → complete, LED glows
 //   npm i puppeteer-core ; CQ_PROFILE=/tmp/test_profile.json CQ_AI_BACKEND=none python3 bench_server.py 8799 & ; node bench/ui_nobb_smoke.js /tmp/shots
@@ -21,9 +21,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
   console.log('parts question:', await page.evaluate(() => document.getElementById('homeQ').innerText));
   console.log('choices:', await page.evaluate(() => [...document.querySelectorAll('.choice')].map(c => c.innerText.split('\n')[0])));
   await page.screenshot({path: out + '/n1_parts_chat.png'});
-  await pick('No breadboard'); await page.waitForFunction(() => document.getElementById('partsDrawer').classList.contains('open'), {polling: 200, timeout: 5000}).catch(() => {});
+  await pick('Let me pick my parts'); await page.waitForFunction(() => document.getElementById('partsDrawer').classList.contains('open'), {polling: 200, timeout: 5000}).catch(() => {});
   console.log('drawer open:', await page.evaluate(() => document.getElementById('partsDrawer').classList.contains('open')), '|', await page.evaluate(() => document.getElementById('drawerNote').innerText.slice(0, 60)));
-  for (const want of ['LED', '1kΩ', 'Alligator']) await page.evaluate((w) => { const t = [...document.querySelectorAll('.ptile')].find(t => t.querySelector('.nm').textContent.includes(w)); t && t.click(); }, want);
+  for (const want of ['Arduino Uno', 'USB Cable', 'LED', '1kΩ', 'Alligator']) await page.evaluate((w) => { const t = [...document.querySelectorAll('.ptile')].find(t => t.querySelector('.nm').textContent.includes(w)); t && t.click(); }, want);
   await sleep(1400);
   console.log('matches:', await page.evaluate(() => [...document.querySelectorAll('.match')].map(m => m.innerText.replace(/\n/g, ' '))));
   await page.screenshot({path: out + '/n2_drawer.png'});

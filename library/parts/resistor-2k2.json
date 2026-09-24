@@ -1,0 +1,29 @@
+{
+  "id": "resistor-2k2",
+  "type": "part",
+  "subtype": "resistor",
+  "wokwi_type": "wokwi-resistor",
+  "wokwi_value": "2200",
+  "pins": {
+    "1": "either end",
+    "2": "either end"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "display_name": "2.2kΩ Resistor",
+  "aliases": [
+    "2.2k resistor",
+    "2.2k ohm resistor",
+    "2.2kohm",
+    "2.2k ω",
+    "2200 ohm resistor"
+  ],
+  "description": "A fixed 2.2kΩ resistor.",
+  "how_to_use": "Put it in series to limit current (e.g. before an LED), or use it as a pull-up / pull-down or in a voltage divider. It works either way round.",
+  "image": "resistor-1k.png",
+  "leads": "wire-lead"
+}

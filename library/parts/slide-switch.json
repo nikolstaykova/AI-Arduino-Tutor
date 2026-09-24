@@ -5,8 +5,18 @@
   "legs_placed_together": true,
   "wokwi_type": "wokwi-slide-switch",
   "display_name": "Slide Switch",
-  "aliases": ["slide switch", "spdt switch", "toggle switch"],
+  "aliases": [
+    "slide switch",
+    "spdt switch",
+    "toggle switch"
+  ],
   "description": "A 3-pin SPDT (single-pole double-throw) switch: pin 2 (common) is always connected to either pin 1 or pin 3, depending on the handle position.",
-  "how_to_use": "Pin 2 is the common terminal, always live. Pins 1 and 3 are the two throw positions — NOT a harmless swap like a resistor's legs: swapping which one is wired changes which handle position reads active, so this isn't treated as symmetric. Many uses only wire one of pin 1/pin 3 plus pin 2, leaving the other throw position unconnected.",
-  "image": "slide-switch.png"
+  "how_to_use": "Pin 2 (the middle one) is the common terminal. Slide the handle toward pin 1 and pins 1+2 are joined; slide it toward pin 3 and pins 2+3 are joined. It stays where you put it — an on/off switch. For a simple on/off, wire the middle pin and ONE end pin, and leave the other end unconnected. Pins 1 and 3 aren't interchangeable: swapping them swaps which position is 'on'.",
+  "image": "slide-switch.png",
+  "pins": {
+    "1": "one end — joined to the middle pin when the handle is slid toward pin 1",
+    "2": "the middle (common) pin — always joined to pin 1 or pin 3",
+    "3": "the other end — joined to the middle pin when the handle is slid toward pin 3"
+  },
+  "leads": "short-leg"
 }

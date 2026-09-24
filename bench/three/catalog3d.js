@@ -205,6 +205,19 @@ const B = {
   "wire-stripper": () => { const g = pliers(0xe8b83a, 30, true); for (let i = 0; i < 5; i++) g.add(at(cyl(0.3 + i * 0.12, 0.3 + i * 0.12, 3, 0x1c1d21, {}, 10), 60 - i * 4, 5, 0)); return g; },
   "small-screwdriver-set": () => { const g = new THREE.Group(); g.add(at(rbox(110, 14, 60, 4, 0x2b2b30), 0, 7, 0)); [0xc9443a, 0x2a5ea8, 0xe8b83a, 0x4a9a6a, 0x6b3fa0, 0xd08a3a].forEach((c, i) => { const s = new THREE.Group(); s.add(at(cyl(4, 4.5, 40, c, {}, 12), 0, 0, 0)); s.add(at(cyl(1, 1, 38, 0xc9ccd1, METAL, 10), 0, -39, 0)); s.rotation.z = Math.PI / 2; s.position.set(0, 16, -22 + i * 9); g.add(s); }); return g; },
   "soldering-iron": () => { const g = new THREE.Group(); const iron = new THREE.Group(); iron.add(at(cyl(9, 8, 70, 0x2b2b30, {}, 20), 0, 0, 0)); iron.add(at(cyl(6, 9, 10, 0xc9443a, {}, 20), 0, 40, 0)); iron.add(at(cyl(3.5, 5, 40, 0xc9ccd1, METAL, 16), 0, 65, 0)); iron.add(at(cyl(0.6, 2.5, 18, 0x8a6a50, METAL, 12), 0, 94, 0)); iron.add(cable([[0, -35, 0], [0, -60, 10], [20, -80, 30]], 2.5, 0x2b2b30)); iron.rotation.z = -Math.PI / 2.4; iron.position.y = 30; g.add(iron); const stand = new THREE.Group(); stand.add(at(rbox(70, 10, 60, 4, 0x3a3c42, METAL), 0, 5, 0)); stand.add(at(cyl(18, 22, 12, 0xe8c83a), -18, 16, 0)); g.add(at(stand, 10, 0, 30)); return g; },
+  "helping-hands": () => {
+    const g = new THREE.Group(); g.add(at(rbox(70, 10, 50, 4, 0x3a3c42, METAL), 0, 5, 0)); g.add(at(cyl(3, 3, 50, 0xc9ccd1, METAL, 12), 0, 35, 0));
+    const lens = new THREE.Group(); lens.add(mesh(new THREE.TorusGeometry(22, 2.4, 10, 40), 0x2b2b30)); lens.add(mesh(new THREE.CircleGeometry(21, 40), 0xcfe4f0, { transparent: true, opacity: 0.45, roughness: 0.05, side: THREE.DoubleSide })); lens.rotation.x = -0.35; g.add(at(lens, 0, 70, -6));
+    for (const s of [-1, 1]) { g.add(cable([[0, 55, 0], [s * 22, 58, 8], [s * 40, 44, 16]], 1.6, 0x2b2b30)); g.add(at(clip(0x2b2b30, s), s * 44, 42, 18)); }
+    return g;
+  },
+  "desoldering-pump": () => { const g = new THREE.Group(); const b = new THREE.Group(); b.add(at(cyl(9, 9, 110, 0xc9ccd1, METAL, 20), 0, 0, 0)); b.add(at(cyl(9.4, 9.4, 26, 0x2a5ea8, {}, 20), 0, 20, 0)); b.add(at(cyl(3.5, 8.8, 16, 0xe8e8e2, {}, 16), 0, -63, 0)); b.add(at(cyl(1.4, 3.5, 12, 0xe8e8e2, {}, 12), 0, -77, 0)); b.add(at(cyl(2.5, 2.5, 26, 0x2b2b30, {}, 10), 0, 68, 0)); b.add(at(cyl(7, 7, 4, 0x2b2b30, {}, 20), 0, 82, 0)); b.add(at(box(6, 4, 8, 0xc9443a), 10, 30, 0)); b.rotation.z = Math.PI / 2; b.position.y = 10; g.add(b); return g; },
+  "solder-wick": () => { const g = new THREE.Group(); g.add(at(cyl(18, 18, 10, 0x4a9a6a, {}, 30), 0, 5, 0)); g.add(at(cyl(8, 8, 10.4, 0x2b2b30, {}, 20), 0, 5, 0)); const braid = box(40, 0.8, 2.6, 0xc98a52, { metalness: 0.8, roughness: 0.35 }); braid.position.set(34, 1, 10); braid.rotation.y = -0.3; g.add(braid); return g; },
+  "heat-gun": () => { const g = new THREE.Group(); const body = cyl(18, 22, 90, 0x2b2b30, {}, 24); body.rotation.z = Math.PI / 2; g.add(at(body, 0, 60, 0)); const noz = cyl(12, 16, 40, 0xc9ccd1, METAL, 20); noz.rotation.z = Math.PI / 2; g.add(at(noz, 64, 60, 0)); g.add(at(rbox(24, 60, 30, 8, 0xd08a3a), -14, 26, 0)); g.add(at(rbox(40, 6, 40, 3, 0x2b2b30), -14, 3, 0)); g.add(at(box(6, 10, 8, 0xc9443a), 2, 40, 0)); return g; },
+  "safety-glasses": () => { const g = new THREE.Group(); const lens = mat(0xd9ecf5, { transparent: true, opacity: 0.55, roughness: 0.05 }); for (const s of [-1, 1]) { const l = mesh(new THREE.SphereGeometry(28, 24, 12, 0, Math.PI * 2, 0, 0.6), lens); l.scale.set(1, 0.7, 0.35); l.rotation.x = Math.PI / 2; g.add(at(l, s * 30, 22, 0)); g.add(at(box(4, 4, 110, 0xd08a3a), s * 58, 22, -54)); } g.add(at(box(120, 5, 4, 0xd08a3a), 0, 34, 2)); return g; },
+  "flux-pen": () => { const g = new THREE.Group(); const b = new THREE.Group(); b.add(at(cyl(6, 6, 100, 0xe8b83a, {}, 16), 0, 0, 0)); b.add(at(cyl(6.2, 6.2, 36, 0x2b2b30, {}, 16), 0, 36, 0)); b.add(at(cyl(2, 5, 12, 0xe8e8e2, {}, 12), 0, -56, 0)); b.add(at(cyl(0.8, 2, 6, 0xd9d0bc, {}, 10), 0, -65, 0)); b.rotation.z = Math.PI / 2; b.position.y = 7; g.add(b); return g; },
+  "tip-cleaner": () => { const g = new THREE.Group(); g.add(at(cyl(34, 36, 10, 0x3a3c42, METAL, 30), 0, 5, 0)); g.add(at(cyl(26, 28, 22, 0x2b2b30, {}, 30), 0, 16, 0)); const wool = mesh(new THREE.TorusKnotGeometry(12, 5, 120, 10, 7, 11), 0xd9b25a, { metalness: 0.85, roughness: 0.45 }); wool.scale.set(1, 0.6, 1); wool.rotation.x = Math.PI / 2; g.add(at(wool, 0, 28, 0)); return g; },
+  "hot-glue-gun": () => { const g = new THREE.Group(); const body = cyl(16, 20, 80, 0x4a9a6a, {}, 24); body.rotation.z = Math.PI / 2; g.add(at(body, 0, 70, 0)); const tip = cyl(2, 6, 18, 0xc9ccd1, METAL, 12); tip.rotation.z = -Math.PI / 2; g.add(at(tip, 48, 70, 0)); g.add(at(rbox(22, 60, 26, 8, 0x4a9a6a), -16, 34, 0)); g.add(at(box(8, 24, 10, 0xe8b83a), 2, 42, 0)); const stick = cyl(5.5, 5.5, 60, 0xf2efe6, { transparent: true, opacity: 0.8 }, 16); stick.rotation.z = Math.PI / 2; g.add(at(stick, -64, 70, 0)); return g; },
   "tweezers": () => { const g = new THREE.Group(); for (const s of [-1, 1]) { const arm = box(110, 2, 8, 0xc9ccd1, METAL); arm.position.set(0, 6, s * 5); arm.rotation.y = s * 0.05; g.add(arm); } g.add(at(box(14, 6, 16, 0xc9ccd1, METAL), -56, 6, 0)); return g; },
 };
 
@@ -278,3 +291,28 @@ export function buildModel(id) {
   g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   return g;
 }
+
+// small close-ups for the "Connect with" switch: the real item each way uses
+const ICON = {
+  solder: () => B.solder(),
+  clip: () => {
+    // an open alligator clip seen from the side: red boot, two toothed jaws in a V
+    const g = new THREE.Group(), steel = 0xc4c8cf;
+    const boot = cyl(2.6, 1.9, 10, 0xc9443a); boot.rotation.z = Math.PI / 2; g.add(at(boot, -8, 0, 0));
+    for (const s of [-1, 1]) {
+      const jaw = new THREE.Group();
+      jaw.add(at(box(12, 1, 3.2, steel, { roughness: 0.35 }), 6, 0, 0));
+      for (let i = 0; i < 5; i++) { const t = box(0.9, 0.9, 3.2, steel, { roughness: 0.35 }); t.rotation.z = Math.PI / 4; jaw.add(at(t, 3 + i * 2, -s * 0.6, 0)); }
+      jaw.position.set(-3, s * 0.9, 0); jaw.rotation.z = s * 0.28; g.add(jaw);
+    }
+    g.rotation.set(0, 0.68, 0.2); return g;
+  },
+  push: () => {
+    const g = new THREE.Group(), pts = (ph) => Array.from({ length: 30 }, (_, i) => { const t = i / 29; return [t * 16 - 8, Math.cos(t * 9 + ph) * 1.1, Math.sin(t * 9 + ph) * 1.1]; });
+    const lead = 0x9a9ea6;
+    g.add(cable(pts(0), 0.7, lead)); g.add(cable(pts(Math.PI), 0.7, lead));
+    g.add(cable([[-8, 1.1, 0], [-13, 4, 1]], 0.7, lead)); g.add(cable([[-8, -1.1, 0], [-13, -4, -1]], 0.7, lead));
+    g.rotation.set(0.3, -0.7, 0.4); return g;
+  },
+};
+export function iconModel(name) { return ICON[name] ? ICON[name]() : null; }

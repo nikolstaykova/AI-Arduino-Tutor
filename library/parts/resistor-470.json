@@ -1,0 +1,29 @@
+{
+  "id": "resistor-470",
+  "type": "part",
+  "subtype": "resistor",
+  "wokwi_type": "wokwi-resistor",
+  "wokwi_value": "470",
+  "pins": {
+    "1": "either end",
+    "2": "either end"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "display_name": "470Ω Resistor",
+  "aliases": [
+    "470 resistor",
+    "470 ohm resistor",
+    "470ohm",
+    "470 ω",
+    "470 ohm resistor"
+  ],
+  "description": "A fixed 470Ω resistor.",
+  "how_to_use": "Put it in series to limit current (e.g. before an LED), or use it as a pull-up / pull-down or in a voltage divider. It works either way round.",
+  "image": "resistor-1k.png",
+  "leads": "wire-lead"
+}

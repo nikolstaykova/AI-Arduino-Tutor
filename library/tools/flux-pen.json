@@ -1,0 +1,14 @@
+{
+  "id": "flux-pen",
+  "type": "tool",
+  "tier": 2,
+  "display_name": "Flux Pen",
+  "aliases": [
+    "flux",
+    "rosin flux",
+    "flux paste"
+  ],
+  "description": "A pen of liquid flux that cleans metal as you solder, so the solder flows and sticks properly.",
+  "how_to_use": "Dab a little on the leg and pad before heating. Most solder already has flux inside (rosin core); extra flux helps with stubborn or old parts.",
+  "image": "flux-pen.png"
+}

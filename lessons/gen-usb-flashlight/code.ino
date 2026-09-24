@@ -1,13 +1,13 @@
 // USB Flashlight
-// The Arduino is only the USB power supply here: 5V and GND.
-// 5V -> pushbutton -> 220 ohm resistor -> white LED -> GND.
-// Hold the button down and the LED lights up. No pins need to be
-// controlled, so the sketch does nothing.
+// The original project has no microcontroller: the Arduino is used only
+// as a USB power supply. Its 5V and GND pins stand in for the USB
+// breakout board's 5V and GND. The slide switch turns the five LEDs
+// on and off, so no code is needed.
 
 void setup() {
-  // Nothing to set up: the circuit runs straight from 5V.
+  // Nothing to do: the LEDs are powered straight from 5V through the switch.
 }
 
 void loop() {
-  // Nothing to do: the pushbutton switches the light by itself.
+  // Nothing to do.
 }

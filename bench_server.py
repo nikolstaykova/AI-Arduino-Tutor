@@ -47,15 +47,17 @@ import core.lesson_gen
 import core.profile
 import core.worlds
 import core.build_methods
+import core.guide_import
 
 # Dependency order: engine imports checker/lesson/library/physics at module
 # level, so those must be reloaded first for engine to pick up new versions.
 _RELOAD_ORDER = [core.checker, core.library, core.lesson, core.physics, core.engine, core.eventlog,
-                 core.progress, core.build_methods, core.lesson_finder, core.lesson_gen]
+                 core.progress, core.build_methods, core.lesson_finder, core.lesson_gen, core.guide_import]
 
 # Wokwi part type → the bench page's leg template.
 _TEMPLATES = {"wokwi-resistor": "resistor", "wokwi-led": "led", "wokwi-potentiometer": "pot",
-              "wokwi-slide-potentiometer": "pot", "wokwi-pushbutton": "button", "wokwi-pushbutton-6mm": "button"}
+              "wokwi-slide-potentiometer": "pot", "wokwi-pushbutton": "button", "wokwi-pushbutton-6mm": "button",
+              "wokwi-slide-switch": "switch", "wokwi-buzzer": "buzzer"}
 
 sessions = {}  # session id -> {"lesson", "library", "state", "log"}
 
@@ -179,7 +181,8 @@ def api_lessons(_body):
                         "completed": data["id"] in progress["completed"],
                         "stars": progress["completed"].get(data["id"], {}).get("stars", 1 if data["id"] in progress["completed"] else 0),
                         "difficulty": data.get("difficulty", "beginner"),
-                        "parts_used": data.get("parts_used", [])})
+                        "parts_used": data.get("parts_used", []),
+                        "source": data.get("source"), "substitutions": data.get("substitutions", [])})
     return {"lessons": lessons, "worlds": core.worlds.build_map(lessons), "progress": _progress_summary(progress)}
 
 
@@ -217,12 +220,29 @@ def api_ideas(body):
     return {"inventory": ids, "unknown": unknown, "ideas": ideas}
 
 
+def api_guide(body):
+    """Read a tutorial page: every part (exact quantity/value), mapped onto the
+    library — exact, or substituted only when we don't have it — for the
+    learner to confirm before a lesson is built from it."""
+    try:
+        return core.guide_import.import_guide(body["url"])
+    except ValueError as exc:
+        return {"error": str(exc)}, 400
+    except OSError as exc:            # urllib: DNS, HTTP errors, timeouts
+        return {"error": f"Couldn't open that page ({exc})."}, 502
+    except Exception as exc:
+        return _ai_unavailable(exc)
+
+
 def api_generate(body):
-    """Generate → validate → repair a lesson on the spot, then save it."""
+    """Generate → validate → repair a lesson on the spot, then save it.
+    With `guide` (a confirmed plan from /api/guide) it follows that tutorial exactly."""
     inventory = None
     if body.get("parts"):
         inventory, _ = core.lesson_finder.resolve_inventory(body["parts"])
     try:
+        if body.get("guide"):
+            return core.guide_import.generate(body["guide"], inventory=inventory)
         return core.lesson_gen.generate_lesson(body["request"], inventory=inventory)
     except Exception as exc:
         return _ai_unavailable(exc)
@@ -339,6 +359,58 @@ def api_parts_catalog(_body):
     return {"parts": out}
 
 
+MEDIA_DIRS = [ROOT / "library" / "tools" / "media", ROOT / "library" / "parts" / "media"]
+LIB_CATEGORY = {"board": "Boards", "breadboard": "Wiring", "wire": "Wiring", "cable": "Wiring", "utility": "Wiring",
+                "led": "Lights", "display": "Displays", "resistor": "Resistors", "potentiometer": "Inputs",
+                "pushbutton": "Inputs", "switch": "Inputs", "input": "Inputs", "sensor": "Sensors", "buzzer": "Sound",
+                "motor": "Motors", "driver": "Motors", "logic": "Chips", "storage": "Chips", "consumable": "Soldering"}
+
+TOOL_CATEGORY = {"soldering-iron": "Soldering", "solder": "Soldering", "heat-shrink": "Soldering", "solder-wick": "Soldering",
+                 "desoldering-pump": "Soldering", "flux-pen": "Soldering", "tip-cleaner": "Soldering",
+                 "helping-hands": "Soldering", "heat-gun": "Soldering",
+                 "flush-cutters": "Cut & grip", "needle-nose-pliers": "Cut & grip", "wire-stripper": "Cut & grip",
+                 "tweezers": "Cut & grip", "small-screwdriver-set": "Cut & grip",
+                 "digital-multimeter": "Measure", "safety-glasses": "Safety & finishing", "hot-glue-gun": "Safety & finishing"}
+
+
+def _media_file(name):
+    """A tutorial clip that is actually on disk, or None."""
+    for d in MEDIA_DIRS:
+        if name and (d / name).is_file():
+            return d / name
+    return None
+
+
+def api_library(_body):
+    """Every part and tool card for the Parts & Tools section: what it is,
+    how to use it, its pins, the levels that use it, and its video if one
+    is on disk."""
+    library = core.library.load_library()
+    used = {}
+    for path in sorted((ROOT / "lessons").glob("*/lesson.json")):
+        data = json.loads(path.read_text())
+        for pid in set(data.get("parts_used", []) + data.get("tools_used", [])):
+            used.setdefault(pid, []).append({"id": data["id"], "title": data.get("title", data["id"])})
+    out = []
+    for card in library.cards.values():
+        if card.get("type") not in ("part", "tool"):
+            continue
+        wt = card.get("wokwi_type")
+        wt = wt[0] if isinstance(wt, list) else wt
+        clip = card.get("tutorial_clip")
+        kind = "tool" if card["type"] == "tool" or card.get("subtype") == "consumable" else "part"
+        out.append({"id": card["id"], "kind": kind, "name": card["display_name"],
+                    "category": TOOL_CATEGORY.get(card["id"], "Tools") if kind == "tool" else LIB_CATEGORY.get(card.get("subtype"), "Other"),
+                    "wokwi_type": wt, "attrs": {"value": card["wokwi_value"]} if card.get("wokwi_value") else {},
+                    "description": card.get("description", ""), "how_to_use": card.get("how_to_use", ""),
+                    "pins": card.get("pins", []), "polarized": bool(card.get("polarized")), "tier": card.get("tier"),
+                    "aliases": card.get("aliases", []),
+                    "video": f"/media/{clip}" if _media_file(clip) else None,
+                    "used_in": used.get(card["id"], [])})
+    out.sort(key=lambda c: (c["kind"], c["category"], c["name"]))
+    return {"items": out}
+
+
 def api_profile(body):
     """GET-style (no body) returns the learner; {"name": ...} saves it."""
     profile = core.profile.load_profile()
@@ -351,7 +423,7 @@ def api_profile(body):
 
 ROUTES = {"/api/lessons": api_lessons, "/api/start": api_start, "/api/event": api_event,
           "/api/find": api_find, "/api/ideas": api_ideas, "/api/generate": api_generate, "/api/part": api_part,
-          "/api/parts_catalog": api_parts_catalog, "/api/plan": api_plan, "/api/ai_status": api_ai_status, "/api/profile": api_profile}
+          "/api/parts_catalog": api_parts_catalog, "/api/plan": api_plan, "/api/guide": api_guide, "/api/ai_status": api_ai_status, "/api/profile": api_profile, "/api/library": api_library}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -387,7 +459,45 @@ class Handler(BaseHTTPRequestHandler):
         if static and static.suffix in (".js", ".css") and PAGE.parent.resolve() in static.resolve().parents and static.exists():
             kind = "text/javascript" if static.suffix == ".js" else "text/css"
             return self._send(200, static.read_bytes(), f"{kind}; charset=utf-8")
+        if name.startswith("media/"):
+            return self._send_media(name[len("media/"):])
         self._dispatch({})
+
+    def _send_media(self, name):
+        """A tool video, with Range support so the browser can seek (Safari needs it)."""
+        path = _media_file(name) if "/" not in name and not name.startswith(".") else None
+        if path is None or path.suffix.lower() not in (".mp4", ".webm"):
+            return self._send(404, {"error": "not found"})
+        size = path.stat().st_size
+        start, end = 0, size - 1
+        rng = self.headers.get("Range", "")
+        if rng.startswith("bytes="):
+            a, _, b = rng[6:].split(",")[0].partition("-")
+            try:
+                start, end = (int(a), int(b) if b else size - 1) if a else (size - int(b), size - 1)
+            except ValueError:
+                pass
+            end = min(end, size - 1)
+            if start > end or start < 0:
+                self.send_response(416); self.send_header("Content-Range", f"bytes */{size}"); self.end_headers(); return
+        self.send_response(206 if rng else 200)
+        self.send_header("Content-Type", "video/mp4" if path.suffix.lower() == ".mp4" else "video/webm")
+        self.send_header("Accept-Ranges", "bytes")
+        self.send_header("Content-Length", str(end - start + 1))
+        if rng:
+            self.send_header("Content-Range", f"bytes {start}-{end}/{size}")
+        self.end_headers()
+        with path.open("rb") as f:
+            f.seek(start)
+            left = end - start + 1
+            try:
+                while left > 0:
+                    chunk = f.read(min(1 << 16, left))
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk); left -= len(chunk)
+            except (BrokenPipeError, ConnectionResetError):
+                pass
 
     def do_POST(self):
         length = int(self.headers.get("Content-Length") or 0)
@@ -432,6 +542,7 @@ def main():
     how = {"claude-code": "your Claude Code login" + (" (token from .env)" if "CLAUDE_CODE_OAUTH_TOKEN" in loaded else ""),
            "api": "the Anthropic API key" + (" (from .env)" if "ANTHROPIC_API_KEY" in loaded else ""), None: "off"}[route]
     print(f"AI lessons: {how}")
+    ThreadingHTTPServer.request_queue_size = 128   # the page fetches many JS modules at once; the default (5) drops some
     server = ThreadingHTTPServer((host, port), Handler)
     print(f"CircuitQuest Wiring Bench running on the real engine → http://localhost:{port}  (Ctrl+C to stop)")
     try:

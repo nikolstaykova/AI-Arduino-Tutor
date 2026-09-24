@@ -1,0 +1,29 @@
+{
+  "id": "resistor-100k",
+  "type": "part",
+  "subtype": "resistor",
+  "wokwi_type": "wokwi-resistor",
+  "wokwi_value": "100000",
+  "pins": {
+    "1": "either end",
+    "2": "either end"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "display_name": "100kΩ Resistor",
+  "aliases": [
+    "100k resistor",
+    "100k ohm resistor",
+    "100kohm",
+    "100k ω",
+    "100000 ohm resistor"
+  ],
+  "description": "A fixed 100kΩ resistor.",
+  "how_to_use": "Put it in series to limit current (e.g. before an LED), or use it as a pull-up / pull-down or in a voltage divider. It works either way round.",
+  "image": "resistor-1k.png",
+  "leads": "wire-lead"
+}

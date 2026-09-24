@@ -62,6 +62,14 @@ LOGIC_LOW_MAX = 0.3 * VCC         # ATmega328P V_IL
 _RESISTOR_TYPES = {"wokwi-resistor"}
 _LED_TYPES = {"wokwi-led"}
 _BUTTON_TYPES = {"wokwi-pushbutton", "wokwi-pushbutton-6mm"}
+# SPDT slide switch: pin 2 (common) joins pin 1 in one position, pin 3 in the
+# other. It stays where it's put — "on" means the handle is at pin 3's side.
+_SLIDE_TYPES = {"wokwi-slide-switch"}
+# A piezo buzzer, as a DC load between its + (pin 2) and − (pin 1): it
+# "sounds" while its + side is driven above its − side.
+_BUZZER_TYPES = {"wokwi-buzzer"}
+BUZZER_RESISTANCE = 1000.0
+BUZZER_ON_VOLTS = 1.5
 _POT_TYPES = {"wokwi-potentiometer", "wokwi-slide-potentiometer"}
 _SUPPLY_PINS = {"5V": 5.0, "3.3V": 3.3, "3V3": 3.3}
 _BOARD_PINS_NOT_MODELLED = {"VIN", "AREF", "IOREF", "RESET"}
@@ -169,6 +177,8 @@ class _Circuit:
         self.resistors = []   # (name, node_a, node_b, ohms)
         self.leds = []        # (id, anode, cathode, vf)
         self.buttons = []     # (id, node_1, node_2)
+        self.slides = []      # (id, node_1, node_common, node_3)
+        self.buzzers = []     # (id, node_plus, node_minus)
         self.pots = []        # (id, gnd_end, wiper, vcc_end, ohms)
         self.unmodeled = []
         for part in diagram_parts:
@@ -182,6 +192,12 @@ class _Circuit:
                 self.leds.append((pid, self.node(f"{pid}:A"), self.node(f"{pid}:C"), vf))
             elif wtype in _BUTTON_TYPES:
                 self.buttons.append((pid, self.node(f"{pid}:1.l"), self.node(f"{pid}:2.l")))
+            elif wtype in _BUZZER_TYPES:
+                plus, minus = self.node(f"{pid}:2"), self.node(f"{pid}:1")
+                self.buzzers.append((pid, plus, minus))
+                self.resistors.append((pid, plus, minus, BUZZER_RESISTANCE))
+            elif wtype in _SLIDE_TYPES:
+                self.slides.append((pid, self.node(f"{pid}:1"), self.node(f"{pid}:2"), self.node(f"{pid}:3")))
             elif wtype in _POT_TYPES:
                 ohms = parse_resistance(attrs.get("value"), POT_RESISTANCE)
                 self.pots.append((pid, self.node(f"{pid}:GND"), self.node(f"{pid}:SIG"), self.node(f"{pid}:VCC"), ohms))
@@ -266,6 +282,8 @@ class _Circuit:
         for pid, n1, n2 in self.buttons:
             if pressed.get(pid):
                 conductance(n1, n2, 1.0 / BUTTON_CLOSED_RESISTANCE)
+        for pid, n1, nc, n3 in self.slides:
+            conductance(nc, n3 if pressed.get(pid) else n1, 1.0 / BUTTON_CLOSED_RESISTANCE)
         for _, end_gnd, wiper, end_vcc, ohms in self.pots:
             conductance(end_gnd, wiper, 1.0 / (ohms / 2))
             conductance(wiper, end_vcc, 1.0 / (ohms / 2))
@@ -322,6 +340,8 @@ class _Circuit:
         for pid, n1, n2 in self.buttons:
             if pressed.get(pid):
                 link(n1, n2)
+        for pid, n1, nc, n3 in self.slides:
+            link(nc, n3 if pressed.get(pid) else n1)
         for _, e1, w, e2, _ in self.pots:
             link(e1, w)
             link(w, e2)
@@ -360,7 +380,8 @@ def analyze(pairs, diagram_parts, code, library=None):
     }"""
     library = library or load_library()
     circuit = _Circuit(pairs, diagram_parts, code, library)
-    button_ids = [pid for pid, *_ in circuit.buttons]
+    button_ids = [pid for pid, *_ in circuit.buttons] + [pid for pid, *_ in circuit.slides]
+    slide_ids = {pid for pid, *_ in circuit.slides}
     scenarios, findings = [], []
     seen_findings = set()
 
@@ -374,9 +395,16 @@ def analyze(pairs, diagram_parts, code, library=None):
 
     for combo in itertools.product([False, True], repeat=len(button_ids)):
         pressed = dict(zip(button_ids, combo))
-        label = ", ".join(f"{pid} {'pressed' if p else 'released'}" for pid, p in pressed.items()) or "steady state"
+        label = ", ".join(f"{pid} {('at pin 3' if p else 'at pin 1') if pid in slide_ids else ('pressed' if p else 'released')}"
+                          for pid, p in pressed.items()) or "steady state"
         volts, led_on = circuit.solve(pressed)
-        scenario = {"label": label, "pressed": pressed, "leds": {}, "pins": {}}
+        scenario = {"label": label, "pressed": pressed, "leds": {}, "pins": {}, "buzzers": {}}
+        for pid, plus, minus in circuit.buzzers:
+            vd = volts[plus] - volts[minus]
+            scenario["buzzers"][pid] = {"state": "sounding" if vd > BUZZER_ON_VOLTS else "reversed" if vd < -BUZZER_ON_VOLTS else "silent",
+                                        "voltage": round(vd, 2)}
+            if vd < -BUZZER_ON_VOLTS:
+                add("warning", "buzzer_reversed", pid, f"{pid} is wired backwards: its + leg (pin 2) should go to the Arduino pin and its − leg (pin 1) to GND.", label)
 
         for pid, anode, cathode, vf in circuit.leds:
             va, vc = volts[anode], volts[cathode]

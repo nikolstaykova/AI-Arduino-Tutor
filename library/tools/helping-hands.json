@@ -1,0 +1,14 @@
+{
+  "id": "helping-hands",
+  "type": "tool",
+  "tier": 2,
+  "display_name": "Helping Hands",
+  "aliases": [
+    "third hand",
+    "helping hand",
+    "third-hand tool"
+  ],
+  "description": "A heavy base with adjustable arms and crocodile clips (often a magnifier) that holds parts still while you solder.",
+  "how_to_use": "Clip each part or wire in its own arm, bend the arms so the joint sits in front of you at a comfortable height, then you have both hands free for the iron and the solder.",
+  "image": "helping-hands.png"
+}
