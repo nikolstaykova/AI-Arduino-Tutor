@@ -21,6 +21,7 @@ and lessons generated on the spot by Claude (core/lesson_gen.py; needs
 `pip install anthropic` and an API key).
 """
 import importlib
+import html
 import json
 import os
 import secrets
@@ -539,6 +540,21 @@ TOOL_CATEGORY = {"soldering-iron": "Soldering", "solder": "Soldering", "heat-shr
                  "digital-multimeter": "Measure", "safety-glasses": "Safety & finishing", "hot-glue-gun": "Safety & finishing"}
 
 
+LEGAL_UPDATED = "24 September 2026"
+
+
+def _legal_page(which):
+    """/privacy and /terms — the pages Google asks for before the sign-in can be
+    published. CQ_CONTACT_EMAIL (set on the host) is where deletion requests go."""
+    folder = PAGE.parent / "legal"
+    contact = os.environ.get("CQ_CONTACT_EMAIL", "").strip()
+    how = (f'email <a href="mailto:{html.escape(contact)}">{html.escape(contact)}</a>' if contact
+           else "contact the person who runs this CircuitQuest site")
+    body = (folder / f"{which}.html").read_text().replace("{{UPDATED}}", LEGAL_UPDATED).replace("{{CONTACT}}", how)
+    return ((folder / "page.html").read_text().replace("{{TITLE}}", "Privacy policy" if which == "privacy" else "Terms of use")
+            .replace("{{BODY}}", body))
+
+
 def _media_file(name):
     """A tutorial clip that is actually on disk, or None."""
     for d in MEDIA_DIRS:
@@ -626,6 +642,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/", "/index.html"):
             return self._send(200, PAGE.read_bytes(), "text/html; charset=utf-8")
+        if self.path.split("?")[0] in ("/privacy", "/terms"):
+            return self._send(200, _legal_page(self.path.split("?")[0][1:]).encode(), "text/html; charset=utf-8")
         name = self.path.split("?")[0].lstrip("/")
         static = (PAGE.parent / name[len("bench/"):]) if name.startswith("bench/") else None
         if static and static.suffix in (".js", ".css") and PAGE.parent.resolve() in static.resolve().parents and static.exists():

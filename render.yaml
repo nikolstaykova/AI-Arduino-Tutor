@@ -26,3 +26,6 @@ services:
       # own Claude); everyone else must connect their own Claude to create lessons
       - key: CQ_OWNER_EMAILS
         sync: false
+      # shown on /privacy as where to ask for your data to be deleted
+      - key: CQ_CONTACT_EMAIL
+        sync: false

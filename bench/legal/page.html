@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}} · CircuitQuest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#f3f1ec;--surface:#fbfaf7;--text:#2c3038;--dim:#5d626c;--accent:#c27b53;--border:#e2dfd7;}
+@media (prefers-color-scheme: dark){:root{--bg:#1d2026;--surface:#252932;--text:#eceef1;--dim:#a4aab4;--accent:#d38c63;--border:#353b46;}}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Sora',system-ui,sans-serif;line-height:1.65;}
+main{max-width:720px;margin:0 auto;padding:40px 16px 60px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:28px 28px 20px;}
+h1{margin:0 0 4px;font-size:28px;} h2{font-size:17px;margin:26px 0 6px;}
+p,li{color:var(--dim);font-size:15px;} a{color:var(--accent);font-weight:600;}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:22px;text-decoration:none;color:var(--text);font-weight:700;}
+.mark{width:30px;height:30px;border-radius:8px;background:var(--text);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px;}
+.muted{font-size:13px;}
+</style>
+</head>
+<body><main>
+<a class="top" href="/"><span class="mark">CQ</span>CircuitQuest</a>
+<div class="card">
+{{BODY}}
+</div>
+<p class="muted"><a href="/">← Back to CircuitQuest</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
+</main></body>
+</html>

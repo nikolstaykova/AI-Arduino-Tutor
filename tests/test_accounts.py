@@ -245,3 +245,14 @@ def test_locally_nothing_changes(monkeypatch):
     bench_server._request.user = None
     assert bench_server._claude_for_request() == (None, None)
     assert bench_server.api_ai_status({})["claude"]["mode"] == "local"
+
+
+def test_privacy_and_terms_pages_exist_for_google(monkeypatch):
+    monkeypatch.setenv("CQ_CONTACT_EMAIL", "owner@example.com")
+    privacy = bench_server._legal_page("privacy")
+    assert "Privacy policy" in privacy and "mailto:owner@example.com" in privacy
+    assert "Limited Use" in privacy and "encrypted" in privacy and "{{" not in privacy
+    assert "Terms of use" in bench_server._legal_page("terms")
+    monkeypatch.delenv("CQ_CONTACT_EMAIL")
+    assert "person who runs this" in bench_server._legal_page("privacy")
+    assert 'href="/privacy"' in (bench_server.PAGE).read_text()      # the homepage links it
