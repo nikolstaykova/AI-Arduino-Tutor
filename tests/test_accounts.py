@@ -293,3 +293,41 @@ def test_a_guest_who_signs_in_brings_their_stars_along(supabase):
     bench_server._save_progress({**bench_server.core.progress.empty_progress(), "xp": 500})
     bench_server.api_profile({"adopt_guest": GUEST})          # never overwrites real account progress
     assert bench_server._load_progress()["xp"] == 500
+
+
+# ---- hardening ------------------------------------------------------------------------------
+def test_pages_forbid_injected_scripts():
+    import base64, hashlib, re as _re
+    csp = bench_server._security_headers("text/html; charset=utf-8")["Content-Security-Policy"]
+    importmap = _re.search(r'<script type="importmap">(.*?)</script>', bench_server.PAGE.read_text(), _re.S).group(1)
+    assert f"'sha256-{base64.b64encode(hashlib.sha256(importmap.encode()).digest()).decode()}'" in csp
+    assert "'unsafe-inline'" not in csp.split("script-src")[1].split(";")[0]      # no inline scripts
+    assert "frame-ancestors 'none'" in csp and "object-src 'none'" in csp
+    assert bench_server._security_headers("application/json")["X-Content-Type-Options"] == "nosniff"
+
+
+def test_each_person_can_only_create_so_much(claude_setup, monkeypatch, supabase):
+    monkeypatch.setenv("CQ_DAILY_CREATES", "3")
+    bench_server._creates.clear()
+    as_user("tok-mert"); bench_server.api_claude_key({"key": KEY})
+    for _ in range(3):
+        bench_server.api_generate({"request": "x"})
+    body, status = bench_server.api_generate({"request": "x"})
+    assert status == 429 and "limit" in body["error"] and len(claude_setup) == 3
+    as_user("tok-nikol")                                         # someone else isn't affected
+    bench_server.api_generate({"request": "x"})
+    assert len(claude_setup) == 4
+
+
+def test_one_creation_at_a_time_and_the_slot_frees_even_after_a_crash(claude_setup, monkeypatch, supabase):
+    bench_server._creates.clear()
+    as_user("tok-mert"); bench_server.api_claude_key({"key": KEY})
+    user = bench_server._user()
+    assert bench_server._claim_create(user) is None
+    assert bench_server._claim_create(user)[1] == 429            # busy
+    bench_server._release_create(user)
+    def boom(*a, **k):
+        raise RuntimeError("Claude fell over")
+    monkeypatch.setattr(lesson_gen, "generate_lesson", boom)
+    assert bench_server.api_generate({"request": "x"})[1] in (502, 503)
+    assert bench_server._creates[user["id"]]["busy"] is False

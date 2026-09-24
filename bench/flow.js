@@ -421,7 +421,8 @@ async function connectClaudeCard(chat) {
   const card = await say(chat, `<div class="claude-lock"><b>🔒 Creating lessons uses your own Claude</b>
     <p class="muted">Each new lesson is written by Claude, so it runs on <b>your</b> Anthropic account — you pay Anthropic directly for what you use, and you can set a monthly limit there. Playing levels is always free.</p>
     <ol class="muted"><li>Open <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API keys ↗</a> (sign up, add a little credit).</li>
-    <li>Create a key and paste it here. It's checked with Anthropic, then stored encrypted — only its last 4 characters are ever shown.</li></ol>
+    <li>Create a key just for CircuitQuest and <b>set a monthly spending limit</b> on it (Settings → Limits) — then even in the worst case it can't cost more than that.</li>
+    <li>Paste it here. It's checked with Anthropic, then stored encrypted — the app never shows it again (only its last 4 characters), and you can disconnect any time.</li></ol>
     <div class="chat-input claude-key-row"><input class="text-input" type="password" autocomplete="off" placeholder="sk-ant-…" data-key>
     <button class="btn btn-primary" data-connect>Connect</button></div><div class="claude-msg" data-msg></div></div>`, 200);
   const input = card.querySelector("[data-key]"), msg = card.querySelector("[data-msg]"), btn = card.querySelector("[data-connect]");

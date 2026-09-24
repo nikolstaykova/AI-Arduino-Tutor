@@ -21,8 +21,11 @@ and lessons generated on the spot by Claude (core/lesson_gen.py; needs
 `pip install anthropic` and an API key).
 """
 import importlib
+import base64
+import hashlib
 import html
 import json
+import re
 import os
 import secrets
 import threading
@@ -180,15 +183,51 @@ def _claude_for_request():
     return None, ({"error": "Connect your Claude first — creating lessons uses your own Claude.", "locked": "claude"}, 403)
 
 
+# Creation limits per person (hosted): a stolen sign-in, or a runaway tab,
+# can't spend much on anyone's Claude — CQ_DAILY_CREATES a day, one at a time.
+_creates, _creates_lock = {}, threading.Lock()
+
+
+def _claim_create(user):
+    if not user:
+        return None
+    limit = int(os.environ.get("CQ_DAILY_CREATES", "20"))
+    day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    with _creates_lock:
+        rec = _creates.get(user["id"])
+        if not rec or rec["day"] != day:
+            rec = _creates[user["id"]] = {"day": day, "count": 0, "busy": False}
+        if rec["busy"]:
+            return {"error": "You're already creating one — wait for it to finish."}, 429
+        if rec["count"] >= limit:
+            return {"error": f"That's today's limit of {limit} Claude requests — it resets at midnight (UTC)."}, 429
+        rec["count"] += 1
+        rec["busy"] = True
+    return None
+
+
+def _release_create(user):
+    if user:
+        with _creates_lock:
+            if user["id"] in _creates:
+                _creates[user["id"]]["busy"] = False
+
+
 def _with_claude(fn):
     """Run fn() on the right Claude for this request, or return why not."""
     key, blocked = _claude_for_request()
     if blocked:
         return blocked
-    if key:
-        with core.lesson_gen.using_key(key):
-            return fn()
-    return fn()
+    user = _user() if core.cloud.enabled() else None
+    if (limited := _claim_create(user)):
+        return limited
+    try:
+        if key:
+            with core.lesson_gen.using_key(key):
+                return fn()
+        return fn()
+    finally:
+        _release_create(user)
 
 
 def _check_anthropic_key(key, opener=urllib.request.urlopen):
@@ -550,6 +589,36 @@ TOOL_CATEGORY = {"soldering-iron": "Soldering", "solder": "Soldering", "heat-shr
                  "digital-multimeter": "Measure", "safety-glasses": "Safety & finishing", "hot-glue-gun": "Safety & finishing"}
 
 
+def _csp():
+    """What the page may load: its own files, the two code/font CDNs, Supabase
+    for sign-in, Google profile pictures — and no inline script except the
+    import map (allowed by its exact hash). So even text that somehow slipped
+    into a lesson as HTML couldn't run code in anyone's browser."""
+    importmap = re.search(r'<script type="importmap">(.*?)</script>', PAGE.read_text(), re.S)
+    digest = base64.b64encode(hashlib.sha256(importmap.group(1).encode()).digest()).decode() if importmap else ""
+    supabase = (core.cloud.config() or {}).get("url", "")
+    return "; ".join([
+        "default-src 'self'",
+        f"script-src 'self' https://cdn.jsdelivr.net 'sha256-{digest}'",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "img-src 'self' data: blob: https://*.googleusercontent.com",
+        f"connect-src 'self' https://cdn.jsdelivr.net {supabase}".strip(),
+        "media-src 'self' blob:", "worker-src 'self' blob:",
+        "object-src 'none'", "base-uri 'self'", "form-action 'self'", "frame-ancestors 'none'",
+    ])
+
+
+def _security_headers(content_type):
+    h = {"X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin"}
+    if content_type.startswith("text/html"):
+        h["Content-Security-Policy"] = _csp()
+        h["X-Frame-Options"] = "DENY"
+    if core.cloud.enabled():            # hosted over HTTPS
+        h["Strict-Transport-Security"] = "max-age=31536000"
+    return h
+
+
 LEGAL_UPDATED = "24 September 2026"
 
 
@@ -634,6 +703,8 @@ class Handler(BaseHTTPRequestHandler):
         data = body if isinstance(body, bytes) else json.dumps(body).encode()
         self.send_response(status)
         self.send_header("Content-Type", content_type)
+        for k, v in _security_headers(content_type).items():
+            self.send_header(k, v)
         self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()

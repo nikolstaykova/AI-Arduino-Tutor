@@ -25,6 +25,12 @@ async function api(path, body) {
   if (!res.ok || data.error) throw new Error(data.error || `HTTP ${res.status}`);
   return data;
 }
+// Lesson text is shared between people (and written by Claude), so it's never
+// trusted as HTML: everything is escaped, then only bold / italic / code /
+// line breaks (which the engine uses round pin numbers) are let back in.
+function safeHtml(text) {
+  return esc(text).replace(/&lt;(\/?)(b|i|em|strong|code)&gt;/gi, "<$1$2>").replace(/&lt;br\s*\/?&gt;/gi, "<br>");
+}
 function guarded(fn) {
   return async (...args) => { try { await fn(...args); } catch (e) { console.error(e); toast("⚠️ " + e.message); } };
 }
@@ -703,8 +709,8 @@ function renderStep() {
     `<div class="progress-dot ${i < v.step_index ? "done" : i === v.step_index ? "current" : ""}"></div>`).join("");
   const phase = s ? s.phase : (v && v.phase) || "";
   $("stepPhase").textContent = phase === "build" ? `Step ${v.step_index} of ${total - 2}` : phase === "upload" ? "Upload the code" : phase === "final_check" ? "Final check" : phase;
-  $("stepClip").innerHTML = S.clip || (s && s.clip) || "";
-  $("hintList").innerHTML = S.hints.map((h, i) => `<div class="hint-item"><b>Hint ${i + 1}.</b> ${h}</div>`).join("");
+  $("stepClip").innerHTML = safeHtml(S.clip || (s && s.clip) || "");
+  $("hintList").innerHTML = S.hints.map((h, i) => `<div class="hint-item"><b>Hint ${i + 1}.</b> ${safeHtml(h)}</div>`).join("");
   $("prevBtn").disabled = !v || v.step_index <= 1;
   const upload = s && s.phase === "upload";
   $("codeView").classList.toggle("show", !!upload);
