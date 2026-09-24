@@ -13,6 +13,8 @@ RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
 RUN useradd --create-home app
 WORKDIR /app
 COPY --chown=app:app . .
+# the app writes profile.json (and new lessons) into /app itself, so it must own the folder too
+RUN chown app:app /app
 USER app
 
 ENV CQ_HOST=0.0.0.0 \
