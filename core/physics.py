@@ -87,6 +87,21 @@ _VARRES_TYPES = {
     "cq-photoresistor": (2_000.0, 50_000.0, "in the light", "covered"),
     "cq-fsr": (10_000_000.0, 1_000.0, "not pressed", "pressed"),
 }
+# Sensor modules whose outputs are actively driven once powered (so they never
+# float): the supply pins, the least supply they need, and each output's level
+# as a fraction of the supply — X/Y/Z of an accelerometer sit mid-rail when
+# level; a Ping's SIG / a Memsic's pulse outputs idle LOW.
+_MODULE_TYPES = {
+    "cq-ping": {"vcc": "5V", "gnd": ["GND"], "min": 4.5, "outputs": {"SIG": 0.0}},
+    "cq-adxl335": {"vcc": "VCC", "gnd": ["GND"], "min": 1.8, "outputs": {"X": 0.5, "Y": 0.5, "Z": 0.6}},
+    "cq-memsic2125": {"vcc": "VDD", "gnd": ["GND.1", "GND.2"], "min": 3.0, "outputs": {"XOUT": 0.0, "YOUT": 0.0}},
+}
+MODULE_SUPPLY_RESISTANCE = 20_000.0
+MODULE_OUTPUT_RESISTANCE = 1_000.0
+# An RGB LED: three LEDs sharing the COM leg — its anode (common anode, the
+# default) or its cathode (attrs common: "cathode").
+_RGB_TYPES = {"wokwi-rgb-led"}
+RGB_FORWARD_VOLTAGE = {"R": 2.0, "G": 3.0, "B": 3.0}
 _POT_TYPES = {"wokwi-potentiometer", "wokwi-slide-potentiometer"}
 _SUPPLY_PINS = {"5V": 5.0, "3.3V": 3.3, "3V3": 3.3}
 _BOARD_PINS_NOT_MODELLED = {"VIN", "AREF", "IOREF", "RESET"}
@@ -210,6 +225,8 @@ class _Circuit:
         self.pots = []        # (id, gnd_end, wiper, vcc_end, ohms)
         self.pirs = []        # (id, vcc, out, gnd)
         self.varres = []      # (id, node_1, node_2, rest_ohms, on_ohms)
+        self.modules = []     # (id, vcc, [gnd nodes], min_supply, {output_node: fraction})
+        self.module_powered = {}
         self.pir_powered = {}
         self.unmodeled = []
         for part in diagram_parts:
@@ -229,6 +246,20 @@ class _Circuit:
                 self.resistors.append((pid, plus, minus, BUZZER_RESISTANCE))
             elif wtype in _SLIDE_TYPES:
                 self.slides.append((pid, self.node(f"{pid}:1"), self.node(f"{pid}:2"), self.node(f"{pid}:3")))
+            elif wtype in _MODULE_TYPES:
+                spec = _MODULE_TYPES[wtype]
+                vcc, gnds = self.node(f"{pid}:{spec['vcc']}"), [self.node(f"{pid}:{g}") for g in spec["gnd"]]
+                outs = {self.node(f"{pid}:{o}"): frac for o, frac in spec["outputs"].items()}
+                self.modules.append((pid, vcc, gnds, spec["min"], outs))
+                self.resistors.append((f"{pid} (supply)", vcc, gnds[0], MODULE_SUPPLY_RESISTANCE))
+                self.module_powered[pid] = True
+            elif wtype in _RGB_TYPES:
+                com = self.node(f"{pid}:COM")
+                cathode_common = str(attrs.get("common", "anode")).lower() == "cathode"
+                for colour in ("R", "G", "B"):
+                    leg = self.node(f"{pid}:{colour}")
+                    anode, cathode = (leg, com) if cathode_common else (com, leg)
+                    self.leds.append((f"{pid}.{colour}", anode, cathode, RGB_FORWARD_VOLTAGE[colour]))
             elif wtype in _VARRES_TYPES:
                 rest, on, *_ = _VARRES_TYPES[wtype]
                 self.varres.append((pid, self.node(f"{pid}:1"), self.node(f"{pid}:2"), rest, on))
@@ -339,6 +370,21 @@ class _Circuit:
                     b[ic] -= gs * vf
             else:
                 conductance(anode, cathode, GMIN)
+        for pid, vcc, gnds, _, outs in self.modules:
+            if not self.module_powered.get(pid):
+                continue
+            # each output: a Norton source relative to the module's GND, at its fraction of the supply
+            for out, frac in outs.items():
+                if out in (vcc, gnds[0]):
+                    continue
+                go = 1.0 / MODULE_OUTPUT_RESISTANCE
+                conductance(out, gnds[0], go)
+                level = frac * getattr(self, "_module_supply", {}).get(pid, VCC)
+                io, ig = self.index.get(out), self.index.get(gnds[0])
+                if io is not None:
+                    b[io] += level * go
+                if ig is not None:
+                    b[ig] -= level * go
         for pid, vcc, out, gnd in self.pirs:
             if self.pir_powered.get(pid) and out not in (gnd, vcc):
                 # Norton source between OUT and the module's own GND
@@ -364,12 +410,16 @@ class _Circuit:
         that changes anything, solve again (a sensor only drives OUT when
         it's powered)."""
         self.pir_powered = {pid: True for pid, *_ in self.pirs}
-        for _ in range(3):
+        self.module_powered = {pid: True for pid, *_ in self.modules}
+        self._module_supply = {}
+        for _ in range(4):
             volts, led_on = self._solve_leds(pressed)
             powered = {pid: volts[vcc] - volts[gnd] >= PIR_MIN_SUPPLY for pid, vcc, _, gnd in self.pirs}
-            if powered == self.pir_powered:
+            mod = {pid: volts[vcc] - volts[gnds[0]] >= need for pid, vcc, gnds, need, _ in self.modules}
+            supply = {pid: round(max(0.0, volts[vcc] - volts[gnds[0]]), 1) for pid, vcc, gnds, _, _ in self.modules}
+            if powered == self.pir_powered and mod == self.module_powered and supply == self._module_supply:
                 break
-            self.pir_powered = powered
+            self.pir_powered, self.module_powered, self._module_supply = powered, mod, supply
         return volts, led_on
 
     def _solve_leds(self, pressed):
@@ -417,6 +467,12 @@ class _Circuit:
         for pid, _, out, gnd in self.pirs:
             if self.pir_powered.get(pid):
                 link(out, gnd)                  # OUT is actively driven
+        for pid, _, gnds, _, outs in self.modules:
+            if self.module_powered.get(pid):
+                for out in outs:
+                    link(out, gnds[0])          # outputs are actively driven
+            for g in gnds[1:]:
+                link(g, gnds[0])
         fixed, seen, todo = self.fixed_nodes(), {start}, [start]
         while todo:
             node = todo.pop()
@@ -478,6 +534,16 @@ def analyze(pairs, diagram_parts, code, library=None):
         label = ", ".join(f"{pid} {state_word(pid, p)}" for pid, p in pressed.items()) or "steady state"
         volts, led_on = circuit.solve(pressed)
         scenario = {"label": label, "pressed": pressed, "leds": {}, "pins": {}, "buzzers": {}, "pirs": {}}
+        for pid, vcc, gnds, need, _ in circuit.modules:
+            supply = volts[vcc] - volts[gnds[0]]
+            if supply < -1.0:
+                add("warning", "module_reversed", pid, f"{pid}'s power is the wrong way round — swap its power and GND wires "
+                    "(backwards it stays off, and can be damaged).", label)
+            elif not circuit.module_powered.get(pid):
+                add("warning", "module_unpowered", pid, f"{pid} has no power, so its outputs aren't working: connect its power pin "
+                    "and its GND pin(s).", label)
+            elif any(abs(volts[g] - volts[gnds[0]]) > 0.5 for g in gnds[1:]):
+                add("warning", "module_unpowered", pid, f"Connect both of {pid}'s GND pins to GND.", label)
         for pid, vcc, out, gnd in circuit.pirs:
             supply = volts[vcc] - volts[gnd]
             powered = circuit.pir_powered.get(pid, False)

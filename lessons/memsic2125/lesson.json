@@ -1,0 +1,166 @@
+{
+  "id": "memsic2125",
+  "title": "Memsic 2125 Accelerometer",
+  "description": "A tilt sensor that talks in pulses — measure them with pulseIn().",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/sensors/Memsic2125/",
+    "title": "Arduino docs: Memsic 2125"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "digital-read-serial"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "memsic2125"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × Memsic 2125 accelerometer, and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "memsic2125"
+      ]
+    },
+    {
+      "id": "acc1-place",
+      "phase": "build",
+      "clip": "Push the Memsic 2125 in across the middle gap, like a chip: three pins above, three below.",
+      "expected_landing": [
+        "acc1:TOUT",
+        "acc1:YOUT",
+        "acc1:GND.1",
+        "acc1:VDD",
+        "acc1:XOUT",
+        "acc1:GND.2"
+      ],
+      "strict": false,
+      "hints": [
+        "Its pin names are printed next to the pins."
+      ],
+      "goal": "Put the Memsic 2125 on the breadboard."
+    },
+    {
+      "id": "acc1-vdd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The Memsic 2125's Vdd pin → that same row.",
+      "expected_nets": [
+        [
+          "acc1:VDD",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Power first: + to 5V, − to GND."
+      ],
+      "goal": "Connect Vdd to 5V."
+    },
+    {
+      "id": "acc1-gnd1",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The Memsic 2125's first GND pin → that same row.",
+      "expected_nets": [
+        [
+          "acc1:GND.1",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "GND is the minus side."
+      ],
+      "goal": "Connect first GND to GND."
+    },
+    {
+      "id": "acc1-gnd2",
+      "phase": "build",
+      "clip": "Run a wire from the Memsic 2125's second GND pin to the blue − row.",
+      "expected_nets": [
+        [
+          "acc1:GND.2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "GND is the minus side."
+      ],
+      "goal": "Connect second GND to GND."
+    },
+    {
+      "id": "acc1-xout",
+      "phase": "build",
+      "clip": "Run a wire from the Memsic 2125's <b>Xout</b> pin to <b>2</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "acc1:XOUT",
+          "uno:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "2 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect Xout to 2."
+    },
+    {
+      "id": "acc1-yout",
+      "phase": "build",
+      "clip": "Run a wire from the Memsic 2125's <b>Yout</b> pin to <b>3</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "acc1:YOUT",
+          "uno:3"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "3 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect Yout to 3."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Open the Serial Monitor and tilt the breadboard: the two numbers show the tilt in milli-g.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "acc1:VDD",
+        "uno:5V"
+      ],
+      [
+        "acc1:GND.1",
+        "uno:GND.1"
+      ],
+      [
+        "acc1:GND.2",
+        "uno:GND.1"
+      ],
+      [
+        "acc1:XOUT",
+        "uno:2"
+      ],
+      [
+        "acc1:YOUT",
+        "uno:3"
+      ]
+    ]
+  }
+}

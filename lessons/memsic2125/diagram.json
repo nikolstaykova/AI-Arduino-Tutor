@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "cq-memsic2125",
+      "id": "acc1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "acc1:TOUT",
+      "bb1:1t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:YOUT",
+      "bb1:2t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:GND.1",
+      "bb1:3t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:VDD",
+      "bb1:1b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:XOUT",
+      "bb1:2b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:GND.2",
+      "bb1:3b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:1b.j",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:5V",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:3t.a",
+      "bb1:bn.3",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:3b.j",
+      "bb1:bn.3",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:2b.j",
+      "uno:2",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:2t.a",
+      "uno:3",
+      "orange",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

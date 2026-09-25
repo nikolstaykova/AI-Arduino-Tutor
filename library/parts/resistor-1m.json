@@ -1,0 +1,31 @@
+{
+  "id": "resistor-1m",
+  "type": "part",
+  "subtype": "resistor",
+  "wokwi_type": "wokwi-resistor",
+  "wokwi_value": "1000000",
+  "pins": {
+    "1": "either end",
+    "2": "either end"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "display_name": "1MΩ Resistor",
+  "aliases": [
+    "1m resistor",
+    "1 megohm resistor",
+    "1 mohm resistor"
+  ],
+  "description": "A fixed 1 MΩ resistor.",
+  "how_to_use": "Very high resistance: used as a gentle pull-down that drains a piezo knock sensor's charge.",
+  "image": "resistor.png",
+  "leads": "wire-lead",
+  "plain": {
+    "what": "A 1 MΩ resistor — a very big one, it lets only a tiny current through.",
+    "how": "It works either way round. In the Knock lesson it sits next to the piezo to drain away its little voltage spikes."
+  }
+}

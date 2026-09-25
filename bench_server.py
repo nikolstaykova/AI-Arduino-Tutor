@@ -68,7 +68,8 @@ _RELOAD_ORDER = [core.checker, core.library, core.lesson, core.physics, core.eng
 _TEMPLATES = {"wokwi-resistor": "resistor", "wokwi-led": "led", "wokwi-potentiometer": "pot",
               "wokwi-slide-potentiometer": "pot", "wokwi-pushbutton": "button", "wokwi-pushbutton-6mm": "button",
               "wokwi-slide-switch": "switch", "wokwi-buzzer": "buzzer", "wokwi-pir-motion-sensor": "pir",
-              "cq-photoresistor": "ldr", "cq-fsr": "fsr"}
+              "cq-photoresistor": "ldr", "cq-fsr": "fsr",
+              "cq-ping": "module", "cq-adxl335": "module", "cq-memsic2125": "module", "wokwi-rgb-led": "rgb"}
 
 sessions = {}  # session id -> {"lesson", "library", "state", "log"}
 
@@ -582,7 +583,7 @@ def api_parts_catalog(_body):
 
 MEDIA_DIRS = [ROOT / "library" / "tools" / "media", ROOT / "library" / "parts" / "media"]
 LIB_CATEGORY = {"board": "Boards", "breadboard": "Wiring", "wire": "Wiring", "cable": "Wiring", "utility": "Wiring",
-                "led": "Lights", "display": "Displays", "resistor": "Resistors", "potentiometer": "Inputs",
+                "led": "Lights", "rgb-led": "Lights", "display": "Displays", "resistor": "Resistors", "potentiometer": "Inputs",
                 "pushbutton": "Inputs", "switch": "Inputs", "input": "Inputs", "sensor": "Sensors", "buzzer": "Sound",
                 "motor": "Motors", "driver": "Motors", "logic": "Chips", "storage": "Chips", "consumable": "Soldering"}
 

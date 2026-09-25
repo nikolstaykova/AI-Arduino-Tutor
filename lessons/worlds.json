@@ -131,7 +131,8 @@
           "lesson": "physical-pixel"
         },
         {
-          "title": "Read ASCII String"
+          "title": "Read ASCII String",
+          "lesson": "read-ascii-string"
         },
         {
           "title": "Serial Call and Response",
@@ -188,16 +189,20 @@
       "blurb": "Measure the world: tilt, knocks, distance.",
       "levels": [
         {
-          "title": "ADXL3xx Accelerometer"
+          "title": "ADXL3xx Accelerometer",
+          "lesson": "adxl3xx"
         },
         {
-          "title": "Knock"
+          "title": "Knock",
+          "lesson": "knock"
         },
         {
-          "title": "Memsic 2125 Accelerometer"
+          "title": "Memsic 2125 Accelerometer",
+          "lesson": "memsic2125"
         },
         {
-          "title": "Ping Range Finder"
+          "title": "Ping Range Finder",
+          "lesson": "ping"
         }
       ]
     },

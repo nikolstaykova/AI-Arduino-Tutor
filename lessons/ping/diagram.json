@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "cq-ping",
+      "id": "ping1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "ping1:GND",
+      "bb1:1b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "ping1:5V",
+      "bb1:2b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "ping1:SIG",
+      "bb1:3b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:1b.j",
+      "bb1:bn.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:2b.j",
+      "bb1:bp.2",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:5V",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:3b.j",
+      "uno:7",
+      "orange",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

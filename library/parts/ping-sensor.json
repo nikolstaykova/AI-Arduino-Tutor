@@ -1,0 +1,33 @@
+{
+  "id": "ping-sensor",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "cq-ping",
+  "display_name": "Ping))) Ultrasonic Sensor",
+  "aliases": [
+    "ping sensor",
+    "parallax ping",
+    "ping ultrasonic",
+    "ping)))"
+  ],
+  "polarized": true,
+  "leads": "pin",
+  "description": "Parallax PING))) ultrasonic distance sensor: 3 pins (GND, 5V, SIG). One signal pin both starts a ping and returns the echo.",
+  "how_to_use": "GND to GND, 5V to 5V, SIG to one digital pin. The sketch sets SIG as OUTPUT to send a 5 µs trigger pulse, then as INPUT and times the echo pulse with pulseIn(); the pulse length is the round-trip time of the sound (29 µs per cm).",
+  "pins": {
+    "GND": "ground",
+    "5V": "power, +5 V",
+    "SIG": "signal: trigger out, echo back on the same pin"
+  },
+  "image": "ping-sensor.png",
+  "plain": {
+    "what": "Measures distance with sound too high to hear — it pings and listens for the echo, like a bat.",
+    "how": "GND to GND, 5V to 5V, and SIG to a digital pin. The same SIG wire sends the ping and hears the echo.",
+    "pins": {
+      "GND": "power −",
+      "5V": "power +",
+      "SIG": "the signal wire (to a pin)"
+    }
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "rgb1",
+      "top": 0,
+      "left": 120,
+      "attrs": {
+        "common": "anode"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 0,
+      "left": 180,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 0,
+      "left": 240,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": 0,
+      "left": 300,
+      "attrs": {
+        "value": "220"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "rgb1:R",
+      "bb1:1t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "rgb1:COM",
+      "bb1:2t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "rgb1:G",
+      "bb1:3t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "rgb1:B",
+      "bb1:4t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:2t.d",
+      "bb1:bp.2",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:5V",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:1",
+      "bb1:1t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:2",
+      "bb1:5t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:5t.d",
+      "uno:3",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r2:1",
+      "bb1:3t.b",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r2:2",
+      "bb1:7t.b",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:7t.d",
+      "uno:5",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r3:1",
+      "bb1:4t.c",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r3:2",
+      "bb1:8t.c",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:8t.d",
+      "uno:6",
+      "orange",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

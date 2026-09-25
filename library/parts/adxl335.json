@@ -1,0 +1,40 @@
+{
+  "id": "adxl335",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "wokwi_type": "cq-adxl335",
+  "display_name": "ADXL335 Accelerometer",
+  "aliases": [
+    "adxl3xx",
+    "adxl335",
+    "adxl320",
+    "analog accelerometer",
+    "3-axis accelerometer"
+  ],
+  "polarized": true,
+  "leads": "pin",
+  "description": "A 3-axis analog accelerometer breakout (ADXL3xx family). X, Y and Z are voltages that change as you tilt it: about half the supply when level, higher or lower as you tilt.",
+  "how_to_use": "Pins in a row: ST (self-test, leave unconnected), Z, Y, X, GND, VCC (3.3 V). Read X/Y/Z with analogRead(). Arduino's example plugs the breakout straight into A0–A5 and powers it from A4/A5 set as outputs; wiring VCC to 3.3V and GND to GND does the same.",
+  "pins": {
+    "ST": "self-test (not used)",
+    "Z": "Z-axis output",
+    "Y": "Y-axis output",
+    "X": "X-axis output",
+    "GND": "ground",
+    "VCC": "power (3.3 V)"
+  },
+  "image": "adxl335.png",
+  "plain": {
+    "what": "Senses tilt and movement in three directions (left–right, forward–back, up–down).",
+    "how": "VCC to 3.3V, GND to GND, and X, Y, Z to three analog pins. Tilt it and the three readings change.",
+    "pins": {
+      "X": "left–right tilt",
+      "Y": "forward–back tilt",
+      "Z": "up–down",
+      "GND": "power −",
+      "VCC": "power + (3.3V)",
+      "ST": "not used"
+    }
+  }
+}

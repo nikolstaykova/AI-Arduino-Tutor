@@ -409,8 +409,12 @@ export const PART_PINS = {
   "wokwi-pir-motion-sensor": [["VCC", 0, 0], ["OUT", 1, 0], ["GND", 2, 0]],
   "cq-photoresistor": [["1", 0, 0], ["2", 2, 0]],
   "cq-fsr": [["1", 0, 0], ["2", 2, 0]],
+  "cq-ping": [["GND", 0, 0], ["5V", 1, 0], ["SIG", 2, 0]],
+  "cq-adxl335": [["ST", 0, 0], ["Z", 1, 0], ["Y", 2, 0], ["X", 3, 0], ["GND", 4, 0], ["VCC", 5, 0]],
+  "cq-memsic2125": [["TOUT", 0, 0], ["YOUT", 1, 0], ["GND.1", 2, 0], ["VDD", 0, 3], ["XOUT", 1, 3], ["GND.2", 2, 3]],
+  "wokwi-rgb-led": [["R", 0, 0], ["COM", 1, 0], ["G", 2, 0], ["B", 3, 0]],
 };
-export const LIFT = { "cq-photoresistor": 5, "cq-fsr": 4, "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
+export const LIFT = { "cq-ping": 2.5, "cq-adxl335": 8.5, "cq-memsic2125": 0.6, "wokwi-rgb-led": 2.2, "cq-photoresistor": 5, "cq-fsr": 4, "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
 
 function resistorBands(value) {
   const ohms = Math.round(Number(String(value || "1000").replace(/k/i, "e3").replace(/M/, "e6")) || 1000);
@@ -620,8 +624,56 @@ function makeFSR() {
   return g;
 }
 
+// Parallax PING))): a small blue board standing upright on its 3 pins, the two
+// transducers (the "eyes") facing you.
+function makePing() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-ping"], cx = PITCH;
+  const board = mesh(new RoundedBoxGeometry(46, 22, 1.6, 2, 0.5), new THREE.MeshPhysicalMaterial({ color: 0x1f4f9a, roughness: 0.45, clearcoat: 0.4 }));
+  board.position.set(cx, y0 + 11.5, -1.5); g.add(board);
+  for (const s of [-1, 1]) {
+    const can = mesh(new THREE.CylinderGeometry(8, 8, 12, 36), M.metal); can.rotation.x = Math.PI / 2; can.position.set(cx + s * 13, y0 + 12, 5.2); g.add(can);
+    const mesh2 = mesh(new THREE.CylinderGeometry(7, 7, 0.2, 36), M.blackPlastic); mesh2.rotation.x = Math.PI / 2; mesh2.position.set(cx + s * 13, y0 + 12, 11.3); g.add(mesh2);
+  }
+  const spacer = mesh(new THREE.BoxGeometry(3 * PITCH, 2.5, PITCH), M.blackPlastic); spacer.position.set(cx, y0 - 1.25, 0); g.add(spacer);
+  for (let i = 0; i < 3; i++) g.add(lead([[i * PITCH, BB_TOP - 1.2, 0], [i * PITCH, y0 + 1, 0], [i * PITCH, y0 + 1, -1]], 0.32, M.gold || M.tin));
+  return g;
+}
+
+// ADXL335 breakout: a small purple board over its six header pins (it overhangs
+// towards the breadboard's outer edge; clicks go through it to the holes).
+function makeADXL() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-adxl335"], cx = 2.5 * PITCH, cz = -8;
+  const board = mesh(new RoundedBoxGeometry(18, 1.6, 18, 2, 0.4), new THREE.MeshPhysicalMaterial({ color: 0x5b2a9a, roughness: 0.45, clearcoat: 0.4 }));
+  board.position.set(cx, y0 + 0.8, cz); board.userData.passThrough = true; g.add(board);
+  const chip = mesh(new THREE.BoxGeometry(4, 1.4, 4), M.blackPlastic); chip.position.set(cx, y0 + 2.3, cz - 2); g.add(chip);
+  const spacer = mesh(new THREE.BoxGeometry(6 * PITCH, 2.5, PITCH), M.blackPlastic); spacer.position.set(cx, y0 - 1.25, 0); g.add(spacer);
+  for (let i = 0; i < 6; i++) g.add(lead([[i * PITCH, BB_TOP - 1.2, 0], [i * PITCH, y0 + 1.8, 0]], 0.32, M.gold || M.tin));
+  return g;
+}
+
+// Memsic 2125: a square black module on six legs, straddling the middle gap like a chip.
+function makeMemsic() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-memsic2125"], cx = PITCH, cz = 1.5 * PITCH;
+  const body = mesh(new RoundedBoxGeometry(10.5, 6, 10.5, 2, 0.6), M.blackPlastic); body.position.set(cx, y0 + 3, cz); g.add(body);
+  const lid = mesh(new THREE.BoxGeometry(8.5, 0.2, 8.5), M.metal); lid.position.set(cx, y0 + 6.05, cz); g.add(lid);
+  for (let i = 0; i < 3; i++) for (const z of [0, 3 * PITCH]) g.add(lead([[i * PITCH, BB_TOP - 1.2, z], [i * PITCH, y0 + 0.4, z], [i * PITCH, y0 + 0.4, cz + (z ? 5.2 : -5.2)]], 0.3));
+  return g;
+}
+
+// A 5 mm RGB LED: a milky diffused dome on four legs (the longest is the common one).
+function makeRGB() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["wokwi-rgb-led"], cx = 1.5 * PITCH;
+  const pts = [[0, 0], [2.9, 0], [2.9, 1], [2.5, 1.05], [2.5, 5.6]];
+  for (let k = 1; k <= 12; k++) { const a = (k / 12) * Math.PI / 2; pts.push([2.5 * Math.cos(a), 5.6 + 2.5 * Math.sin(a)]); }
+  const dome = mesh(new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r, y)), 36),
+    new THREE.MeshPhysicalMaterial({ color: 0xf4f4f4, roughness: 0.5, transmission: 0.3, thickness: 2, transparent: true, opacity: 0.95 }));
+  dome.position.set(cx, y0 + 2, 0); g.add(dome);
+  for (let i = 0; i < 4; i++) g.add(lead([[i * PITCH, BB_TOP - 1.2, 0], [i * PITCH, y0 + (i === 1 ? 1.2 : 0.6), 0], [cx + (i - 1.5) * 0.7, y0 + 2, 0]], 0.25));
+  return g;
+}
+
 export function makePart(wokwiType, attrs = {}) {
-  const build = { "cq-photoresistor": makeLDR, "cq-fsr": makeFSR, "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
+  const build = { "cq-ping": makePing, "cq-adxl335": makeADXL, "cq-memsic2125": makeMemsic, "wokwi-rgb-led": makeRGB, "cq-photoresistor": makeLDR, "cq-fsr": makeFSR, "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
                   "wokwi-pushbutton-6mm": makePushbutton, "wokwi-potentiometer": makePotentiometer }[wokwiType]
                 || (() => makeGeneric(wokwiType));
   const g = build(attrs);

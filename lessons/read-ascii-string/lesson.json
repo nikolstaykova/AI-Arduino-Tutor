@@ -1,0 +1,207 @@
+{
+  "id": "read-ascii-string",
+  "title": "Read ASCII String",
+  "description": "Type three numbers to mix a colour on an RGB LED.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/communication/ReadASCIIString/",
+    "title": "Arduino docs: Read ASCII String"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "fade",
+    "physical-pixel"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "rgb-led",
+    "resistor-220"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × RGB LED (common anode), 3 × 220 Ω resistor, and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "rgb-led",
+        "resistor-220"
+      ]
+    },
+    {
+      "id": "rgb1-place",
+      "phase": "build",
+      "clip": "Push the RGB LED in, each of its four legs in its own column (top half). The longest leg is the common one.",
+      "expected_landing": [
+        "rgb1:R",
+        "rgb1:COM",
+        "rgb1:G",
+        "rgb1:B"
+      ],
+      "strict": false,
+      "hints": [
+        "Legs from left to right: red, common (longest), green, blue."
+      ],
+      "goal": "Put the RGB LED on the breadboard."
+    },
+    {
+      "id": "rgb1-com",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The RGB LED's longest leg → that same row.",
+      "expected_nets": [
+        [
+          "rgb1:COM",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "This LED is common anode: the shared leg is +. A colour lights when its own pin goes LOW."
+      ],
+      "goal": "Connect the common leg to 5V."
+    },
+    {
+      "id": "rgb1-r-resistor",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in the red leg's column, the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "rgb1:R"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each colour needs its own resistor."
+      ],
+      "goal": "Put a resistor on the red leg."
+    },
+    {
+      "id": "rgb1-r-pin",
+      "phase": "build",
+      "clip": "Run a wire from that resistor's other leg to pin <b>3</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "uno:3"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 3 has a ~ next to it: it can dim the colour (PWM)."
+      ],
+      "goal": "Connect the red resistor to pin 3."
+    },
+    {
+      "id": "rgb1-g-resistor",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in the green leg's column, the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r2:1",
+          "rgb1:G"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each colour needs its own resistor."
+      ],
+      "goal": "Put a resistor on the green leg."
+    },
+    {
+      "id": "rgb1-g-pin",
+      "phase": "build",
+      "clip": "Run a wire from that resistor's other leg to pin <b>5</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r2:2",
+          "uno:5"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 5 has a ~ next to it: it can dim the colour (PWM)."
+      ],
+      "goal": "Connect the green resistor to pin 5."
+    },
+    {
+      "id": "rgb1-b-resistor",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in the blue leg's column, the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r3:1",
+          "rgb1:B"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each colour needs its own resistor."
+      ],
+      "goal": "Put a resistor on the blue leg."
+    },
+    {
+      "id": "rgb1-b-pin",
+      "phase": "build",
+      "clip": "Run a wire from that resistor's other leg to pin <b>6</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r3:2",
+          "uno:6"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 6 has a ~ next to it: it can dim the colour (PWM)."
+      ],
+      "goal": "Connect the blue resistor to pin 6."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. In the Serial Monitor (set to 'Newline') type three numbers like 255,0,128 and press Enter: the LED mixes that colour.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "rgb1:COM",
+        "uno:5V"
+      ],
+      [
+        "r1:1",
+        "rgb1:R"
+      ],
+      [
+        "r1:2",
+        "uno:3"
+      ],
+      [
+        "r2:1",
+        "rgb1:G"
+      ],
+      [
+        "r2:2",
+        "uno:5"
+      ],
+      [
+        "r3:1",
+        "rgb1:B"
+      ],
+      [
+        "r3:2",
+        "uno:6"
+      ]
+    ]
+  }
+}

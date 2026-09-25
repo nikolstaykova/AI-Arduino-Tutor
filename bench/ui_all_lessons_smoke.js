@@ -10,14 +10,18 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader']});
   let failed = 0;
   try {
-    const page = await browser.newPage(); await page.setViewport({width: 1280, height: 800});
-    const errors = []; page.on('pageerror', e => errors.push(e.message));
-    await page.goto('http://localhost:' + (process.env.PORT || 8799) + '/', {waitUntil: 'networkidle0'});
-    await page.waitForFunction(() => window.__bench3d, {timeout: 30000, polling: 500});
+    const errors = [];
+    const url = 'http://localhost:' + (process.env.PORT || 8799) + '/';
+    let page = await browser.newPage(); await page.goto(url, {waitUntil: 'networkidle0'});
     // default: the lesson-kit lessons (laid out to match the 3D parts' real leg spacing)
     const ids = process.argv.slice(2).length ? process.argv.slice(2) : require('child_process')
       .execSync('python3 -c "from tools.lessons_spec import LESSONS; print(\\" \\".join(m().id for m in LESSONS))"', {cwd: __dirname + '/..'}).toString().trim().split(' ');
     for (const id of ids) {
+      // a fresh page per lesson: each one starts from a clean table
+      await page.close(); page = await browser.newPage(); await page.setViewport({width: 1280, height: 800});
+      page.on('pageerror', e => errors.push(`${id}: ${e.message}`));
+      await page.goto(url, {waitUntil: 'networkidle0'});
+      await page.waitForFunction(() => window.__bench3d, {timeout: 30000, polling: 500});
       const verdict = await page.evaluate(async (id) => {
         const m = await import('/bench/app.js'); await m.bench.start(id, 'beginner');
         document.querySelectorAll('.screen').forEach(s => s.hidden = s.id !== 'lessonScreen');
@@ -57,7 +61,6 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       const ok = /COMPLETE|skipped/.test(verdict);
       if (!ok) failed++;
       console.log((ok ? 'OK  ' : 'FAIL') + ' ' + id.padEnd(28) + verdict);
-      await page.evaluate(() => { const p = document.getElementById('levelPop'); if (p) p.hidden = true; });
     }
     console.log('ERRORS:', errors.slice(0, 5));
   } catch (e) { console.log('TEST ERROR', e); failed++; } finally { await browser.close(); process.exit(failed ? 1 : 0); }

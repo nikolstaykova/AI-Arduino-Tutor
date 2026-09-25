@@ -1,0 +1,224 @@
+{
+  "id": "knock",
+  "title": "Knock",
+  "description": "A piezo feels a knock on the table: each knock toggles an LED and prints “Knock!”.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/sensors/Knock/",
+    "title": "Arduino docs: Knock"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "analog-read-serial"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "buzzer",
+    "resistor-1m",
+    "resistor-220",
+    "led"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × piezo buzzer, 1 × 1 MΩ resistor, 1 × 220 Ω resistor, 1 × LED, and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "buzzer",
+        "resistor-1m",
+        "resistor-220",
+        "led"
+      ]
+    },
+    {
+      "id": "bz1-place",
+      "phase": "build",
+      "clip": "Push the piezo in, its two legs in two different columns.",
+      "expected_landing": [
+        "bz1:1",
+        "bz1:2"
+      ],
+      "strict": false,
+      "hints": [
+        "Here the piezo is a sensor: a knock squeezes it and it makes a tiny voltage.",
+        "Its + leg is marked on top."
+      ],
+      "goal": "Put the piezo on the breadboard."
+    },
+    {
+      "id": "bz1-gnd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The piezo's − leg → that same row.",
+      "expected_nets": [
+        [
+          "bz1:1",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The − leg is the unmarked one."
+      ],
+      "goal": "Connect the piezo's − leg to GND."
+    },
+    {
+      "id": "bz1-pin",
+      "phase": "build",
+      "clip": "Run a wire from the piezo's <b>+</b> leg to pin <b>A0</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bz1:2",
+          "uno:A0"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A0 is on the ANALOG IN side: a knock shows up as a jump in the reading."
+      ],
+      "goal": "Connect the piezo's + leg to A0."
+    },
+    {
+      "id": "r1-place",
+      "phase": "build",
+      "clip": "Push the 1 MΩ resistor in: one leg in the piezo's + column, the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "bz1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "It slowly drains the piezo's charge so each knock is a fresh spike."
+      ],
+      "goal": "Put the 1 MΩ resistor next to the piezo's + leg."
+    },
+    {
+      "id": "r1-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the 1 MΩ resistor's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now it sits across the piezo."
+      ],
+      "goal": "Connect the 1 MΩ resistor to GND."
+    },
+    {
+      "id": "led1-resistor",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
+      "expected_landing": "r2:1",
+      "strict": false,
+      "hints": [
+        "A resistor works either way round.",
+        "It protects the LED — without it the LED can burn out."
+      ],
+      "goal": "Put the resistor for the LED on the breadboard."
+    },
+    {
+      "id": "led1-pin",
+      "phase": "build",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>13</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r2:1",
+          "uno:13"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Put the wire in any hole in the same column as the leg.",
+        "Pin 13 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect the resistor to pin 13."
+    },
+    {
+      "id": "led1-legs",
+      "phase": "build",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "expected_nets": [
+        [
+          "led1:A",
+          "r2:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
+      ],
+      "goal": "Connect the LED's long leg (+) to the resistor."
+    },
+    {
+      "id": "led1-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the LED's short leg to the blue − row.",
+      "expected_nets": [
+        [
+          "led1:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The short leg is − (the cathode).",
+        "GND is the minus side of the circuit."
+      ],
+      "goal": "Connect the LED's short leg (−) to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Knock on the table next to the piezo: the LED switches and the Serial Monitor says Knock!",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "bz1:1",
+        "uno:GND.1"
+      ],
+      [
+        "bz1:2",
+        "uno:A0"
+      ],
+      [
+        "r1:1",
+        "bz1:2"
+      ],
+      [
+        "r1:2",
+        "uno:GND.1"
+      ],
+      [
+        "r2:1",
+        "uno:13"
+      ],
+      [
+        "led1:A",
+        "r2:2"
+      ],
+      [
+        "led1:C",
+        "uno:GND.1"
+      ]
+    ]
+  }
+}

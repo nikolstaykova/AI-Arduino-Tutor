@@ -1,0 +1,46 @@
+{
+  "id": "memsic2125",
+  "type": "part",
+  "subtype": "sensor",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "wokwi_type": "cq-memsic2125",
+  "display_name": "Memsic 2125 Accelerometer",
+  "aliases": [
+    "memsic",
+    "memsic 2125",
+    "mx2125",
+    "2-axis accelerometer"
+  ],
+  "polarized": true,
+  "leads": "pin",
+  "description": "A 2-axis thermal accelerometer in a 6-pin DIP-style module. X and Y are digital pulse outputs whose width changes with tilt (about 5 ms each at level).",
+  "how_to_use": "Straddle the breadboard gap. Pin 1 Tout (temperature, unused), 2 Yout, 3 GND, 4 GND (the two GND pins are joined inside), 5 Xout, 6 Vdd (5 V). Read the tilt with pulseIn() on the pins wired to Xout and Yout.",
+  "pins": {
+    "TOUT": "temperature output (not used)",
+    "YOUT": "Y-axis pulse output",
+    "GND.1": "ground",
+    "GND.2": "ground",
+    "XOUT": "X-axis pulse output",
+    "VDD": "power, +5 V"
+  },
+  "image": "memsic2125.png",
+  "plain": {
+    "what": "Senses tilt in two directions and tells the Arduino with pulses.",
+    "how": "Put it across the middle gap. Vdd to 5V, both GNDs to GND, Xout and Yout to two digital pins.",
+    "pins": {
+      "XOUT": "left–right tilt (to a pin)",
+      "YOUT": "forward–back tilt (to a pin)",
+      "VDD": "power +",
+      "GND.1": "power −",
+      "GND.2": "power − (second)",
+      "TOUT": "not used"
+    }
+  },
+  "pin_aliases": {
+    "mode": "prefix",
+    "prefixes": [
+      "GND"
+    ]
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "id": "adxl3xx",
+  "title": "ADXL3xx Accelerometer",
+  "description": "Read tilt in three directions from an analog accelerometer.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/sensors/ADXL3xx/",
+    "title": "Arduino docs: ADXL3xx"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "analog-read-serial"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "adxl335"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × ADXL335 accelerometer, and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "adxl335"
+      ]
+    },
+    {
+      "id": "acc1-place",
+      "phase": "build",
+      "clip": "Push the accelerometer in, its six pins in six columns.",
+      "expected_landing": [
+        "acc1:ST",
+        "acc1:Z",
+        "acc1:Y",
+        "acc1:X",
+        "acc1:GND",
+        "acc1:VCC"
+      ],
+      "strict": false,
+      "hints": [
+        "Its pin names are printed next to the pins."
+      ],
+      "goal": "Put the accelerometer on the breadboard."
+    },
+    {
+      "id": "acc1-vcc",
+      "phase": "build",
+      "clip": "Run a wire from the accelerometer's <b>VCC</b> pin to <b>3.3V</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "acc1:VCC",
+          "uno:3.3V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "3.3V is on the Arduino's power header, next to 5V."
+      ],
+      "goal": "Connect VCC to 3.3V."
+    },
+    {
+      "id": "acc1-gnd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The accelerometer's GND pin → that same row.",
+      "expected_nets": [
+        [
+          "acc1:GND",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "GND is the minus side."
+      ],
+      "goal": "Connect GND to GND."
+    },
+    {
+      "id": "acc1-x",
+      "phase": "build",
+      "clip": "Run a wire from the accelerometer's <b>X</b> pin to <b>A3</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "acc1:X",
+          "uno:A3"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A3 is on the Arduino's ANALOG IN side."
+      ],
+      "goal": "Connect X to A3."
+    },
+    {
+      "id": "acc1-y",
+      "phase": "build",
+      "clip": "Run a wire from the accelerometer's <b>Y</b> pin to <b>A2</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "acc1:Y",
+          "uno:A2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A2 is on the Arduino's ANALOG IN side."
+      ],
+      "goal": "Connect Y to A2."
+    },
+    {
+      "id": "acc1-z",
+      "phase": "build",
+      "clip": "Run a wire from the accelerometer's <b>Z</b> pin to <b>A1</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "acc1:Z",
+          "uno:A1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A1 is on the Arduino's ANALOG IN side."
+      ],
+      "goal": "Connect Z to A1."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Open the Serial Monitor and tilt the breadboard: the three numbers change.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "acc1:VCC",
+        "uno:3.3V"
+      ],
+      [
+        "acc1:GND",
+        "uno:GND.1"
+      ],
+      [
+        "acc1:X",
+        "uno:A3"
+      ],
+      [
+        "acc1:Y",
+        "uno:A2"
+      ],
+      [
+        "acc1:Z",
+        "uno:A1"
+      ]
+    ]
+  }
+}

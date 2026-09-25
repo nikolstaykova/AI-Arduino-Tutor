@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "cq-adxl335",
+      "id": "acc1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "acc1:ST",
+      "bb1:1b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:Z",
+      "bb1:2b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:Y",
+      "bb1:3b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:X",
+      "bb1:4b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:GND",
+      "bb1:5b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "acc1:VCC",
+      "bb1:6b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:6b.j",
+      "uno:3.3V",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:5b.j",
+      "bb1:bn.5",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:4b.j",
+      "uno:A3",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:3b.j",
+      "uno:A2",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:2b.j",
+      "uno:A1",
+      "orange",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

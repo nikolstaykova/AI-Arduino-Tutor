@@ -318,7 +318,45 @@ function logicAnalyzer() {
   return g;
 }
 
+function pingSensor() {
+  // Parallax PING))): blue board, two transducers, the 3-pin header along the bottom edge
+  const g = pcb(45.7, 21.3, BLUE, { holes: [[-20, -7.5, 1.4], [20, -7.5, 1.4]], traces: 10, seed: 301,
+    silk: silkAll(silkText("PING)))", 0, -7.6, 2), labelsX(["GND", "5V", "SIG"], 8.6, { side: -1 })) });
+  for (const x of [-12.5, 12.5]) {
+    const t = new THREE.Group();
+    t.add(lathe([[0, 0], [8, 0], [8, 12], [7.4, 12.2], [7.4, 11.4], [0, 11.4]], M.metal(0xd4d7dc, 0.25), 64));
+    t.add(at(cyl(7.3, 7.3, 0.1, M.plastic(0x101012, 0.9), 48), 0, 11.5, 0));
+    g.add(at(t, x, 1.6, -1));
+  }
+  g.add(at(smdLed(0x3ae060), 0, 1.6, 4)); g.add(at(qfp(5, ["SX28"], { legs: false }), 0, 1.6, -1));
+  rowPins(g, 3, 8.6);
+  return g;
+}
+
+function adxl335() {
+  // ADXL335 breakout: a small purple board, the chip, a row of six pins
+  const g = pcb(19, 19, PURPLE, { holes: [[-6.5, -6.5, 1.3], [6.5, -6.5, 1.3]], traces: 6, seed: 307,
+    silk: silkAll(silkText("ADXL335", 0, -3, 1.3), labelsX(["ST", "Z", "Y", "X", "GND", "VCC"], 7.8, { side: -1, size: 0.7 })) });
+  g.add(at(qfp(4, ["ADXL", "335"], { legs: false }), 0, 1.6, -0.5));
+  g.add(at(sot23("LDO"), 5, 1.6, -5)); g.add(at(smdC("0603"), -5, 1.6, 1)); g.add(at(smdC("0603"), -3, 1.6, 1));
+  rowPins(g, 6, 7.8);
+  return g;
+}
+
+function memsic() {
+  // Memsic 2125: a square ceramic module with a metal lid, six legs in two rows
+  const g = new THREE.Group();
+  g.add(at(rbox(10.5, 5, 10.5, 0.6, M.plastic(0x17181b, 0.5)), 0, 3.5, 0));
+  g.add(at(box(8.6, 0.25, 8.6, M.metal(0xc9ccd1, 0.3)), 0, 6.1, 0));
+  g.add(at(decal(8, 8, (ctx, W, H, k) => { ctx.clearRect(0, 0, W, H); text(ctx, "MEMSIC", W / 2, H * 0.38, { size: 1.4 * k, color: "#7b7f86" }); text(ctx, "2125", W / 2, H * 0.62, { size: 1.6 * k, color: "#7b7f86" }); }, { pxPerMm: 50 }), 0, 6.24, 0));
+  for (let i = 0; i < 3; i++) for (const s of [-1, 1]) g.add(bentWire([[-2.54 + i * 2.54, 1.5, s * 5.2], [-2.54 + i * 2.54, 1.2, s * 5.8], [-2.54 + i * 2.54, -4, s * 5.8]], 0.25, M.tin()));
+  return g;
+}
+
 export const MODULES = {
+  "ping-sensor": pingSensor,
+  "adxl335": adxl335,
+  "memsic2125": memsic,
   "hc-sr04": hcsr04,
   "dht22": dht22,
   "bmp180": bmp180,

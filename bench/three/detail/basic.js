@@ -236,7 +236,7 @@ function fsr() {
 }
 
 const OHMS = { "resistor-100": 100, "resistor-150": 150, "resistor-220": 220, "resistor-330": 330, "resistor-470": 470, "resistor-680": 680,
-  "resistor-1k": 1000, "resistor-2k2": 2200, "resistor-4k7": 4700, "resistor-10k": 10000, "resistor-22k": 22000, "resistor-47k": 47000, "resistor-100k": 100000 };
+  "resistor-1k": 1000, "resistor-2k2": 2200, "resistor-4k7": 4700, "resistor-10k": 10000, "resistor-22k": 22000, "resistor-47k": 47000, "resistor-100k": 100000, "resistor-1m": 1000000 };
 
 export const BASIC = {
   "led": () => led5(0xff2a1a),

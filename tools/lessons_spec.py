@@ -903,3 +903,203 @@ void loop() {
 
 
 LESSONS += [pitch_follower, calibration, switch_case_sensor, while_loop, tone_keyboard]
+
+
+# ---- sensors world + RGB ------------------------------------------------------------------------
+def knock():
+    L = Lesson("knock", "Knock", "A piezo feels a knock on the table: each knock toggles an LED and prints “Knock!”.", D + "sensors/Knock/", "Knock",
+               requires=["analog-read-serial"], code="""
+/*
+  Knock Sensor
+  Reads the piezo on A0; a reading above the threshold counts as a knock and toggles the LED on pin 13.
+*/
+const int ledPin = 13;
+const int knockSensor = A0;
+const int threshold = 100;
+int sensorReading = 0;
+int ledState = LOW;
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  sensorReading = analogRead(knockSensor);
+  if (sensorReading >= threshold) {
+    ledState = !ledState;
+    digitalWrite(ledPin, ledState);
+    Serial.println("Knock!");
+  }
+  delay(100);          // don't count one knock twice
+}
+""")
+    L.knock("A0"); L.led(13)
+    L.upload("Knock on the table next to the piezo: the LED switches and the Serial Monitor says Knock!")
+    return L
+
+
+def ping():
+    L = Lesson("ping", "Ping Range Finder", "Measure how far away things are with an ultrasonic sensor — it pings and times the echo.", D + "sensors/Ping/",
+               "Ping", requires=["digital-read-serial"], code="""
+/*
+  Ping))) Sensor
+  Sends a ping from the sensor on pin 7, times the echo and prints the distance.
+*/
+const int pingPin = 7;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  long duration, inches, cm;
+  // a short HIGH pulse starts a ping
+  pinMode(pingPin, OUTPUT);
+  digitalWrite(pingPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pingPin, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(pingPin, LOW);
+  // the same pin then listens: the echo pulse is as long as the sound took to come back
+  pinMode(pingPin, INPUT);
+  duration = pulseIn(pingPin, HIGH);
+  inches = microsecondsToInches(duration);
+  cm = microsecondsToCentimeters(duration);
+  Serial.print(inches);
+  Serial.print("in, ");
+  Serial.print(cm);
+  Serial.print("cm");
+  Serial.println();
+  delay(100);
+}
+
+long microsecondsToInches(long microseconds) {
+  return microseconds / 74 / 2;      // sound: 74 µs per inch, there and back
+}
+
+long microsecondsToCentimeters(long microseconds) {
+  return microseconds / 29 / 2;      // 29 µs per cm, there and back
+}
+""")
+    L.module("cq-ping", "ping-sensor", "ping", "Ping sensor", {"GND": "gnd", "5V": "5v", "SIG": "7"},
+             place_note=", its three pins in three columns (the “eyes” facing you)", pin_words={"SIG": "SIG"})
+    L.upload("Open the Serial Monitor and move your hand in front of the sensor: the distance changes.")
+    return L
+
+
+def adxl3xx():
+    L = Lesson("adxl3xx", "ADXL3xx Accelerometer", "Read tilt in three directions from an analog accelerometer.", D + "sensors/ADXL3xx/", "ADXL3xx",
+               requires=["analog-read-serial"], code="""
+/*
+  ADXL3xx
+  Reads the X, Y and Z outputs of an ADXL3xx accelerometer (A3, A2, A1) and prints them.
+  (Arduino's example plugs the board straight into A0-A5 and powers it from A4/A5 set as outputs;
+  here it's wired to 3.3V and GND with jumper wires instead.)
+*/
+const int xpin = A3;
+const int ypin = A2;
+const int zpin = A1;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  Serial.print(analogRead(xpin));
+  Serial.print("\\t");
+  Serial.print(analogRead(ypin));
+  Serial.print("\\t");
+  Serial.print(analogRead(zpin));
+  Serial.println();
+  delay(100);
+}
+""")
+    L.module("cq-adxl335", "adxl335", "acc", "accelerometer", {"VCC": "3v3", "GND": "gnd", "X": "A3", "Y": "A2", "Z": "A1", "ST": None},
+             place_note=", its six pins in six columns")
+    L.upload("Open the Serial Monitor and tilt the breadboard: the three numbers change.")
+    return L
+
+
+def memsic2125():
+    L = Lesson("memsic2125", "Memsic 2125 Accelerometer", "A tilt sensor that talks in pulses — measure them with pulseIn().", D + "sensors/Memsic2125/",
+               "Memsic 2125", requires=["digital-read-serial"], code="""
+/*
+  Memsic2125
+  Reads the X and Y pulse outputs of a Memsic 2125 (pins 2 and 3) and prints the acceleration in milli-g.
+*/
+const int xPin = 2;
+const int yPin = 3;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(xPin, INPUT);
+  pinMode(yPin, INPUT);
+}
+
+void loop() {
+  int pulseX, pulseY;
+  int accelerationX, accelerationY;
+  pulseX = pulseIn(xPin, HIGH);
+  pulseY = pulseIn(yPin, HIGH);
+  // 5000 µs pulses mean level; each 12.5 µs more or less is 1 milli-g
+  accelerationX = ((pulseX / 10) - 500) * 8;
+  accelerationY = ((pulseY / 10) - 500) * 8;
+  Serial.print(accelerationX);
+  Serial.print("\\t");
+  Serial.print(accelerationY);
+  Serial.println();
+  delay(100);
+}
+""")
+    L.module("cq-memsic2125", "memsic2125", "acc", "Memsic 2125", {"VDD": "5v", "GND.1": "gnd", "GND.2": "gnd", "XOUT": "2", "YOUT": "3", "TOUT": None},
+             place_note=" across the middle gap, like a chip: three pins above, three below", straddle=True,
+             pin_words={"XOUT": "Xout", "YOUT": "Yout", "VDD": "Vdd", "GND.1": "first GND", "GND.2": "second GND"})
+    L.upload("Open the Serial Monitor and tilt the breadboard: the two numbers show the tilt in milli-g.")
+    return L
+
+
+def read_ascii_string():
+    L = Lesson("read-ascii-string", "Read ASCII String", "Type three numbers to mix a colour on an RGB LED.", D + "communication/ReadASCIIString/",
+               "Read ASCII String", requires=["fade", "physical-pixel"], code="""
+/*
+  Reading a serial ASCII-encoded string
+  Reads three comma-separated numbers (0-255) and sets a common-anode RGB LED's colour on pins 3, 5, 6.
+*/
+const int redPin = 3;
+const int greenPin = 5;
+const int bluePin = 6;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
+}
+
+void loop() {
+  while (Serial.available() > 0) {
+    int red = Serial.parseInt();
+    int green = Serial.parseInt();
+    int blue = Serial.parseInt();
+    if (Serial.read() == '\\n') {
+      // common anode: 0 is full brightness, 255 is off
+      red = 255 - constrain(red, 0, 255);
+      green = 255 - constrain(green, 0, 255);
+      blue = 255 - constrain(blue, 0, 255);
+      analogWrite(redPin, red);
+      analogWrite(greenPin, green);
+      analogWrite(bluePin, blue);
+      Serial.print(red, HEX);
+      Serial.print(green, HEX);
+      Serial.println(blue, HEX);
+    }
+  }
+}
+""")
+    L.rgb(3, 5, 6)
+    L.upload("In the Serial Monitor (set to 'Newline') type three numbers like 255,0,128 and press Enter: the LED mixes that colour.")
+    return L
+
+
+LESSONS += [knock, ping, adxl3xx, memsic2125, read_ascii_string]

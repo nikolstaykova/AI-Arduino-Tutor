@@ -20,10 +20,19 @@ CARD = {"led": "led", "r220": "resistor-220", "r10k": "resistor-10k", "button": 
         "buzzer": "buzzer"}
 SINGULAR = {"resistor-220": "220 Ω resistor", "resistor-10k": "10 kΩ resistor", "resistor-4k7": "4.7 kΩ resistor", "led": "LED",
             "pushbutton": "pushbutton", "potentiometer-10k": "knob (10 kΩ potentiometer)", "buzzer": "piezo buzzer",
-            "photoresistor": "light sensor (photoresistor)", "fsr": "force sensor (FSR)"}
+            "photoresistor": "light sensor (photoresistor)", "fsr": "force sensor (FSR)", "resistor-1m": "1 MΩ resistor",
+            "ping-sensor": "Ping))) ultrasonic sensor", "adxl335": "ADXL335 accelerometer", "memsic2125": "Memsic 2125 accelerometer", "rgb-led": "RGB LED (common anode)"}
 NAME = {"resistor-220": "220 Ω resistors", "resistor-10k": "10 kΩ resistors", "resistor-4k7": "a 4.7 kΩ resistor", "led": "LEDs",
         "pushbutton": "a pushbutton", "potentiometer-10k": "a knob (10 kΩ potentiometer)", "buzzer": "a piezo buzzer",
         "photoresistor": "a light sensor (photoresistor)", "fsr": "force sensors (FSR)"}
+
+
+# pin layouts of the bench parts (same as bench/three/models.js PART_PINS): name, column offset, row offset (3 = across the gap)
+PIN_LAYOUT = {
+    "cq-ping": [("GND", 0, 0), ("5V", 1, 0), ("SIG", 2, 0)],
+    "cq-adxl335": [("ST", 0, 0), ("Z", 1, 0), ("Y", 2, 0), ("X", 3, 0), ("GND", 4, 0), ("VCC", 5, 0)],
+    "cq-memsic2125": [("TOUT", 0, 0), ("YOUT", 1, 0), ("GND.1", 2, 0), ("VDD", 0, 3), ("XOUT", 1, 3), ("GND.2", 2, 3)],
+}
 
 
 class Lesson:
@@ -231,6 +240,100 @@ class Lesson:
         self.nets += [[f"{sid}:1", "uno:5V"], [f"{sid}:2", f"uno:{pin}"], [f"{r}:1", f"{sid}:2"], [f"{r}:2", "uno:GND.1"]]
         return sid
 
+    def knock(self, pin):
+        """A piezo used as a knock sensor: + to an analog pin, − to GND, and a 1 MΩ
+        resistor across it (from + to the GND row) to drain its spikes."""
+        self.power_rails()
+        c = self.col; self.col += 9
+        z, r = self._id("bz"), self._id("r")
+        self._part("wokwi-buzzer", z); self._part("wokwi-resistor", r, {"value": "1000000"})
+        self._need("buzzer"); self._need("resistor-1m")
+        self._wire(f"{z}:1", f"bb1:{c}b.f"); self._wire(f"{z}:2", f"bb1:{c + 3}b.f")
+        self._wire(f"bb1:{c}b.j", f"bb1:bn.{c}", "black"); self._wire(f"bb1:{c + 3}b.i", f"uno:{pin}", "orange")
+        self._wire(f"{r}:1", f"bb1:{c + 3}b.h"); self._wire(f"{r}:2", f"bb1:{c + 7}b.h"); self._wire(f"bb1:{c + 7}b.j", f"bb1:bn.{c + 7}", "black")
+        self._step(f"{z}-place", "Push the piezo in, its two legs in two different columns.", "Put the piezo on the breadboard.",
+                   ["Here the piezo is a sensor: a knock squeezes it and it makes a tiny voltage.", "Its + leg is marked on top."], landing=[f"{z}:1", f"{z}:2"])
+        self._step(f"{z}-gnd", self._to_rail("gnd", "the piezo's − leg"), "Connect the piezo's − leg to GND.", ["The − leg is the unmarked one."],
+                   nets=[[f"{z}:1", "uno:GND.1"]])
+        self._step(f"{z}-pin", f"Run a wire from the piezo's <b>+</b> leg to pin <b>{pin}</b> on the Arduino.", f"Connect the piezo's + leg to {pin}.",
+                   [f"{pin} is on the ANALOG IN side: a knock shows up as a jump in the reading."], nets=[[f"{z}:2", f"uno:{pin}"]])
+        self._step(f"{r}-place", "Push the 1 MΩ resistor in: one leg in the piezo's + column, the other leg in an empty column.",
+                   "Put the 1 MΩ resistor next to the piezo's + leg.", ["It slowly drains the piezo's charge so each knock is a fresh spike."],
+                   nets=[[f"{r}:1", f"{z}:2"]])
+        self._step(f"{r}-gnd", self._to_rail("gnd", "the 1 MΩ resistor's other leg"), "Connect the 1 MΩ resistor to GND.", ["Now it sits across the piezo."],
+                   nets=[[f"{r}:2", "uno:GND.1"]])
+        self.nets += [[f"{z}:1", "uno:GND.1"], [f"{z}:2", f"uno:{pin}"], [f"{r}:1", f"{z}:2"], [f"{r}:2", "uno:GND.1"]]
+        return z
+
+    def module(self, wtype, card, prefix, word, wiring, *, place_note="", straddle=False, pin_words=None):
+        """A sensor module on header pins, each pin wired as `wiring` says:
+        {"PIN": "5v" | "gnd" | "3v3" | "<Arduino pin>" | None (unused)}. Pin
+        order comes from the bench part (models.js PART_PINS); `straddle` for a
+        chip-style part across the middle gap (pins in a top and a bottom row)."""
+        self.power_rails()
+        from json import loads
+        rows = PIN_LAYOUT[wtype]
+        c = self.col; self.col += max(dx for _, dx, _ in rows) + 3
+        mid = self._id(prefix)
+        self._part(wtype, mid); self._need(card)
+        hole = {}
+        for name, dx, dz in rows:
+            hole[name] = f"{c + dx}{'b' if dz else ('t' if straddle else 'b')}"
+            self._wire(f"{mid}:{name}", f"bb1:{hole[name]}.{'f' if dz or not straddle else 'e'}")
+        self._step(f"{mid}-place", f"Push the {word} in{place_note}.", f"Put the {word} on the breadboard.",
+                   ["Its pin names are printed next to the pins."], landing=[f"{mid}:{n}" for n, _, _ in rows])
+        words = pin_words or {}
+        for name, target in wiring.items():
+            if not target:
+                continue
+            label = words.get(name, name)
+            strip, row = hole[name], ("a" if hole[name].endswith("t") else "j")
+            if target in ("5v", "gnd"):
+                self._wire(f"bb1:{strip}.{row}", f"bb1:{'bp' if target == '5v' else 'bn'}.{int(strip[:-1])}", "red" if target == "5v" else "black")
+                self._step(f"{mid}-{name.lower().replace('.', '')}", self._to_rail(target, f"the {word}'s {label} pin"), f"Connect {label} to {'5V' if target == '5v' else 'GND'}.",
+                           ["Power first: + to 5V, − to GND." if target == "5v" else "GND is the minus side."],
+                           nets=[[f"{mid}:{name}", "uno:5V" if target == "5v" else "uno:GND.1"]])
+                self.nets.append([f"{mid}:{name}", "uno:5V" if target == "5v" else "uno:GND.1"])
+            else:
+                board_pin = "3.3V" if target == "3v3" else target
+                self._wire(f"bb1:{strip}.{row}", f"uno:{board_pin}", "orange")
+                self._step(f"{mid}-{name.lower().replace('.', '')}", f"Run a wire from the {word}'s <b>{label}</b> pin to <b>{board_pin}</b> on the Arduino.",
+                           f"Connect {label} to {board_pin}.",
+                           ["3.3V is on the Arduino's power header, next to 5V." if target == "3v3" else f"{board_pin} is on the Arduino's {'ANALOG IN side' if board_pin.startswith('A') else 'row of numbered sockets'}."],
+                           nets=[[f"{mid}:{name}", f"uno:{board_pin}"]])
+                self.nets.append([f"{mid}:{name}", f"uno:{board_pin}"])
+        return mid
+
+    def rgb(self, red, green, blue):
+        """A common-anode RGB LED: COM to 5V, each colour through a 220 Ω resistor to its pin."""
+        self.power_rails()
+        c = self.col; self.col += 9
+        d = self._id("rgb")
+        self._part("wokwi-rgb-led", d, {"common": "anode"}); self._need("rgb-led")
+        for name, dx in (("R", 0), ("COM", 1), ("G", 2), ("B", 3)):
+            self._wire(f"{d}:{name}", f"bb1:{c + dx}t.e")
+        self._wire(f"bb1:{c + 1}t.d", f"bb1:bp.{c + 1}", "red")
+        self._step(f"{d}-place", "Push the RGB LED in, each of its four legs in its own column (top half). The longest leg is the common one.",
+                   "Put the RGB LED on the breadboard.", ["Legs from left to right: red, common (longest), green, blue."],
+                   landing=[f"{d}:R", f"{d}:COM", f"{d}:G", f"{d}:B"])
+        self._step(f"{d}-com", self._to_rail("5v", "the RGB LED's longest leg"), "Connect the common leg to 5V.",
+                   ["This LED is common anode: the shared leg is +. A colour lights when its own pin goes LOW."], nets=[[f"{d}:COM", "uno:5V"]])
+        self.nets.append([f"{d}:COM", "uno:5V"])
+        for colour, dx, pin, row, span in (("R", 0, red, "a", 4), ("G", 2, green, "b", 4), ("B", 3, blue, "c", 4)):
+            r = self._id("r")
+            self._part("wokwi-resistor", r, {"value": "220"}); self._need("resistor-220")
+            far = c + dx + span
+            self._wire(f"{r}:1", f"bb1:{c + dx}t.{row}"); self._wire(f"{r}:2", f"bb1:{far}t.{row}")
+            self._wire(f"bb1:{far}t.d", f"uno:{pin}", "orange")
+            name = {"R": "red", "G": "green", "B": "blue"}[colour]
+            self._step(f"{d}-{colour.lower()}-resistor", f"Push a 220 Ω resistor in: one leg in the {name} leg's column, the other leg in an empty column.",
+                       f"Put a resistor on the {name} leg.", ["Each colour needs its own resistor."], nets=[[f"{r}:1", f"{d}:{colour}"]])
+            self._step(f"{d}-{colour.lower()}-pin", f"Run a wire from that resistor's other leg to pin <b>{pin}</b> on the Arduino.",
+                       f"Connect the {name} resistor to pin {pin}.", [f"Pin {pin} has a ~ next to it: it can dim the colour (PWM)."],
+                       nets=[[f"{r}:2", f"uno:{pin}"]])
+            self.nets += [[f"{r}:1", f"{d}:{colour}"], [f"{r}:2", f"uno:{pin}"]]
+        return d
+
     # ---- writing ---------------------------------------------------------------------------
     def upload(self, note):
         self.upload_note = note
@@ -238,10 +341,11 @@ class Lesson:
     def write(self):
         # how many of each part, from the diagram ("6 LEDs", "1 knob")
         card_of = {"wokwi-led": "led", "wokwi-pushbutton": "pushbutton", "wokwi-potentiometer": "potentiometer-10k", "wokwi-buzzer": "buzzer",
-                   "cq-photoresistor": "photoresistor", "cq-fsr": "fsr"}
+                   "cq-photoresistor": "photoresistor", "cq-fsr": "fsr", "cq-ping": "ping-sensor", "cq-adxl335": "adxl335",
+                   "cq-memsic2125": "memsic2125", "wokwi-rgb-led": "rgb-led"}
         count = {}
         for part in self.parts:
-            cid = card_of.get(part["type"]) or ({"220": "resistor-220", "10000": "resistor-10k", "4700": "resistor-4k7"}.get(part["attrs"].get("value"))
+            cid = card_of.get(part["type"]) or ({"220": "resistor-220", "10000": "resistor-10k", "4700": "resistor-4k7", "1000000": "resistor-1m"}.get(part["attrs"].get("value"))
                                                   if part["type"] == "wokwi-resistor" else None)
             if cid:
                 count[cid] = count.get(cid, 0) + 1
