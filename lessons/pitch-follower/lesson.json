@@ -56,7 +56,7 @@
     {
       "id": "ldr1-5v",
       "phase": "build",
-      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The light sensor's first leg → that same row.",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. One leg of the light sensor → that same row.",
       "expected_nets": [
         [
           "ldr1:1",
@@ -81,14 +81,14 @@
       ],
       "strict": false,
       "hints": [
-        "A0 is on the ANALOG IN side of the Arduino."
+        "Pin A0 is on the ANALOG IN side of the Arduino."
       ],
-      "goal": "Connect the light sensor's other leg to A0."
+      "goal": "Connect the light sensor's other leg to pin A0."
     },
     {
       "id": "ldr1-resistor",
       "phase": "build",
-      "clip": "Push a 4.7 kΩ resistor in: one leg in that same column (the light sensor's other leg), the other leg in an empty column.",
+      "clip": "Push a 4.7 kΩ resistor in: one leg in the same column as the pin A0 wire, the other leg in an empty column.",
       "expected_nets": [
         [
           "r1:1",
@@ -99,12 +99,12 @@
       "hints": [
         "The light sensor and this resistor share the 5 V between them — so the pin's voltage changes as the light sensor does."
       ],
-      "goal": "Put a 4.7 kΩ resistor on the light sensor's pin side."
+      "goal": "Put a 4.7 kΩ resistor next to the pin A0 wire."
     },
     {
       "id": "ldr1-gnd",
       "phase": "build",
-      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The 4.7 kΩ resistor's other leg → that same row.",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. That resistor's other leg → that same row.",
       "expected_nets": [
         [
           "r1:2",
@@ -115,7 +115,7 @@
       "hints": [
         "Now the reading goes up when the light gets brighter."
       ],
-      "goal": "Connect the resistor to GND."
+      "goal": "Connect the 4.7 kΩ resistor to GND."
     },
     {
       "id": "bz1-place",

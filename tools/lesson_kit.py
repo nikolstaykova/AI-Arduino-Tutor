@@ -43,6 +43,9 @@ PIN_LAYOUT = {
 }
 
 
+ORD = {2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth", 11: "eleventh", 12: "twelfth"}
+
+
 class Lesson:
     def __init__(self, lid, title, description, source_url, source_title, code, *, requires=(), full_board=False, difficulty="beginner",
                  fixed_pins=False, board="uno", board_type="wokwi-arduino-uno", board_card="arduino-uno", board_name="Arduino Uno"):
@@ -64,6 +67,11 @@ class Lesson:
     def _id(self, prefix):
         self.counts[prefix] = self.counts.get(prefix, 0) + 1
         return f"{prefix}{self.counts[prefix]}"
+
+    def _nth(self, prefix, word):
+        """"the knob" for the first one, "the second knob" once there are more."""
+        n = self.counts.get(prefix, 1)
+        return f"the {word}" if n == 1 else f"the {ORD.get(n, str(n) + 'th')} {word}"
 
     def _part(self, wtype, pid, attrs=None):
         self.parts.append({"type": wtype, "id": pid, "top": 0, "left": 60 * len(self.parts), "attrs": attrs or {}})
@@ -118,16 +126,16 @@ class Lesson:
         self._wire(f"bb1:{c}b.g", f"{self.board}:{pin}", "orange")
         self._wire(f"{d}:A", f"bb1:{c + 4}b.i"); self._wire(f"{d}:C", f"bb1:{c + 3}b.i")
         self._wire(f"bb1:{c + 3}b.j", f"bb1:bn.{self._rail_n(c + 3)}", "black")
-        what = label or (f"the {color} LED" if color != "red" else "the LED")
+        what = label or (self._nth("led", "LED") if color == "red" or self.counts["led"] > 1 else f"the {color} LED")
         exact = " Use exactly this pin — the code counts through the pins in order." if self.fixed_pins else ""
         self._step(f"{d}-resistor", "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
                    f"Put the resistor for {what} on the breadboard.",
                    ["A resistor works either way round.", "It protects the LED — without it the LED can burn out."], landing=f"{r}:1")
-        self._step(f"{d}-pin", f"Run a wire from one leg of the 220 Ω resistor to pin <b>{pin}</b> on the Arduino.",
+        self._step(f"{d}-pin", f"Run a wire from one leg of the resistor you just placed to pin <b>{pin}</b> on the Arduino.",
                    f"Connect the resistor to pin {pin}.",
                    [f"Put the wire in any hole in the same column as the leg.{exact}", f"Pin {pin} is on the Arduino's row of numbered sockets."],
                    nets=[[f"{r}:1", f"{self.board}:{pin}"]])
-        self._step(f"{d}-legs", f"Put {what} in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg "
+        self._step(f"{d}-legs", f"Put {what} in: the <b>long</b> leg in the same column as that resistor's other leg, the <b>short</b> leg "
                    "in the next column.", f"Connect {what}'s long leg (+) to the resistor.",
                    ["The long leg is + (the anode). Backwards, the LED stays dark.", "Legs in the same column are connected — no wire needed."],
                    nets=[[f"{d}:A", f"{r}:2"]])
@@ -142,7 +150,7 @@ class Lesson:
         self.power_rails()
         c = self.col; self.col += 7 if pulldown else 4
         b = self._id("btn")
-        what = label or "the button"
+        what = label or self._nth("btn", "button")
         What = what[0].upper() + what[1:]
         self._part("wokwi-pushbutton", b, {"color": "green"}); self._need("pushbutton")
         self._wire(f"{b}:1.l", f"bb1:{c}t.e"); self._wire(f"{b}:1.r", f"bb1:{c}b.f")
@@ -165,10 +173,10 @@ class Lesson:
             self._step(f"{b}-5v", self._to_rail("5v", f"{what}'s right column (bottom half)"), f"Connect the other side of {what} to 5V.",
                        ["When you press, 5V flows through the button to the pin."], nets=[[f"{b}:2.r", f"{self.board}:5V"]])
             self._step(f"{b}-pulldown", f"Push a 10 kΩ resistor in: one leg in {what}'s <b>left</b> column (bottom half), the other leg "
-                       "in an empty column.", f"Put a 10 kΩ resistor on {what}'s pin side.",
+                       "in an empty column.", f"Put a 10 kΩ resistor on {what}'s pin {pin} side.",
                        ["This is a pull-down: it keeps the pin LOW until you press.", "Without it the pin 'floats' and reads random values."],
                        nets=[[f"{r}:1", f"{b}:1.r"]])
-            self._step(f"{b}-pulldown-gnd", self._to_rail("gnd", "the 10 kΩ resistor's other leg"), "Connect the pull-down resistor to GND.",
+            self._step(f"{b}-pulldown-gnd", self._to_rail("gnd", "the 10 kΩ resistor's other leg"), "Connect the 10 kΩ resistor to GND.",
                        ["Now the pin reads LOW, and HIGH only while you press."], nets=[[f"{r}:2", f"{self.board}:GND.1"]])
             self.nets += [[f"{b}:1.r", f"{self.board}:{pin}"], [f"{b}:2.r", f"{self.board}:5V"], [f"{r}:1", f"{b}:1.r"], [f"{r}:2", f"{self.board}:GND.1"]]
         else:
@@ -188,15 +196,16 @@ class Lesson:
         self._wire(f"bb1:{c}b.f", f"{p}:GND"); self._wire(f"bb1:{c + 1}b.f", f"{p}:SIG"); self._wire(f"bb1:{c + 2}b.f", f"{p}:VCC")
         self._wire(f"bb1:{c}b.j", f"bb1:bn.{self._rail_n(c)}", "black"); self._wire(f"bb1:{c + 2}b.j", f"bb1:bp.{self._rail_n(c + 2)}", "red")
         self._wire(f"bb1:{c + 1}b.h", f"{self.board}:{pin}", "orange")
-        self._step(f"{p}-place", "Push the knob into the breadboard, each of its three legs in its own column.", "Put the knob on the breadboard.",
+        knob = self._nth("pot", "knob")
+        self._step(f"{p}-place", f"Push {'the knob' if knob == 'the knob' else 'a ' + knob[4:]} into the breadboard, each of its three legs in its own column.", f"Put {knob} on the breadboard.",
                    ["The two outer legs are for power; the middle leg gives the reading."], landing=[f"{p}:GND", f"{p}:SIG", f"{p}:VCC"])
-        self._step(f"{p}-gnd", self._to_rail("gnd", "one outer leg of the knob"), "Connect one outer leg to GND.",
+        self._step(f"{p}-gnd", self._to_rail("gnd", f"one outer leg of {knob}"), f"Connect one outer leg of {knob} to GND.",
                    ["Either outer leg works."], nets=[[f"{p}:GND", f"{self.board}:GND.1"]])
-        self._step(f"{p}-5v", self._to_rail("5v", "the knob's other outer leg"), "Connect the other outer leg to 5V.",
+        self._step(f"{p}-5v", self._to_rail("5v", f"{knob}'s other outer leg"), f"Connect {knob}'s other outer leg to 5V.",
                    ["Now the knob has 0 V at one end and 5 V at the other."], nets=[[f"{p}:VCC", f"{self.board}:5V"]])
-        self._step(f"{p}-pin", f"Run a wire from the knob's <b>middle</b> leg to pin <b>{pin}</b> on the Arduino.",
-                   f"Connect the knob's middle leg to {pin}.",
-                   [f"{pin} is on the ANALOG IN side of the Arduino.", "The middle leg's voltage follows the knob: 0 V to 5 V."],
+        self._step(f"{p}-pin", f"Run a wire from {knob}'s <b>middle</b> leg to pin <b>{pin}</b> on the Arduino.",
+                   f"Connect {knob}'s middle leg to pin {pin}.",
+                   [f"Pin {pin} is on the ANALOG IN side of the Arduino.", "The middle leg's voltage follows the knob: 0 V to 5 V."],
                    nets=[[f"{p}:SIG", f"{self.board}:{pin}"]])
         self.nets += [[f"{p}:GND", f"{self.board}:GND.1"], [f"{p}:VCC", f"{self.board}:5V"], [f"{p}:SIG", f"{self.board}:{pin}"]]
         return p
@@ -209,11 +218,12 @@ class Lesson:
         self._part("wokwi-buzzer", z); self._need("buzzer")
         self._wire(f"{z}:1", f"bb1:{c}b.f"); self._wire(f"{z}:2", f"bb1:{c + 3}b.f")
         self._wire(f"bb1:{c}b.j", f"bb1:bn.{self._rail_n(c)}", "black"); self._wire(f"bb1:{c + 3}b.j", f"{self.board}:{pin}", "orange")
-        self._step(f"{z}-place", "Push the buzzer in, its two legs in two different columns.", "Put the buzzer on the breadboard.",
+        bz = self._nth("bz", "buzzer")
+        self._step(f"{z}-place", f"Push {'the buzzer' if bz == 'the buzzer' else 'a ' + bz[4:]} in, its two legs in two different columns.", f"Put {bz} on the breadboard.",
                    ["The + leg is marked on top (and is usually longer).", "It only works one way round."], landing=[f"{z}:1", f"{z}:2"])
-        self._step(f"{z}-pin", f"Run a wire from the buzzer's <b>+</b> leg to pin <b>{pin}</b> on the Arduino.", f"Connect the buzzer's + leg to pin {pin}.",
+        self._step(f"{z}-pin", f"Run a wire from {bz}'s <b>+</b> leg to pin <b>{pin}</b> on the Arduino.", f"Connect {bz}'s + leg to pin {pin}.",
                    ["tone() on this pin makes the buzzer sing."], nets=[[f"{z}:2", f"{self.board}:{pin}"]])
-        self._step(f"{z}-gnd", self._to_rail("gnd", "the buzzer's other leg"), "Connect the buzzer's − leg to GND.",
+        self._step(f"{z}-gnd", self._to_rail("gnd", f"{bz}'s other leg"), f"Connect {bz}'s − leg to GND.",
                    ["GND is the minus side of the circuit."], nets=[[f"{z}:1", f"{self.board}:GND.1"]])
         self.nets += [[f"{z}:2", f"{self.board}:{pin}"], [f"{z}:1", f"{self.board}:GND.1"]]
         return z
@@ -235,18 +245,19 @@ class Lesson:
         self._wire(f"bb1:{c + 2}b.i", f"{self.board}:{pin}", "orange")
         self._wire(f"{r}:1", f"bb1:{c + 2}b.h"); self._wire(f"{r}:2", f"bb1:{c + 6}b.h")
         self._wire(f"bb1:{c + 6}b.j", f"bb1:bn.{self._rail_n(c + 6)}", "black")
-        self._step(f"{sid}-place", f"Push the {word} in, its two legs in two different columns.", f"Put the {word} on the breadboard.",
+        the = self._nth(prefix, word)
+        self._step(f"{sid}-place", f"Push {'the ' + word if the == 'the ' + word else 'a ' + the[4:]} in, its two legs in two different columns.", f"Put {the} on the breadboard.",
                    ["It works either way round."], landing=[f"{sid}:1", f"{sid}:2"])
-        self._step(f"{sid}-5v", self._to_rail("5v", f"the {word}'s first leg"), f"Connect one leg of the {word} to 5V.",
+        self._step(f"{sid}-5v", self._to_rail("5v", f"one leg of {the}"), f"Connect one leg of {the} to 5V.",
                    ["Either leg works."], nets=[[f"{sid}:1", f"{self.board}:5V"]])
-        self._step(f"{sid}-pin", f"Run a wire from the {word}'s <b>other</b> leg to pin <b>{pin}</b> on the Arduino.",
-                   f"Connect the {word}'s other leg to {pin}.", [f"{pin} is on the ANALOG IN side of the Arduino."],
+        self._step(f"{sid}-pin", f"Run a wire from {the}'s <b>other</b> leg to pin <b>{pin}</b> on the Arduino.",
+                   f"Connect {the}'s other leg to pin {pin}.", [f"Pin {pin} is on the ANALOG IN side of the Arduino."],
                    nets=[[f"{sid}:2", f"{self.board}:{pin}"]])
-        self._step(f"{sid}-resistor", f"Push a {rtext} resistor in: one leg in that same column (the {word}'s other leg), the other "
-                   "leg in an empty column.", f"Put a {rtext} resistor on the {word}'s pin side.",
+        self._step(f"{sid}-resistor", f"Push a {rtext} resistor in: one leg in the same column as the pin {pin} wire, the other "
+                   "leg in an empty column.", f"Put a {rtext} resistor next to the pin {pin} wire.",
                    [f"The {word} and this resistor share the 5 V between them — so the pin's voltage changes as the {word} does."],
                    nets=[[f"{r}:1", f"{sid}:2"]])
-        self._step(f"{sid}-gnd", self._to_rail("gnd", f"the {rtext} resistor's other leg"), "Connect the resistor to GND.",
+        self._step(f"{sid}-gnd", self._to_rail("gnd", f"that resistor's other leg"), f"Connect the {rtext} resistor to GND.",
                    ["Now the reading goes up when the " + ("light gets brighter." if kind == "ldr" else "pad is pressed.")],
                    nets=[[f"{r}:2", f"{self.board}:GND.1"]])
         self.nets += [[f"{sid}:1", f"{self.board}:5V"], [f"{sid}:2", f"{self.board}:{pin}"], [f"{r}:1", f"{sid}:2"], [f"{r}:2", f"{self.board}:GND.1"]]
@@ -267,9 +278,9 @@ class Lesson:
                    ["Here the piezo is a sensor: a knock squeezes it and it makes a tiny voltage.", "Its + leg is marked on top."], landing=[f"{z}:1", f"{z}:2"])
         self._step(f"{z}-gnd", self._to_rail("gnd", "the piezo's − leg"), "Connect the piezo's − leg to GND.", ["The − leg is the unmarked one."],
                    nets=[[f"{z}:1", f"{self.board}:GND.1"]])
-        self._step(f"{z}-pin", f"Run a wire from the piezo's <b>+</b> leg to pin <b>{pin}</b> on the Arduino.", f"Connect the piezo's + leg to {pin}.",
-                   [f"{pin} is on the ANALOG IN side: a knock shows up as a jump in the reading."], nets=[[f"{z}:2", f"{self.board}:{pin}"]])
-        self._step(f"{r}-place", "Push the 1 MΩ resistor in: one leg in the piezo's + column, the other leg in an empty column.",
+        self._step(f"{z}-pin", f"Run a wire from the piezo's <b>+</b> leg to pin <b>{pin}</b> on the Arduino.", f"Connect the piezo's + leg to pin {pin}.",
+                   [f"Pin {pin} is on the ANALOG IN side: a knock shows up as a jump in the reading."], nets=[[f"{z}:2", f"{self.board}:{pin}"]])
+        self._step(f"{r}-place", "Push the 1 MΩ resistor in: one leg in the same column as the piezo's + leg, the other leg in an empty column.",
                    "Put the 1 MΩ resistor next to the piezo's + leg.", ["It slowly drains the piezo's charge so each knock is a fresh spike."],
                    nets=[[f"{r}:1", f"{z}:2"]])
         self._step(f"{r}-gnd", self._to_rail("gnd", "the 1 MΩ resistor's other leg"), "Connect the 1 MΩ resistor to GND.", ["Now it sits across the piezo."],
@@ -302,16 +313,17 @@ class Lesson:
             strip, row = hole[name], ("a" if hole[name].endswith("t") else "j")
             if target in ("5v", "gnd"):
                 self._wire(f"bb1:{strip}.{row}", f"bb1:{'bp' if target == '5v' else 'bn'}.{int(strip[:-1])}", "red" if target == "5v" else "black")
-                self._step(f"{mid}-{name.lower().replace('.', '')}", self._to_rail(target, f"the {word}'s {label} pin"), f"Connect {label} to {'5V' if target == '5v' else 'GND'}.",
+                self._step(f"{mid}-{name.lower().replace('.', '')}", self._to_rail(target, f"the {word}'s {label} pin"), f"Connect the {word}'s {label} pin to {'5V' if target == '5v' else 'GND'}.",
                            ["Power first: + to 5V, − to GND." if target == "5v" else "GND is the minus side."],
                            nets=[[f"{mid}:{name}", f"{self.board}:5V" if target == "5v" else f"{self.board}:GND.1"]])
                 self.nets.append([f"{mid}:{name}", f"{self.board}:5V" if target == "5v" else f"{self.board}:GND.1"])
             else:
                 board_pin = "3.3V" if target == "3v3" else target
                 self._wire(f"bb1:{strip}.{row}", f"{self.board}:{board_pin}", "orange")
-                self._step(f"{mid}-{name.lower().replace('.', '')}", f"Run a wire from the {word}'s <b>{label}</b> pin to <b>{board_pin}</b> on the Arduino.",
-                           f"Connect {label} to {board_pin}.",
-                           ["3.3V is on the Arduino's power header, next to 5V." if target == "3v3" else f"{board_pin} is on the Arduino's {'ANALOG IN side' if board_pin.startswith('A') else 'row of numbered sockets'}."],
+                where = board_pin if target == "3v3" else f"pin {board_pin}"
+                self._step(f"{mid}-{name.lower().replace('.', '')}", f"Run a wire from the {word}'s <b>{label}</b> pin to <b>{where}</b> on the Arduino.",
+                           f"Connect the {word}'s {label} pin to {where}.",
+                           ["3.3V is on the Arduino's power header, next to 5V." if target == "3v3" else f"Pin {board_pin} is on the Arduino's {'ANALOG IN side' if board_pin.startswith('A') else 'row of numbered sockets'}."],
                            nets=[[f"{mid}:{name}", f"{self.board}:{board_pin}"]])
                 self.nets.append([f"{mid}:{name}", f"{self.board}:{board_pin}"])
         return mid
@@ -354,26 +366,24 @@ class Lesson:
                        f"Connect bar {k}'s + leg to pin {pin}.", ["Any hole in that column works."], nets=[[f"{bar}:A{k}", f"{self.board}:{pin}"]])
             r = self._id("r"); self._part("wokwi-resistor", r, {"value": "220"}); self._need("resistor-220")
             n = self.rail_index(col)
+            todo = []
             if first_gnd:
                 self._gnd_done = True; self._wire("bb1:bn.1", f"{self.board}:GND.1", "black"); first_gnd = False
-                gnd_first = "First, run a wire from the Arduino's <b>GND</b> pin to the blue − row at the bottom.<br>Then: "
-            else:
-                gnd_first = ""
+                todo.append("A wire from the Arduino's <b>GND</b> pin to the blue − row at the bottom.")
+            upright = "Stand a 220 Ω resistor upright: one leg in {where} (row h), the other leg in the blue − row just below it."
             if n:
                 self._wire(f"{r}:1", f"bb1:{col}b.h"); self._wire(f"{r}:2", f"bb1:bn.{self._rail_n(n)}")
-                self._step(f"{bar}-c{k}", f"{gnd_first}turn a 220 Ω resistor upright: one leg in bar {k}'s − column (bottom half, row h), the other leg straight "
-                           "into the blue − row just below it." if gnd_first else f"Turn a 220 Ω resistor upright: one leg in bar {k}'s − column (row h), "
-                           "the other leg straight into the blue − row just below it.",
-                           f"Connect bar {k}'s − leg to GND through a 220 Ω resistor.", ["Each bar needs its own resistor, like any LED."],
-                           nets=[[f"{r}:1", f"{bar}:C{k}"], [f"{r}:2", f"{self.board}:GND.1"]])
+                todo.append(upright.format(where=f"bar {k}'s − column"))
+                hint = "Each bar needs its own resistor, like any LED."
             else:
                 n2 = self.rail_index(spare)
                 self._wire(f"bb1:{col}b.j", f"bb1:{spare}b.j", "black")
                 self._wire(f"{r}:1", f"bb1:{spare}b.h"); self._wire(f"{r}:2", f"bb1:bn.{self._rail_n(n2)}")
-                self._step(f"{bar}-c{k}", f"{gnd_first}bar {k}'s column sits over a gap in the − row, so first a short wire from its − column (row j) to the empty "
-                           f"column {spare}. Then turn a 220 Ω resistor upright from column {spare} (row h) into the − row below it.",
-                           f"Connect bar {k}'s − leg to GND through a 220 Ω resistor.", ["The − row has a small gap every few holes — this bar sits over one."],
-                           nets=[[f"{r}:1", f"{bar}:C{k}"], [f"{r}:2", f"{self.board}:GND.1"]])
+                todo += [f"A short wire from bar {k}'s − column (row j) to the empty column {spare}.", upright.format(where=f"column {spare}")]
+                hint = f"The − row has a small gap under bar {k}, so its resistor stands in column {spare} instead."
+            clip = todo[0] if len(todo) == 1 else f"{'Two' if len(todo) == 2 else 'Three'} things:<br>" + "<br>".join(f"{i}. {t}" for i, t in enumerate(todo, 1))
+            self._step(f"{bar}-c{k}", clip, f"Connect bar {k}'s − leg to GND through a 220 Ω resistor.", [hint],
+                       nets=[[f"{r}:1", f"{bar}:C{k}"], [f"{r}:2", f"{self.board}:GND.1"]])
             self.nets += [[f"{bar}:A{k}", f"{self.board}:{pin}"], [f"{r}:1", f"{bar}:C{k}"], [f"{r}:2", f"{self.board}:GND.1"]]
         return bar
 
@@ -390,12 +400,12 @@ class Lesson:
             self._wire(f"{m}:R{k}", f"bb1:{c + k - 1}t.a"); self._wire(f"{m}:C{k}", f"bb1:{c + k - 1}b.j")
         self._step(f"{m}-place", "Push the 8×8 matrix into the middle of the breadboard (columns 5–12): its top pins in row a, its bottom pins in row j. "
                    "It covers the holes between — that's fine.", "Put the LED matrix on the breadboard.",
-                   ["The top 8 pins are the rows (+), the bottom 8 the columns (−).", "Wires can still go into the covered holes."],
+                   ["The top 8 pins (R1–R8) feed the matrix's rows (+), the bottom 8 (C1–C8) its columns (−).", "Wires can still go into the covered holes."],
                    landing=[f"{m}:R{k}" for k in range(1, 9)] + [f"{m}:C{k}" for k in range(1, 9)])
         for k, pin in enumerate(row_pins, start=1):
             self._wire(f"bb1:{c + k - 1}t.c", f"{self.board}:{pin}", "orange")
-            self._step(f"{m}-r{k}", f"Run a wire from row pin <b>R{k}</b> (column {c + k - 1}, top half) to pin <b>{pin}</b> on the Arduino.",
-                       f"Connect row {k} to pin {pin}.", ["Any hole in that column's top half works."], nets=[[f"{m}:R{k}", f"{self.board}:{pin}"]])
+            self._step(f"{m}-r{k}", f"Run a wire from matrix pin <b>R{k}</b> (breadboard column {c + k - 1}, top half) to pin <b>{pin}</b> on the Arduino.",
+                       f"Connect matrix pin R{k} to pin {pin}.", ["Any hole in that column's top half works."], nets=[[f"{m}:R{k}", f"{self.board}:{pin}"]])
             self.nets.append([f"{m}:R{k}", f"{self.board}:{pin}"])
         for k, pin in enumerate(col_pins, start=1):
             col = c + k - 1
@@ -403,11 +413,11 @@ class Lesson:
             r = self._id("r"); self._part("wokwi-resistor", r, {"value": "220"}); self._need("resistor-220")
             self._wire(f"{r}:1", f"bb1:{col}b.h"); self._wire(f"{r}:2", f"bb1:{free}b.h")
             self._wire(f"bb1:{free}b.j", f"{self.board}:{pin}", "orange")
-            self._step(f"{m}-c{k}-r", f"Push a 220 Ω resistor in: one leg in column pin <b>C{k}</b>'s column ({col}, bottom half), the other leg in the empty "
-                       f"column {free}.", f"Put a resistor on column {k}.", ["Every column needs its own resistor, like any LED."],
+            self._step(f"{m}-c{k}-r", f"Push a 220 Ω resistor in: one leg in breadboard column {col} (bottom half, under matrix pin <b>C{k}</b>), the other leg in the empty "
+                       f"column {free}.", f"Put a resistor on matrix pin C{k}.", ["Each of the 8 C pins needs its own resistor, like any LED."],
                        nets=[[f"{r}:1", f"{m}:C{k}"]])
-            self._step(f"{m}-c{k}-pin", f"Run a wire from column {free} (the resistor's other leg) to pin <b>{pin}</b> on the Arduino.",
-                       f"Connect column {k}'s resistor to pin {pin}.", [f"{pin} is on the Arduino's {'ANALOG IN side' if str(pin).startswith('A') else 'row of numbered sockets'}."],
+            self._step(f"{m}-c{k}-pin", f"Run a wire from that resistor's other leg (column {free}) to pin <b>{pin}</b> on the Arduino.",
+                       f"Connect C{k}'s resistor to pin {pin}.", [f"Pin {pin} is on the Arduino's {'ANALOG IN side' if str(pin).startswith('A') else 'row of numbered sockets'}."],
                        nets=[[f"{r}:2", f"{self.board}:{pin}"]])
             self.nets += [[f"{r}:1", f"{m}:C{k}"], [f"{r}:2", f"{self.board}:{pin}"]]
         return m
@@ -426,12 +436,12 @@ class Lesson:
         self._wire(f"bb1:{c + 4}b.j", f"{self.board}:1", "orange")
         self._step(f"{j}-place", "Push the MIDI socket in, its five pins in five columns (numbered 1–5 from the left), the round socket facing you.",
                    "Put the MIDI socket on the breadboard.", ["Only pins 2, 4 and 5 are used; 1 and 3 stay empty."], landing=[f"{j}:{k}" for k in range(1, 6)])
-        self._step(f"{j}-gnd", self._to_rail("gnd", "the socket's pin 2"), "Connect pin 2 to GND.", ["Pin 2 is the cable's shield."], nets=[[f"{j}:2", f"{self.board}:GND.1"]])
-        self._step(f"{j}-resistor", "Push a 220 Ω resistor in: one leg in pin 4's column, the other leg in an empty column.", "Put a 220 Ω resistor on pin 4.",
+        self._step(f"{j}-gnd", self._to_rail("gnd", "the socket's pin 2"), "Connect the socket's pin 2 to GND.", ["Pin 2 is the cable's shield (its outer metal)."], nets=[[f"{j}:2", f"{self.board}:GND.1"]])
+        self._step(f"{j}-resistor", "Push a 220 Ω resistor in: one leg in the same column as the socket's pin 4, the other leg in an empty column.", "Put a 220 Ω resistor on the socket's pin 4.",
                    ["MIDI sends a small current through the cable: this resistor limits it."], nets=[[f"{r}:1", f"{j}:4"]])
-        self._step(f"{j}-5v", self._to_rail("5v", "the resistor's other leg"), "Connect the resistor to 5V.", ["Pin 4 is the current source."],
+        self._step(f"{j}-5v", self._to_rail("5v", "the resistor's other leg"), "Connect the resistor to 5V.", ["The socket's pin 4 gets 5V through this resistor."],
                    nets=[[f"{r}:2", f"{self.board}:5V"]])
-        self._step(f"{j}-tx", "Run a wire from the socket's pin 5 to pin <b>1</b> (TX → 1) on the Arduino.", "Connect pin 5 to TX (pin 1).",
+        self._step(f"{j}-tx", "Run a wire from the socket's pin 5 to pin <b>1</b> (TX) on the Arduino.", "Connect the socket's pin 5 to pin 1 (TX).",
                    ["TX is the Arduino's serial output — the MIDI notes come out here.", "Unplug the MIDI cable while uploading: uploads use this pin too."],
                    nets=[[f"{j}:5", f"{self.board}:1"]])
         self.nets += [[f"{j}:2", f"{self.board}:GND.1"], [f"{r}:1", f"{j}:4"], [f"{r}:2", f"{self.board}:5V"], [f"{j}:5", f"{self.board}:1"]]
@@ -459,7 +469,7 @@ class Lesson:
             self._wire(f"{r}:1", f"bb1:{c + dx}t.{row}"); self._wire(f"{r}:2", f"bb1:{far}t.{row}")
             self._wire(f"bb1:{far}t.d", f"{self.board}:{pin}", "orange")
             name = {"R": "red", "G": "green", "B": "blue"}[colour]
-            self._step(f"{d}-{colour.lower()}-resistor", f"Push a 220 Ω resistor in: one leg in the {name} leg's column, the other leg in an empty column.",
+            self._step(f"{d}-{colour.lower()}-resistor", f"Push a 220 Ω resistor in: one leg in the same column as the {name} leg, the other leg in an empty column.",
                        f"Put a resistor on the {name} leg.", ["Each colour needs its own resistor."], nets=[[f"{r}:1", f"{d}:{colour}"]])
             self._step(f"{d}-{colour.lower()}-pin", f"Run a wire from that resistor's other leg to pin <b>{pin}</b> on the Arduino.",
                        f"Connect the {name} resistor to pin {pin}.", [f"Pin {pin} has a ~ next to it: it can dim the colour (PWM)."],
@@ -533,7 +543,7 @@ class Lesson:
             leg_strip = f"{x + 1 + int(leg)}b"
             self._wire(f"bb1:{hole[pin]}.{self._free(hole[pin])}", f"bb1:{leg_strip}.{self._free(leg_strip)}", "yellow")
             self._step(f"{y}-p{pin}", f"Run a wire from chip pin <b>{pin}</b> to the crystal's {side} leg.", f"Connect chip pin {pin} to the crystal.",
-                       [f"Pin {pin} is on the bottom row, {pin} holes from the left.", "Either crystal leg is fine — it has no + or −."],
+                       [f"Chip pin {pin} is the {pin}th leg from the left on the bottom row.", "Either crystal leg is fine — it has no + or −."],
                        nets=self._net(f"{u}:{pin}", f"{y}:{leg}"))
         for cap, leg, cap_leg, side, far in [(k1, "1", "2", "left", "left"), (k2, "2", "1", "right", "right")]:
             self._step(f"{cap}-place", f"Push a 22 pF capacitor (marked “22”) in: one leg in the same column as the crystal's {side} leg, the other leg two columns to the {far}.",

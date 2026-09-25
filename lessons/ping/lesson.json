@@ -63,7 +63,7 @@
       "hints": [
         "GND is the minus side."
       ],
-      "goal": "Connect GND to GND."
+      "goal": "Connect the Ping sensor's GND pin to GND."
     },
     {
       "id": "ping1-5v",
@@ -79,12 +79,12 @@
       "hints": [
         "Power first: + to 5V, − to GND."
       ],
-      "goal": "Connect 5V to 5V."
+      "goal": "Connect the Ping sensor's 5V pin to 5V."
     },
     {
       "id": "ping1-sig",
       "phase": "build",
-      "clip": "Run a wire from the Ping sensor's <b>SIG</b> pin to <b>7</b> on the Arduino.",
+      "clip": "Run a wire from the Ping sensor's <b>SIG</b> pin to <b>pin 7</b> on the Arduino.",
       "expected_nets": [
         [
           "ping1:SIG",
@@ -93,9 +93,9 @@
       ],
       "strict": false,
       "hints": [
-        "7 is on the Arduino's row of numbered sockets."
+        "Pin 7 is on the Arduino's row of numbered sockets."
       ],
-      "goal": "Connect SIG to 7."
+      "goal": "Connect the Ping sensor's SIG pin to pin 7."
     },
     {
       "id": "upload-code",

@@ -74,7 +74,7 @@
       "hints": [
         "Power first: + to 5V, − to GND."
       ],
-      "goal": "Connect VCC to 5V."
+      "goal": "Connect the joystick's VCC pin to 5V."
     },
     {
       "id": "joy1-gnd",
@@ -90,12 +90,12 @@
       "hints": [
         "GND is the minus side."
       ],
-      "goal": "Connect GND to GND."
+      "goal": "Connect the joystick's GND pin to GND."
     },
     {
       "id": "joy1-horz",
       "phase": "build",
-      "clip": "Run a wire from the joystick's <b>HORZ</b> pin to <b>A0</b> on the Arduino.",
+      "clip": "Run a wire from the joystick's <b>HORZ</b> pin to <b>pin A0</b> on the Arduino.",
       "expected_nets": [
         [
           "joy1:HORZ",
@@ -104,14 +104,14 @@
       ],
       "strict": false,
       "hints": [
-        "A0 is on the Arduino's ANALOG IN side."
+        "Pin A0 is on the Arduino's ANALOG IN side."
       ],
-      "goal": "Connect HORZ to A0."
+      "goal": "Connect the joystick's HORZ pin to pin A0."
     },
     {
       "id": "joy1-vert",
       "phase": "build",
-      "clip": "Run a wire from the joystick's <b>VERT</b> pin to <b>A1</b> on the Arduino.",
+      "clip": "Run a wire from the joystick's <b>VERT</b> pin to <b>pin A1</b> on the Arduino.",
       "expected_nets": [
         [
           "joy1:VERT",
@@ -120,9 +120,9 @@
       ],
       "strict": false,
       "hints": [
-        "A1 is on the Arduino's ANALOG IN side."
+        "Pin A1 is on the Arduino's ANALOG IN side."
       ],
-      "goal": "Connect VERT to A1."
+      "goal": "Connect the joystick's VERT pin to pin A1."
     },
     {
       "id": "btn1-place",
@@ -187,7 +187,7 @@
         "This is a pull-down: it keeps the pin LOW until you press.",
         "Without it the pin 'floats' and reads random values."
       ],
-      "goal": "Put a 10 kΩ resistor on the On/Off button's pin side."
+      "goal": "Put a 10 kΩ resistor on the On/Off button's pin 2 side."
     },
     {
       "id": "btn1-pulldown-gnd",
@@ -203,7 +203,7 @@
       "hints": [
         "Now the pin reads LOW, and HIGH only while you press."
       ],
-      "goal": "Connect the pull-down resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "btn2-place",
@@ -268,7 +268,7 @@
         "This is a pull-down: it keeps the pin LOW until you press.",
         "Without it the pin 'floats' and reads random values."
       ],
-      "goal": "Put a 10 kΩ resistor on the Click button's pin side."
+      "goal": "Put a 10 kΩ resistor on the Click button's pin 3 side."
     },
     {
       "id": "btn2-pulldown-gnd",
@@ -284,7 +284,7 @@
       "hints": [
         "Now the pin reads LOW, and HIGH only while you press."
       ],
-      "goal": "Connect the pull-down resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "led1-resistor",
@@ -301,7 +301,7 @@
     {
       "id": "led1-pin",
       "phase": "build",
-      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>5</b> on the Arduino.",
+      "clip": "Run a wire from one leg of the resistor you just placed to pin <b>5</b> on the Arduino.",
       "expected_nets": [
         [
           "r3:1",
@@ -318,7 +318,7 @@
     {
       "id": "led1-legs",
       "phase": "build",
-      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as that resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led1:A",

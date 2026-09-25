@@ -179,7 +179,7 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 9 is on the bottom row, 9 holes from the left.",
+        "Chip pin 9 is the 9th leg from the left on the bottom row.",
         "Either crystal leg is fine — it has no + or −."
       ],
       "goal": "Connect chip pin 9 to the crystal."
@@ -196,7 +196,7 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 10 is on the bottom row, 10 holes from the left.",
+        "Chip pin 10 is the 10th leg from the left on the bottom row.",
         "Either crystal leg is fine — it has no + or −."
       ],
       "goal": "Connect chip pin 10 to the crystal."

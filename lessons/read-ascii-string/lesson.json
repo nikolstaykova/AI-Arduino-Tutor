@@ -72,7 +72,7 @@
     {
       "id": "rgb1-r-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor in: one leg in the red leg's column, the other leg in an empty column.",
+      "clip": "Push a 220 Ω resistor in: one leg in the same column as the red leg, the other leg in an empty column.",
       "expected_nets": [
         [
           "r1:1",
@@ -104,7 +104,7 @@
     {
       "id": "rgb1-g-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor in: one leg in the green leg's column, the other leg in an empty column.",
+      "clip": "Push a 220 Ω resistor in: one leg in the same column as the green leg, the other leg in an empty column.",
       "expected_nets": [
         [
           "r2:1",
@@ -136,7 +136,7 @@
     {
       "id": "rgb1-b-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor in: one leg in the blue leg's column, the other leg in an empty column.",
+      "clip": "Push a 220 Ω resistor in: one leg in the same column as the blue leg, the other leg in an empty column.",
       "expected_nets": [
         [
           "r3:1",

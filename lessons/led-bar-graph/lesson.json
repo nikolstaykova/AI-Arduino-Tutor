@@ -90,7 +90,7 @@
     {
       "id": "bar1-c1",
       "phase": "build",
-      "clip": "First, run a wire from the Arduino's <b>GND</b> pin to the blue − row at the bottom.<br>Then: turn a 220 Ω resistor upright: one leg in bar 1's − column (bottom half, row h), the other leg straight into the blue − row just below it.",
+      "clip": "Two things:<br>1. A wire from the Arduino's <b>GND</b> pin to the blue − row at the bottom.<br>2. Stand a 220 Ω resistor upright: one leg in bar 1's − column (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r1:1",
@@ -126,7 +126,7 @@
     {
       "id": "bar1-c2",
       "phase": "build",
-      "clip": "Turn a 220 Ω resistor upright: one leg in bar 2's − column (row h), the other leg straight into the blue − row just below it.",
+      "clip": "Stand a 220 Ω resistor upright: one leg in bar 2's − column (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r2:1",
@@ -162,7 +162,7 @@
     {
       "id": "bar1-c3",
       "phase": "build",
-      "clip": "Turn a 220 Ω resistor upright: one leg in bar 3's − column (row h), the other leg straight into the blue − row just below it.",
+      "clip": "Stand a 220 Ω resistor upright: one leg in bar 3's − column (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r3:1",
@@ -198,7 +198,7 @@
     {
       "id": "bar1-c4",
       "phase": "build",
-      "clip": "Turn a 220 Ω resistor upright: one leg in bar 4's − column (row h), the other leg straight into the blue − row just below it.",
+      "clip": "Stand a 220 Ω resistor upright: one leg in bar 4's − column (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r4:1",
@@ -234,7 +234,7 @@
     {
       "id": "bar1-c5",
       "phase": "build",
-      "clip": "Turn a 220 Ω resistor upright: one leg in bar 5's − column (row h), the other leg straight into the blue − row just below it.",
+      "clip": "Stand a 220 Ω resistor upright: one leg in bar 5's − column (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r5:1",
@@ -270,7 +270,7 @@
     {
       "id": "bar1-c6",
       "phase": "build",
-      "clip": "bar 6's column sits over a gap in the − row, so first a short wire from its − column (row j) to the empty column 11. Then turn a 220 Ω resistor upright from column 11 (row h) into the − row below it.",
+      "clip": "Two things:<br>1. A short wire from bar 6's − column (row j) to the empty column 11.<br>2. Stand a 220 Ω resistor upright: one leg in column 11 (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r6:1",
@@ -283,7 +283,7 @@
       ],
       "strict": false,
       "hints": [
-        "The − row has a small gap every few holes — this bar sits over one."
+        "The − row has a small gap under bar 6, so its resistor stands in column 11 instead."
       ],
       "goal": "Connect bar 6's − leg to GND through a 220 Ω resistor."
     },
@@ -306,7 +306,7 @@
     {
       "id": "bar1-c7",
       "phase": "build",
-      "clip": "Turn a 220 Ω resistor upright: one leg in bar 7's − column (row h), the other leg straight into the blue − row just below it.",
+      "clip": "Stand a 220 Ω resistor upright: one leg in bar 7's − column (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r7:1",
@@ -342,7 +342,7 @@
     {
       "id": "bar1-c8",
       "phase": "build",
-      "clip": "Turn a 220 Ω resistor upright: one leg in bar 8's − column (row h), the other leg straight into the blue − row just below it.",
+      "clip": "Stand a 220 Ω resistor upright: one leg in bar 8's − column (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r8:1",
@@ -378,7 +378,7 @@
     {
       "id": "bar1-c9",
       "phase": "build",
-      "clip": "Turn a 220 Ω resistor upright: one leg in bar 9's − column (row h), the other leg straight into the blue − row just below it.",
+      "clip": "Stand a 220 Ω resistor upright: one leg in bar 9's − column (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r9:1",
@@ -414,7 +414,7 @@
     {
       "id": "bar1-c10",
       "phase": "build",
-      "clip": "Turn a 220 Ω resistor upright: one leg in bar 10's − column (row h), the other leg straight into the blue − row just below it.",
+      "clip": "Stand a 220 Ω resistor upright: one leg in bar 10's − column (row h), the other leg in the blue − row just below it.",
       "expected_nets": [
         [
           "r10:1",
@@ -460,7 +460,7 @@
       "hints": [
         "Either outer leg works."
       ],
-      "goal": "Connect one outer leg to GND."
+      "goal": "Connect one outer leg of the knob to GND."
     },
     {
       "id": "pot1-5v",
@@ -476,7 +476,7 @@
       "hints": [
         "Now the knob has 0 V at one end and 5 V at the other."
       ],
-      "goal": "Connect the other outer leg to 5V."
+      "goal": "Connect the knob's other outer leg to 5V."
     },
     {
       "id": "pot1-pin",
@@ -490,10 +490,10 @@
       ],
       "strict": false,
       "hints": [
-        "A0 is on the ANALOG IN side of the Arduino.",
+        "Pin A0 is on the ANALOG IN side of the Arduino.",
         "The middle leg's voltage follows the knob: 0 V to 5 V."
       ],
-      "goal": "Connect the knob's middle leg to A0."
+      "goal": "Connect the knob's middle leg to pin A0."
     },
     {
       "id": "upload-code",

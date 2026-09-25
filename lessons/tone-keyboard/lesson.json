@@ -55,7 +55,7 @@
     {
       "id": "fsr1-5v",
       "phase": "build",
-      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The force sensor's first leg → that same row.",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. One leg of the force sensor → that same row.",
       "expected_nets": [
         [
           "fsr1:1",
@@ -80,14 +80,14 @@
       ],
       "strict": false,
       "hints": [
-        "A0 is on the ANALOG IN side of the Arduino."
+        "Pin A0 is on the ANALOG IN side of the Arduino."
       ],
-      "goal": "Connect the force sensor's other leg to A0."
+      "goal": "Connect the force sensor's other leg to pin A0."
     },
     {
       "id": "fsr1-resistor",
       "phase": "build",
-      "clip": "Push a 10 kΩ resistor in: one leg in that same column (the force sensor's other leg), the other leg in an empty column.",
+      "clip": "Push a 10 kΩ resistor in: one leg in the same column as the pin A0 wire, the other leg in an empty column.",
       "expected_nets": [
         [
           "r1:1",
@@ -98,12 +98,12 @@
       "hints": [
         "The force sensor and this resistor share the 5 V between them — so the pin's voltage changes as the force sensor does."
       ],
-      "goal": "Put a 10 kΩ resistor on the force sensor's pin side."
+      "goal": "Put a 10 kΩ resistor next to the pin A0 wire."
     },
     {
       "id": "fsr1-gnd",
       "phase": "build",
-      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The 10 kΩ resistor's other leg → that same row.",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. That resistor's other leg → that same row.",
       "expected_nets": [
         [
           "r1:2",
@@ -114,12 +114,12 @@
       "hints": [
         "Now the reading goes up when the pad is pressed."
       ],
-      "goal": "Connect the resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "fsr2-place",
       "phase": "build",
-      "clip": "Push the force sensor in, its two legs in two different columns.",
+      "clip": "Push a second force sensor in, its two legs in two different columns.",
       "expected_landing": [
         "fsr2:1",
         "fsr2:2"
@@ -128,12 +128,12 @@
       "hints": [
         "It works either way round."
       ],
-      "goal": "Put the force sensor on the breadboard."
+      "goal": "Put the second force sensor on the breadboard."
     },
     {
       "id": "fsr2-5v",
       "phase": "build",
-      "clip": "Run a wire from the force sensor's first leg to the red + row.",
+      "clip": "Run a wire from one leg of the second force sensor to the red + row.",
       "expected_nets": [
         [
           "fsr2:1",
@@ -144,12 +144,12 @@
       "hints": [
         "Either leg works."
       ],
-      "goal": "Connect one leg of the force sensor to 5V."
+      "goal": "Connect one leg of the second force sensor to 5V."
     },
     {
       "id": "fsr2-pin",
       "phase": "build",
-      "clip": "Run a wire from the force sensor's <b>other</b> leg to pin <b>A1</b> on the Arduino.",
+      "clip": "Run a wire from the second force sensor's <b>other</b> leg to pin <b>A1</b> on the Arduino.",
       "expected_nets": [
         [
           "fsr2:2",
@@ -158,14 +158,14 @@
       ],
       "strict": false,
       "hints": [
-        "A1 is on the ANALOG IN side of the Arduino."
+        "Pin A1 is on the ANALOG IN side of the Arduino."
       ],
-      "goal": "Connect the force sensor's other leg to A1."
+      "goal": "Connect the second force sensor's other leg to pin A1."
     },
     {
       "id": "fsr2-resistor",
       "phase": "build",
-      "clip": "Push a 10 kΩ resistor in: one leg in that same column (the force sensor's other leg), the other leg in an empty column.",
+      "clip": "Push a 10 kΩ resistor in: one leg in the same column as the pin A1 wire, the other leg in an empty column.",
       "expected_nets": [
         [
           "r2:1",
@@ -176,12 +176,12 @@
       "hints": [
         "The force sensor and this resistor share the 5 V between them — so the pin's voltage changes as the force sensor does."
       ],
-      "goal": "Put a 10 kΩ resistor on the force sensor's pin side."
+      "goal": "Put a 10 kΩ resistor next to the pin A1 wire."
     },
     {
       "id": "fsr2-gnd",
       "phase": "build",
-      "clip": "Run a wire from the 10 kΩ resistor's other leg to the blue − row.",
+      "clip": "Run a wire from that resistor's other leg to the blue − row.",
       "expected_nets": [
         [
           "r2:2",
@@ -192,12 +192,12 @@
       "hints": [
         "Now the reading goes up when the pad is pressed."
       ],
-      "goal": "Connect the resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "fsr3-place",
       "phase": "build",
-      "clip": "Push the force sensor in, its two legs in two different columns.",
+      "clip": "Push a third force sensor in, its two legs in two different columns.",
       "expected_landing": [
         "fsr3:1",
         "fsr3:2"
@@ -206,12 +206,12 @@
       "hints": [
         "It works either way round."
       ],
-      "goal": "Put the force sensor on the breadboard."
+      "goal": "Put the third force sensor on the breadboard."
     },
     {
       "id": "fsr3-5v",
       "phase": "build",
-      "clip": "Run a wire from the force sensor's first leg to the red + row.",
+      "clip": "Run a wire from one leg of the third force sensor to the red + row.",
       "expected_nets": [
         [
           "fsr3:1",
@@ -222,12 +222,12 @@
       "hints": [
         "Either leg works."
       ],
-      "goal": "Connect one leg of the force sensor to 5V."
+      "goal": "Connect one leg of the third force sensor to 5V."
     },
     {
       "id": "fsr3-pin",
       "phase": "build",
-      "clip": "Run a wire from the force sensor's <b>other</b> leg to pin <b>A2</b> on the Arduino.",
+      "clip": "Run a wire from the third force sensor's <b>other</b> leg to pin <b>A2</b> on the Arduino.",
       "expected_nets": [
         [
           "fsr3:2",
@@ -236,14 +236,14 @@
       ],
       "strict": false,
       "hints": [
-        "A2 is on the ANALOG IN side of the Arduino."
+        "Pin A2 is on the ANALOG IN side of the Arduino."
       ],
-      "goal": "Connect the force sensor's other leg to A2."
+      "goal": "Connect the third force sensor's other leg to pin A2."
     },
     {
       "id": "fsr3-resistor",
       "phase": "build",
-      "clip": "Push a 10 kΩ resistor in: one leg in that same column (the force sensor's other leg), the other leg in an empty column.",
+      "clip": "Push a 10 kΩ resistor in: one leg in the same column as the pin A2 wire, the other leg in an empty column.",
       "expected_nets": [
         [
           "r3:1",
@@ -254,12 +254,12 @@
       "hints": [
         "The force sensor and this resistor share the 5 V between them — so the pin's voltage changes as the force sensor does."
       ],
-      "goal": "Put a 10 kΩ resistor on the force sensor's pin side."
+      "goal": "Put a 10 kΩ resistor next to the pin A2 wire."
     },
     {
       "id": "fsr3-gnd",
       "phase": "build",
-      "clip": "Run a wire from the 10 kΩ resistor's other leg to the blue − row.",
+      "clip": "Run a wire from that resistor's other leg to the blue − row.",
       "expected_nets": [
         [
           "r3:2",
@@ -270,7 +270,7 @@
       "hints": [
         "Now the reading goes up when the pad is pressed."
       ],
-      "goal": "Connect the resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "bz1-place",

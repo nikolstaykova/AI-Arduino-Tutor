@@ -83,14 +83,14 @@
       ],
       "strict": false,
       "hints": [
-        "A0 is on the ANALOG IN side: a knock shows up as a jump in the reading."
+        "Pin A0 is on the ANALOG IN side: a knock shows up as a jump in the reading."
       ],
-      "goal": "Connect the piezo's + leg to A0."
+      "goal": "Connect the piezo's + leg to pin A0."
     },
     {
       "id": "r1-place",
       "phase": "build",
-      "clip": "Push the 1 MΩ resistor in: one leg in the piezo's + column, the other leg in an empty column.",
+      "clip": "Push the 1 MΩ resistor in: one leg in the same column as the piezo's + leg, the other leg in an empty column.",
       "expected_nets": [
         [
           "r1:1",
@@ -134,7 +134,7 @@
     {
       "id": "led1-pin",
       "phase": "build",
-      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>13</b> on the Arduino.",
+      "clip": "Run a wire from one leg of the resistor you just placed to pin <b>13</b> on the Arduino.",
       "expected_nets": [
         [
           "r2:1",
@@ -151,7 +151,7 @@
     {
       "id": "led1-legs",
       "phase": "build",
-      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as that resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led1:A",

@@ -99,7 +99,7 @@
         "This is a pull-down: it keeps the pin LOW until you press.",
         "Without it the pin 'floats' and reads random values."
       ],
-      "goal": "Put a 10 kΩ resistor on the Up button's pin side."
+      "goal": "Put a 10 kΩ resistor on the Up button's pin 2 side."
     },
     {
       "id": "btn1-pulldown-gnd",
@@ -115,7 +115,7 @@
       "hints": [
         "Now the pin reads LOW, and HIGH only while you press."
       ],
-      "goal": "Connect the pull-down resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "btn2-place",
@@ -180,7 +180,7 @@
         "This is a pull-down: it keeps the pin LOW until you press.",
         "Without it the pin 'floats' and reads random values."
       ],
-      "goal": "Put a 10 kΩ resistor on the Down button's pin side."
+      "goal": "Put a 10 kΩ resistor on the Down button's pin 3 side."
     },
     {
       "id": "btn2-pulldown-gnd",
@@ -196,7 +196,7 @@
       "hints": [
         "Now the pin reads LOW, and HIGH only while you press."
       ],
-      "goal": "Connect the pull-down resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "btn3-place",
@@ -261,7 +261,7 @@
         "This is a pull-down: it keeps the pin LOW until you press.",
         "Without it the pin 'floats' and reads random values."
       ],
-      "goal": "Put a 10 kΩ resistor on the Left button's pin side."
+      "goal": "Put a 10 kΩ resistor on the Left button's pin 4 side."
     },
     {
       "id": "btn3-pulldown-gnd",
@@ -277,7 +277,7 @@
       "hints": [
         "Now the pin reads LOW, and HIGH only while you press."
       ],
-      "goal": "Connect the pull-down resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "btn4-place",
@@ -342,7 +342,7 @@
         "This is a pull-down: it keeps the pin LOW until you press.",
         "Without it the pin 'floats' and reads random values."
       ],
-      "goal": "Put a 10 kΩ resistor on the Right button's pin side."
+      "goal": "Put a 10 kΩ resistor on the Right button's pin 5 side."
     },
     {
       "id": "btn4-pulldown-gnd",
@@ -358,7 +358,7 @@
       "hints": [
         "Now the pin reads LOW, and HIGH only while you press."
       ],
-      "goal": "Connect the pull-down resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "btn5-place",
@@ -423,7 +423,7 @@
         "This is a pull-down: it keeps the pin LOW until you press.",
         "Without it the pin 'floats' and reads random values."
       ],
-      "goal": "Put a 10 kΩ resistor on the Click button's pin side."
+      "goal": "Put a 10 kΩ resistor on the Click button's pin 6 side."
     },
     {
       "id": "btn5-pulldown-gnd",
@@ -439,7 +439,7 @@
       "hints": [
         "Now the pin reads LOW, and HIGH only while you press."
       ],
-      "goal": "Connect the pull-down resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "upload-code",

@@ -66,7 +66,7 @@
       "hints": [
         "3.3V is on the Arduino's power header, next to 5V."
       ],
-      "goal": "Connect VCC to 3.3V."
+      "goal": "Connect the accelerometer's VCC pin to 3.3V."
     },
     {
       "id": "acc1-gnd",
@@ -82,12 +82,12 @@
       "hints": [
         "GND is the minus side."
       ],
-      "goal": "Connect GND to GND."
+      "goal": "Connect the accelerometer's GND pin to GND."
     },
     {
       "id": "acc1-x",
       "phase": "build",
-      "clip": "Run a wire from the accelerometer's <b>X</b> pin to <b>A3</b> on the Arduino.",
+      "clip": "Run a wire from the accelerometer's <b>X</b> pin to <b>pin A3</b> on the Arduino.",
       "expected_nets": [
         [
           "acc1:X",
@@ -96,14 +96,14 @@
       ],
       "strict": false,
       "hints": [
-        "A3 is on the Arduino's ANALOG IN side."
+        "Pin A3 is on the Arduino's ANALOG IN side."
       ],
-      "goal": "Connect X to A3."
+      "goal": "Connect the accelerometer's X pin to pin A3."
     },
     {
       "id": "acc1-y",
       "phase": "build",
-      "clip": "Run a wire from the accelerometer's <b>Y</b> pin to <b>A2</b> on the Arduino.",
+      "clip": "Run a wire from the accelerometer's <b>Y</b> pin to <b>pin A2</b> on the Arduino.",
       "expected_nets": [
         [
           "acc1:Y",
@@ -112,14 +112,14 @@
       ],
       "strict": false,
       "hints": [
-        "A2 is on the Arduino's ANALOG IN side."
+        "Pin A2 is on the Arduino's ANALOG IN side."
       ],
-      "goal": "Connect Y to A2."
+      "goal": "Connect the accelerometer's Y pin to pin A2."
     },
     {
       "id": "acc1-z",
       "phase": "build",
-      "clip": "Run a wire from the accelerometer's <b>Z</b> pin to <b>A1</b> on the Arduino.",
+      "clip": "Run a wire from the accelerometer's <b>Z</b> pin to <b>pin A1</b> on the Arduino.",
       "expected_nets": [
         [
           "acc1:Z",
@@ -128,9 +128,9 @@
       ],
       "strict": false,
       "hints": [
-        "A1 is on the Arduino's ANALOG IN side."
+        "Pin A1 is on the Arduino's ANALOG IN side."
       ],
-      "goal": "Connect Z to A1."
+      "goal": "Connect the accelerometer's Z pin to pin A1."
     },
     {
       "id": "upload-code",

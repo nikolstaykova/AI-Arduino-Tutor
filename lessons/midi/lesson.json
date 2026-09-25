@@ -65,14 +65,14 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 2 is the cable's shield."
+        "Pin 2 is the cable's shield (its outer metal)."
       ],
-      "goal": "Connect pin 2 to GND."
+      "goal": "Connect the socket's pin 2 to GND."
     },
     {
       "id": "midi1-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor in: one leg in pin 4's column, the other leg in an empty column.",
+      "clip": "Push a 220 Ω resistor in: one leg in the same column as the socket's pin 4, the other leg in an empty column.",
       "expected_nets": [
         [
           "r1:1",
@@ -83,7 +83,7 @@
       "hints": [
         "MIDI sends a small current through the cable: this resistor limits it."
       ],
-      "goal": "Put a 220 Ω resistor on pin 4."
+      "goal": "Put a 220 Ω resistor on the socket's pin 4."
     },
     {
       "id": "midi1-5v",
@@ -97,14 +97,14 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 4 is the current source."
+        "The socket's pin 4 gets 5V through this resistor."
       ],
       "goal": "Connect the resistor to 5V."
     },
     {
       "id": "midi1-tx",
       "phase": "build",
-      "clip": "Run a wire from the socket's pin 5 to pin <b>1</b> (TX → 1) on the Arduino.",
+      "clip": "Run a wire from the socket's pin 5 to pin <b>1</b> (TX) on the Arduino.",
       "expected_nets": [
         [
           "midi1:5",
@@ -116,7 +116,7 @@
         "TX is the Arduino's serial output — the MIDI notes come out here.",
         "Unplug the MIDI cable while uploading: uploads use this pin too."
       ],
-      "goal": "Connect pin 5 to TX (pin 1)."
+      "goal": "Connect the socket's pin 5 to pin 1 (TX)."
     },
     {
       "id": "upload-code",

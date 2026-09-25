@@ -51,7 +51,7 @@
     {
       "id": "led1-pin",
       "phase": "build",
-      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>9</b> on the Arduino.",
+      "clip": "Run a wire from one leg of the resistor you just placed to pin <b>9</b> on the Arduino.",
       "expected_nets": [
         [
           "r1:1",
@@ -68,7 +68,7 @@
     {
       "id": "led1-legs",
       "phase": "build",
-      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as that resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led1:A",

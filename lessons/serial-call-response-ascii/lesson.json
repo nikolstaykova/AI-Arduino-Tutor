@@ -68,7 +68,7 @@
       "hints": [
         "Either outer leg works."
       ],
-      "goal": "Connect one outer leg to GND."
+      "goal": "Connect one outer leg of the knob to GND."
     },
     {
       "id": "pot1-5v",
@@ -84,7 +84,7 @@
       "hints": [
         "Now the knob has 0 V at one end and 5 V at the other."
       ],
-      "goal": "Connect the other outer leg to 5V."
+      "goal": "Connect the knob's other outer leg to 5V."
     },
     {
       "id": "pot1-pin",
@@ -98,15 +98,15 @@
       ],
       "strict": false,
       "hints": [
-        "A0 is on the ANALOG IN side of the Arduino.",
+        "Pin A0 is on the ANALOG IN side of the Arduino.",
         "The middle leg's voltage follows the knob: 0 V to 5 V."
       ],
-      "goal": "Connect the knob's middle leg to A0."
+      "goal": "Connect the knob's middle leg to pin A0."
     },
     {
       "id": "pot2-place",
       "phase": "build",
-      "clip": "Push the knob into the breadboard, each of its three legs in its own column.",
+      "clip": "Push a second knob into the breadboard, each of its three legs in its own column.",
       "expected_landing": [
         "pot2:GND",
         "pot2:SIG",
@@ -116,12 +116,12 @@
       "hints": [
         "The two outer legs are for power; the middle leg gives the reading."
       ],
-      "goal": "Put the knob on the breadboard."
+      "goal": "Put the second knob on the breadboard."
     },
     {
       "id": "pot2-gnd",
       "phase": "build",
-      "clip": "Run a wire from one outer leg of the knob to the blue − row.",
+      "clip": "Run a wire from one outer leg of the second knob to the blue − row.",
       "expected_nets": [
         [
           "pot2:GND",
@@ -132,12 +132,12 @@
       "hints": [
         "Either outer leg works."
       ],
-      "goal": "Connect one outer leg to GND."
+      "goal": "Connect one outer leg of the second knob to GND."
     },
     {
       "id": "pot2-5v",
       "phase": "build",
-      "clip": "Run a wire from the knob's other outer leg to the red + row.",
+      "clip": "Run a wire from the second knob's other outer leg to the red + row.",
       "expected_nets": [
         [
           "pot2:VCC",
@@ -148,12 +148,12 @@
       "hints": [
         "Now the knob has 0 V at one end and 5 V at the other."
       ],
-      "goal": "Connect the other outer leg to 5V."
+      "goal": "Connect the second knob's other outer leg to 5V."
     },
     {
       "id": "pot2-pin",
       "phase": "build",
-      "clip": "Run a wire from the knob's <b>middle</b> leg to pin <b>A1</b> on the Arduino.",
+      "clip": "Run a wire from the second knob's <b>middle</b> leg to pin <b>A1</b> on the Arduino.",
       "expected_nets": [
         [
           "pot2:SIG",
@@ -162,10 +162,10 @@
       ],
       "strict": false,
       "hints": [
-        "A1 is on the ANALOG IN side of the Arduino.",
+        "Pin A1 is on the ANALOG IN side of the Arduino.",
         "The middle leg's voltage follows the knob: 0 V to 5 V."
       ],
-      "goal": "Connect the knob's middle leg to A1."
+      "goal": "Connect the second knob's middle leg to pin A1."
     },
     {
       "id": "btn1-place",
@@ -230,7 +230,7 @@
         "This is a pull-down: it keeps the pin LOW until you press.",
         "Without it the pin 'floats' and reads random values."
       ],
-      "goal": "Put a 10 kΩ resistor on the button's pin side."
+      "goal": "Put a 10 kΩ resistor on the button's pin 2 side."
     },
     {
       "id": "btn1-pulldown-gnd",
@@ -246,7 +246,7 @@
       "hints": [
         "Now the pin reads LOW, and HIGH only while you press."
       ],
-      "goal": "Connect the pull-down resistor to GND."
+      "goal": "Connect the 10 kΩ resistor to GND."
     },
     {
       "id": "upload-code",

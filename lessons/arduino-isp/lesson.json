@@ -179,7 +179,7 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 9 is on the bottom row, 9 holes from the left.",
+        "Chip pin 9 is the 9th leg from the left on the bottom row.",
         "Either crystal leg is fine — it has no + or −."
       ],
       "goal": "Connect chip pin 9 to the crystal."
@@ -196,7 +196,7 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 10 is on the bottom row, 10 holes from the left.",
+        "Chip pin 10 is the 10th leg from the left on the bottom row.",
         "Either crystal leg is fine — it has no + or −."
       ],
       "goal": "Connect chip pin 10 to the crystal."
@@ -405,7 +405,7 @@
     {
       "id": "led1-pin",
       "phase": "build",
-      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>9</b> on the Arduino.",
+      "clip": "Run a wire from one leg of the resistor you just placed to pin <b>9</b> on the Arduino.",
       "expected_nets": [
         [
           "r1:1",
@@ -422,7 +422,7 @@
     {
       "id": "led1-legs",
       "phase": "build",
-      "clip": "Put the green LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "clip": "Put the green LED in: the <b>long</b> leg in the same column as that resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led1:A",
@@ -468,7 +468,7 @@
     {
       "id": "led2-pin",
       "phase": "build",
-      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>8</b> on the Arduino.",
+      "clip": "Run a wire from one leg of the resistor you just placed to pin <b>8</b> on the Arduino.",
       "expected_nets": [
         [
           "r2:1",
@@ -485,7 +485,7 @@
     {
       "id": "led2-legs",
       "phase": "build",
-      "clip": "Put the red LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "clip": "Put the red LED in: the <b>long</b> leg in the same column as that resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led2:A",
@@ -531,7 +531,7 @@
     {
       "id": "led3-pin",
       "phase": "build",
-      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>7</b> on the Arduino.",
+      "clip": "Run a wire from one leg of the resistor you just placed to pin <b>7</b> on the Arduino.",
       "expected_nets": [
         [
           "r3:1",
@@ -548,7 +548,7 @@
     {
       "id": "led3-legs",
       "phase": "build",
-      "clip": "Put the yellow LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "clip": "Put the yellow LED in: the <b>long</b> leg in the same column as that resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led3:A",

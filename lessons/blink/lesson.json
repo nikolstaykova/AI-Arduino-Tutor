@@ -66,7 +66,7 @@
     {
       "id": "step-2",
       "phase": "build",
-      "clip": "Now the LED. Its legs are different lengths: put the long leg in the same column as the resistor's other leg, and the short leg in an empty column next to it. Sharing a column already connects them — no wire needed.",
+      "clip": "Now the LED. Put its <b>long</b> leg in the same column as the resistor's other leg, and its <b>short</b> leg in an empty column next to it.",
       "expected_nets": [
         [
           "led1:A",

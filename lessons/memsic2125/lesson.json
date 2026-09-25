@@ -66,7 +66,7 @@
       "hints": [
         "Power first: + to 5V, − to GND."
       ],
-      "goal": "Connect Vdd to 5V."
+      "goal": "Connect the Memsic 2125's Vdd pin to 5V."
     },
     {
       "id": "acc1-gnd1",
@@ -82,7 +82,7 @@
       "hints": [
         "GND is the minus side."
       ],
-      "goal": "Connect first GND to GND."
+      "goal": "Connect the Memsic 2125's first GND pin to GND."
     },
     {
       "id": "acc1-gnd2",
@@ -98,12 +98,12 @@
       "hints": [
         "GND is the minus side."
       ],
-      "goal": "Connect second GND to GND."
+      "goal": "Connect the Memsic 2125's second GND pin to GND."
     },
     {
       "id": "acc1-xout",
       "phase": "build",
-      "clip": "Run a wire from the Memsic 2125's <b>Xout</b> pin to <b>2</b> on the Arduino.",
+      "clip": "Run a wire from the Memsic 2125's <b>Xout</b> pin to <b>pin 2</b> on the Arduino.",
       "expected_nets": [
         [
           "acc1:XOUT",
@@ -112,14 +112,14 @@
       ],
       "strict": false,
       "hints": [
-        "2 is on the Arduino's row of numbered sockets."
+        "Pin 2 is on the Arduino's row of numbered sockets."
       ],
-      "goal": "Connect Xout to 2."
+      "goal": "Connect the Memsic 2125's Xout pin to pin 2."
     },
     {
       "id": "acc1-yout",
       "phase": "build",
-      "clip": "Run a wire from the Memsic 2125's <b>Yout</b> pin to <b>3</b> on the Arduino.",
+      "clip": "Run a wire from the Memsic 2125's <b>Yout</b> pin to <b>pin 3</b> on the Arduino.",
       "expected_nets": [
         [
           "acc1:YOUT",
@@ -128,9 +128,9 @@
       ],
       "strict": false,
       "hints": [
-        "3 is on the Arduino's row of numbered sockets."
+        "Pin 3 is on the Arduino's row of numbered sockets."
       ],
-      "goal": "Connect Yout to 3."
+      "goal": "Connect the Memsic 2125's Yout pin to pin 3."
     },
     {
       "id": "upload-code",

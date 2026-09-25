@@ -84,7 +84,7 @@
     {
       "id": "bz2-place",
       "phase": "build",
-      "clip": "Push the buzzer in, its two legs in two different columns.",
+      "clip": "Push a second buzzer in, its two legs in two different columns.",
       "expected_landing": [
         "bz2:1",
         "bz2:2"
@@ -94,12 +94,12 @@
         "The + leg is marked on top (and is usually longer).",
         "It only works one way round."
       ],
-      "goal": "Put the buzzer on the breadboard."
+      "goal": "Put the second buzzer on the breadboard."
     },
     {
       "id": "bz2-pin",
       "phase": "build",
-      "clip": "Run a wire from the buzzer's <b>+</b> leg to pin <b>7</b> on the Arduino.",
+      "clip": "Run a wire from the second buzzer's <b>+</b> leg to pin <b>7</b> on the Arduino.",
       "expected_nets": [
         [
           "bz2:2",
@@ -110,12 +110,12 @@
       "hints": [
         "tone() on this pin makes the buzzer sing."
       ],
-      "goal": "Connect the buzzer's + leg to pin 7."
+      "goal": "Connect the second buzzer's + leg to pin 7."
     },
     {
       "id": "bz2-gnd",
       "phase": "build",
-      "clip": "Run a wire from the buzzer's other leg to the blue − row.",
+      "clip": "Run a wire from the second buzzer's other leg to the blue − row.",
       "expected_nets": [
         [
           "bz2:1",
@@ -126,12 +126,12 @@
       "hints": [
         "GND is the minus side of the circuit."
       ],
-      "goal": "Connect the buzzer's − leg to GND."
+      "goal": "Connect the second buzzer's − leg to GND."
     },
     {
       "id": "bz3-place",
       "phase": "build",
-      "clip": "Push the buzzer in, its two legs in two different columns.",
+      "clip": "Push a third buzzer in, its two legs in two different columns.",
       "expected_landing": [
         "bz3:1",
         "bz3:2"
@@ -141,12 +141,12 @@
         "The + leg is marked on top (and is usually longer).",
         "It only works one way round."
       ],
-      "goal": "Put the buzzer on the breadboard."
+      "goal": "Put the third buzzer on the breadboard."
     },
     {
       "id": "bz3-pin",
       "phase": "build",
-      "clip": "Run a wire from the buzzer's <b>+</b> leg to pin <b>8</b> on the Arduino.",
+      "clip": "Run a wire from the third buzzer's <b>+</b> leg to pin <b>8</b> on the Arduino.",
       "expected_nets": [
         [
           "bz3:2",
@@ -157,12 +157,12 @@
       "hints": [
         "tone() on this pin makes the buzzer sing."
       ],
-      "goal": "Connect the buzzer's + leg to pin 8."
+      "goal": "Connect the third buzzer's + leg to pin 8."
     },
     {
       "id": "bz3-gnd",
       "phase": "build",
-      "clip": "Run a wire from the buzzer's other leg to the blue − row.",
+      "clip": "Run a wire from the third buzzer's other leg to the blue − row.",
       "expected_nets": [
         [
           "bz3:1",
@@ -173,7 +173,7 @@
       "hints": [
         "GND is the minus side of the circuit."
       ],
-      "goal": "Connect the buzzer's − leg to GND."
+      "goal": "Connect the third buzzer's − leg to GND."
     },
     {
       "id": "upload-code",
