@@ -146,6 +146,10 @@ async function wokwiArtwork(tag, widthPx = 2048) {
     const clone = svg.cloneNode(true);
     const vb = (clone.getAttribute("viewBox") || "0 0 1 1").split(/\s+/).map(Number);
     clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    // the element's text sizes/fonts live in <style> blocks outside the <svg> — carry them along
+    const adopted = [...(el.shadowRoot.adoptedStyleSheets || [])].flatMap((sh) => { try { return [...sh.cssRules].map((r) => r.cssText); } catch { return []; } });
+    const css = [...[...el.shadowRoot.querySelectorAll("style")].map((s) => s.textContent), ...adopted].join("\n");
+    if (css) { const st = document.createElementNS("http://www.w3.org/2000/svg", "style"); st.textContent = css; clone.insertBefore(st, clone.firstChild); }
     clone.setAttribute("width", widthPx); clone.setAttribute("height", Math.round(widthPx * vb[3] / vb[2]));
     const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: "image/svg+xml" }));
     img = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = url; });
@@ -156,6 +160,7 @@ async function wokwiArtwork(tag, widthPx = 2048) {
 }
 
 export async function makeBoard(tag = "wokwi-arduino-uno") {
+  if (tag === "cq-arduino-leonardo") return makeUno("leonardo");      // the Uno's layout, a USB-native chip
   if (tag !== "wokwi-arduino-uno") return makeGenericBoard(tag);
   return makeUno();
 }
@@ -213,7 +218,7 @@ export const UNO_COMPONENTS = {
 
 // The Uno's top face: solder mask, copper traces, white silkscreen with the
 // real pin labels printed next to every header socket.
-function unoSilkscreen(pins) {
+function unoSilkscreen(pins, variant = "uno") {
   const K = 30, W = Math.round(UNO_W * K), H = Math.round(UNO_D * K);
   return textTexture((ctx) => {
     ctx.fillStyle = "#00878f"; ctx.fillRect(0, 0, W, H);
@@ -261,8 +266,9 @@ function unoSilkscreen(pins) {
     ctx.beginPath(); ctx.ellipse(lx + 3.2 * K, ly, 3.2 * K, 2.4 * K, 0, 0, 7); ctx.stroke();
     ctx.font = `900 ${1.9 * K}px Arial, sans-serif`; ctx.fillText("−", lx - 3.2 * K, ly); ctx.fillText("+", lx + 3.2 * K, ly);
     ctx.font = `800 ${3 * K}px Arial, sans-serif`; ctx.textAlign = "left"; ctx.fillText("ARDUINO", 34 * K, 28 * K);
-    ctx.lineWidth = 0.3 * K; ctx.strokeRect(53 * K, 15 * K, 10 * K, 5 * K);
-    ctx.font = `800 ${3.4 * K}px Arial, sans-serif`; ctx.textAlign = "center"; ctx.fillText("UNO", 58 * K, 17.6 * K);
+    ctx.lineWidth = 0.3 * K;
+    if (variant === "leonardo") { ctx.strokeRect(47 * K, 15 * K, 18 * K, 5 * K); ctx.font = `800 ${2.6 * K}px Arial, sans-serif`; ctx.textAlign = "center"; ctx.fillText("LEONARDO", 56 * K, 17.6 * K); }
+    else { ctx.strokeRect(53 * K, 15 * K, 10 * K, 5 * K); ctx.font = `800 ${3.4 * K}px Arial, sans-serif`; ctx.textAlign = "center"; ctx.fillText("UNO", 58 * K, 17.6 * K); }
     ctx.font = `600 ${1.2 * K}px Arial, sans-serif`;
     [["L", 24.5, 11.5], ["TX", 24.5, 15], ["RX", 24.5, 17.5], ["ON", 60.5, 11], ["ICSP", 64.2, 22.8], ["RESET", 7.5, 9], ["AREF", 0, 0]]
       .forEach(([t, x, y]) => { if (x) ctx.fillText(t, x * K, y * K); });
@@ -273,8 +279,9 @@ function unoSilkscreen(pins) {
   }, W, H);
 }
 
-export async function makeUno() {
+export async function makeUno(variant = "uno") {
   const g = new THREE.Group(); g.name = "uno";
+  const leo = variant === "leonardo";
   const { img, pins } = await wokwiArtwork("wokwi-arduino-uno");
   // every mesh added between mark() and tag(key) belongs to that board component
   let from = 0; const mark = () => { from = g.children.length; };
@@ -290,7 +297,7 @@ export async function makeUno() {
   // board-local mm from Wokwi pinInfo (px in the element, whose viewBox starts at -4 mm)
   const vx = img ? img.viewBox[0] : -4;
   const pinMM = pins.map((p) => ({ name: p.name, x: p.x / PX_PER_MM + vx, z: p.y / PX_PER_MM }));
-  const tex = unoSilkscreen(pinMM);
+  const tex = unoSilkscreen(pinMM, variant);
   tex.repeat.set(1 / UNO_W, -1 / UNO_D); tex.offset.set(0, 1);
   const topMat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.42, metalness: 0.08 });
   const pcb = mesh(pcbGeo, [topMat, M.pcbEdge]);
@@ -326,6 +333,11 @@ export async function makeUno() {
   sockMesh.name = "boardPins";
   g.add(sockMesh); mark();
 
+  if (leo) {
+    // Leonardo: a micro-USB socket, and no separate USB chip — the ATmega32U4 speaks USB itself
+    const usb = mesh(new RoundedBoxGeometry(6, 3, 8, 2, 0.8), M.metal); usb.position.set(1.5, PCB_T + 1.5, 15.4); g.add(usb);
+    const usbMouth = mesh(new THREE.BoxGeometry(0.4, 1.8, 6.4), M.chip, false); usbMouth.position.set(-1.51, PCB_T + 1.5, 15.4); g.add(usbMouth); tag("usb");
+  } else {
   // USB-B jack (metal, hangs over the left edge)
   const usb = mesh(new RoundedBoxGeometry(16, 10.9, 12, 2, 0.6), M.metal);
   usb.position.set(1.8, PCB_T + 5.45, 15.4); g.add(usb);
@@ -333,14 +345,19 @@ export async function makeUno() {
   usbMouth.position.set(usb.position.x - 8.01, usb.position.y, usb.position.z); g.add(usbMouth); tag("usb");
   // ATmega16U2: the USB-to-serial chip right behind the USB jack
   const u2 = mesh(new RoundedBoxGeometry(5, 0.9, 5, 2, 0.2), M.chip); u2.position.set(15.5, PCB_T + 0.45, 13.5); g.add(u2); tag("usbchip");
+  }
   // DC barrel jack
   const dc = mesh(new RoundedBoxGeometry(14, 11, 9, 2, 0.8), M.blackPlastic);
   dc.position.set(5.2, PCB_T + 5.5, 44); g.add(dc);
   const dcHole = mesh(new THREE.CylinderGeometry(3.1, 3.1, 0.5, 32), M.chip, false);
   dcHole.rotation.z = Math.PI / 2; dcHole.position.set(-1.85, PCB_T + 6, 44); g.add(dcHole); tag("dc");
-  // ATmega328P in a DIP-28 socket
+  // ATmega328P in a DIP-28 socket (the Leonardo: a flat ATmega32U4 instead)
   const bottomY = bottom.length ? Math.min(...bottom.map((p) => p.z)) : 50;
   const chipZ = bottomY - 9.5;
+  if (leo) {
+    const qfp = mesh(new RoundedBoxGeometry(10, 1.2, 10, 2, 0.2), M.chip); qfp.position.set(46, PCB_T + 0.6, chipZ - 3); qfp.rotation.y = Math.PI / 4; g.add(qfp);
+    const pin1 = mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.05, 12), M.blackPlastic, false); pin1.position.set(46, PCB_T + 1.22, chipZ - 6.5); g.add(pin1); tag("mcu");
+  } else {
   const socket = mesh(new THREE.BoxGeometry(36, 1.6, 9.2), M.blackPlastic);
   socket.position.set(49.5, PCB_T + 0.8, chipZ); g.add(socket);
   const chip = mesh(new RoundedBoxGeometry(35, 3.4, 7.2, 2, 0.35), M.chip);
@@ -354,6 +371,7 @@ export async function makeUno() {
   legs.castShadow = true; g.add(legs);
   const dot = mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.05, 16), M.blackPlastic, false);
   dot.position.set(33.5, PCB_T + 5.02, chipZ - 1.8); g.add(dot); tag("mcu");
+  }
   // crystal, capacitors, reset button, ICSP pins, status LEDs
   const xtal = mesh(new RoundedBoxGeometry(11, 3.8, 4.6, 3, 1.8), M.metal);
   xtal.position.set(22, PCB_T + 1.9, 25); g.add(xtal); tag("xtal");
@@ -413,11 +431,12 @@ export const PART_PINS = {
   "cq-adxl335": [["ST", 0, 0], ["Z", 1, 0], ["Y", 2, 0], ["X", 3, 0], ["GND", 4, 0], ["VCC", 5, 0]],
   "cq-memsic2125": [["TOUT", 0, 0], ["YOUT", 1, 0], ["GND.1", 2, 0], ["VDD", 0, 3], ["XOUT", 1, 3], ["GND.2", 2, 3]],
   "wokwi-rgb-led": [["R", 0, 0], ["COM", 1, 0], ["G", 2, 0], ["B", 3, 0]],
+  "wokwi-analog-joystick": [["VCC", 0, 0], ["VERT", 1, 0], ["HORZ", 2, 0], ["SEL", 3, 0], ["GND", 4, 0]],
   "cq-midi-jack": [["1", 0, 0], ["2", 1, 0], ["3", 2, 0], ["4", 3, 0], ["5", 4, 0]],
   "cq-led-matrix-8x8": [...Array.from({ length: 8 }, (_, k) => [`R${k + 1}`, k, 0]), ...Array.from({ length: 8 }, (_, k) => [`C${k + 1}`, k, 11])],
   "wokwi-led-bar-graph": [...Array.from({ length: 10 }, (_, k) => [`A${k + 1}`, k, 0]), ...Array.from({ length: 10 }, (_, k) => [`C${k + 1}`, k, 3])],
 };
-export const LIFT = { "cq-midi-jack": 0.5, "cq-led-matrix-8x8": 1, "wokwi-led-bar-graph": 0.6, "cq-ping": 2.5, "cq-adxl335": 8.5, "cq-memsic2125": 0.6, "wokwi-rgb-led": 2.2, "cq-photoresistor": 5, "cq-fsr": 4, "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
+export const LIFT = { "wokwi-analog-joystick": 8.5, "cq-midi-jack": 0.5, "cq-led-matrix-8x8": 1, "wokwi-led-bar-graph": 0.6, "cq-ping": 2.5, "cq-adxl335": 8.5, "cq-memsic2125": 0.6, "wokwi-rgb-led": 2.2, "cq-photoresistor": 5, "cq-fsr": 4, "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
 
 function resistorBands(value) {
   const ohms = Math.round(Number(String(value || "1000").replace(/k/i, "e3").replace(/M/, "e6")) || 1000);
@@ -718,8 +737,22 @@ function makeMidiJack() {
   return g;
 }
 
+// A thumb-joystick module on its 5-pin header: black board (clicks go through it
+// to the holes), the white gimbal box and the rubber thumb cap.
+function makeJoystick() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["wokwi-analog-joystick"], cx = 2 * PITCH, cz = -15;
+  const board = mesh(new RoundedBoxGeometry(34, 1.6, 26, 2, 0.5), new THREE.MeshPhysicalMaterial({ color: 0x17181b, roughness: 0.45, clearcoat: 0.4 }));
+  board.position.set(cx, y0 + 0.8, cz); board.userData.passThrough = true; g.add(board);
+  const box = mesh(new THREE.BoxGeometry(16, 9, 16), M.whitePlastic); box.position.set(cx, y0 + 6, cz - 1); g.add(box);
+  const stem = mesh(new THREE.CylinderGeometry(2.3, 2.3, 7, 20), M.blackPlastic); stem.position.set(cx, y0 + 13.5, cz - 1); g.add(stem);
+  const cap = mesh(new THREE.CylinderGeometry(9, 8, 4.5, 36), new THREE.MeshStandardMaterial({ color: 0x202124, roughness: 0.9 })); cap.position.set(cx, y0 + 18, cz - 1); g.add(cap);
+  const spacer = mesh(new THREE.BoxGeometry(5 * PITCH, 2.5, PITCH), M.blackPlastic); spacer.position.set(cx, y0 - 1.25, 0); g.add(spacer);
+  for (let i = 0; i < 5; i++) g.add(lead([[i * PITCH, BB_TOP - 1.2, 0], [i * PITCH, y0 + 1.8, 0]], 0.32, M.gold || M.tin));
+  return g;
+}
+
 export function makePart(wokwiType, attrs = {}) {
-  const build = { "cq-midi-jack": makeMidiJack, "cq-led-matrix-8x8": makeMatrix, "wokwi-led-bar-graph": makeBarGraph, "cq-ping": makePing, "cq-adxl335": makeADXL, "cq-memsic2125": makeMemsic, "wokwi-rgb-led": makeRGB, "cq-photoresistor": makeLDR, "cq-fsr": makeFSR, "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
+  const build = { "wokwi-analog-joystick": makeJoystick, "cq-midi-jack": makeMidiJack, "cq-led-matrix-8x8": makeMatrix, "wokwi-led-bar-graph": makeBarGraph, "cq-ping": makePing, "cq-adxl335": makeADXL, "cq-memsic2125": makeMemsic, "wokwi-rgb-led": makeRGB, "cq-photoresistor": makeLDR, "cq-fsr": makeFSR, "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
                   "wokwi-pushbutton-6mm": makePushbutton, "wokwi-potentiometer": makePotentiometer }[wokwiType]
                 || (() => makeGeneric(wokwiType));
   const g = build(attrs);
@@ -863,7 +896,7 @@ export function thumbnail(wokwiType, attrs = {}, size = 160) {
   const key = wokwiType + JSON.stringify(attrs) + size;
   if (!thumbCache.has(key)) thumbCache.set(key, (async () => {
     let obj = null;
-    if (/arduino-uno/.test(wokwiType || "")) obj = await makeBoard(wokwiType);
+    if (/arduino-uno|arduino-leonardo/.test(wokwiType || "")) obj = await makeBoard(wokwiType);
     else if (wokwiType && wokwiType.startsWith("wokwi-breadboard")) obj = makeBreadboard("mini");
     else if (wokwiType && (customElements.get(wokwiType) || PART_PINS[wokwiType])) obj = makePart(wokwiType, attrs);
     return obj ? renderThumb(obj, size) : null;
@@ -889,7 +922,7 @@ export function iconThumb(name, size = 64) {
 // the 3D object for a library part or tool by its id (for the Parts & Tools viewer)
 export async function modelById(id, wokwiType, attrs = {}) {
   if (!BENCH_MODELLED.has(id) && hasModel(id)) return buildModel(id);
-  if (/arduino-uno/.test(wokwiType || "")) return makeBoard(wokwiType);
+  if (/arduino-uno|arduino-leonardo/.test(wokwiType || "")) return makeBoard(wokwiType);
   if (wokwiType && wokwiType.startsWith("wokwi-breadboard")) return makeBreadboard("half");
   if (wokwiType && customElements.get(wokwiType)) return makePart(wokwiType, attrs);
   return null;

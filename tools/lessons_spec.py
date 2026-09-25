@@ -1238,3 +1238,403 @@ void noteOn(int cmd, int pitch, int velocity) {
 
 
 LESSONS += [midi]
+
+
+# ---- the Mega -------------------------------------------------------------------------------------
+def analog_write_mega():
+    L = Lesson("analog-write-mega", "Analog Write (Mega)", "Twelve LEDs fade up and down one after another — the Mega has PWM on pins 2 to 13.",
+               D + "analog/AnalogWriteMega/", "Analog Write Mega", requires=["fading", "for-loop"], full_board=True, fixed_pins=True,
+               board="mega", board_type="wokwi-arduino-mega", board_card="arduino-mega", board_name="Arduino Mega 2560", code="""
+/*
+  Mega analogWrite() test
+  Fades LEDs up and down one at a time on digital pins 2 through 13 (all PWM on the Mega).
+*/
+const int lowestPin = 2;
+const int highestPin = 13;
+
+void setup() {
+  for (int thisPin = lowestPin; thisPin <= highestPin; thisPin++) {
+    pinMode(thisPin, OUTPUT);
+  }
+}
+
+void loop() {
+  for (int thisPin = lowestPin; thisPin <= highestPin; thisPin++) {
+    for (int brightness = 0; brightness < 255; brightness++) {
+      analogWrite(thisPin, brightness);
+      delay(2);
+    }
+    for (int brightness = 255; brightness >= 0; brightness--) {
+      analogWrite(thisPin, brightness);
+      delay(2);
+    }
+    delay(100);
+  }
+}
+""")
+    for pin in range(2, 14):
+        L.led(pin, compact=True)
+    L.upload("Each LED in turn fades up and down, from pin 2 to pin 13 — then it starts again.")
+    return L
+
+
+LESSONS += [analog_write_mega]
+
+
+# ---- USB (Arduino Leonardo) ---------------------------------------------------------------------
+LEO = dict(board="leo", board_type="cq-arduino-leonardo", board_card="arduino-leonardo", board_name="Arduino Leonardo")
+
+
+def button_mouse():
+    L = Lesson("button-mouse-control", "Button Mouse Control", "Five buttons move your computer's mouse and click it — the Leonardo pretends to be a USB mouse.",
+               D + "usb/ButtonMouseControl/", "Button Mouse Control", requires=["button"], full_board=True, **LEO, code="""
+/*
+  ButtonMouseControl (Arduino Leonardo / Micro)
+  Buttons on pins 2-5 move the mouse up, down, left, right; the button on pin 6 clicks.
+  Tip: have a way to unplug — the Arduino really moves your mouse.
+*/
+#include "Mouse.h"
+
+const int upButton = 2;
+const int downButton = 3;
+const int leftButton = 4;
+const int rightButton = 5;
+const int mouseButton = 6;
+int range = 5;              // how far each step moves the mouse
+int responseDelay = 10;     // ms between reads
+
+void setup() {
+  pinMode(upButton, INPUT);
+  pinMode(downButton, INPUT);
+  pinMode(leftButton, INPUT);
+  pinMode(rightButton, INPUT);
+  pinMode(mouseButton, INPUT);
+  Mouse.begin();
+}
+
+void loop() {
+  int upState = digitalRead(upButton);
+  int downState = digitalRead(downButton);
+  int rightState = digitalRead(rightButton);
+  int leftState = digitalRead(leftButton);
+  int clickState = digitalRead(mouseButton);
+  int xDistance = (leftState - rightState) * range;
+  int yDistance = (upState - downState) * range;
+  if ((xDistance != 0) || (yDistance != 0)) {
+    Mouse.move(xDistance, yDistance, 0);
+  }
+  if (clickState == HIGH) {
+    if (!Mouse.isPressed(MOUSE_LEFT)) {
+      Mouse.press(MOUSE_LEFT);
+    }
+  } else {
+    if (Mouse.isPressed(MOUSE_LEFT)) {
+      Mouse.release(MOUSE_LEFT);
+    }
+  }
+  delay(responseDelay);
+}
+""")
+    for pin, name in ((2, "the Up button"), (3, "the Down button"), (4, "the Left button"), (5, "the Right button"), (6, "the Click button")):
+        L.button(pin, label=name)
+    L.upload("Press the buttons: the mouse pointer on your computer moves, and the fifth button clicks.")
+    return L
+
+
+def joystick_mouse():
+    L = Lesson("joystick-mouse-control", "Joystick Mouse Control", "Steer your computer's mouse with a joystick; one button turns it on, another clicks.",
+               D + "usb/JoystickMouseControl/", "Joystick Mouse Control", requires=["button-mouse-control", "analog-read-serial"], full_board=True,
+               fixed_pins=True, **LEO, code="""
+/*
+  JoystickMouseControl (Arduino Leonardo / Micro)
+  The joystick (A0, A1) moves the mouse while it's switched on with the button on pin 2
+  (the LED on pin 5 shows it's on); the button on pin 3 is the mouse button.
+*/
+#include "Mouse.h"
+
+const int switchPin = 2;
+const int mouseButton = 3;
+const int xAxis = A0;
+const int yAxis = A1;
+const int ledPin = 5;
+int range = 12;
+int responseDelay = 5;
+int threshold = range / 4;
+int center = range / 2;
+bool mouseIsActive = false;
+int lastSwitchState = LOW;
+
+void setup() {
+  pinMode(switchPin, INPUT);
+  pinMode(mouseButton, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Mouse.begin();
+}
+
+void loop() {
+  int switchState = digitalRead(switchPin);
+  if (switchState != lastSwitchState) {
+    if (switchState == HIGH) {
+      mouseIsActive = !mouseIsActive;
+      digitalWrite(ledPin, mouseIsActive);
+    }
+  }
+  lastSwitchState = switchState;
+  int xReading = readAxis(xAxis);
+  int yReading = readAxis(yAxis);
+  if (mouseIsActive) {
+    Mouse.move(xReading, yReading, 0);
+  }
+  if (digitalRead(mouseButton) == HIGH) {
+    if (!Mouse.isPressed(MOUSE_LEFT)) {
+      Mouse.press(MOUSE_LEFT);
+    }
+  } else {
+    if (Mouse.isPressed(MOUSE_LEFT)) {
+      Mouse.release(MOUSE_LEFT);
+    }
+  }
+  delay(responseDelay);
+}
+
+int readAxis(int thisAxis) {
+  int reading = analogRead(thisAxis);
+  reading = map(reading, 0, 1023, 0, range);
+  int distance = reading - center;
+  if (abs(distance) < threshold) {
+    distance = 0;          // a dead zone round the middle
+  }
+  return distance;
+}
+""")
+    L.module("wokwi-analog-joystick", "analog-joystick", "joy", "joystick", {"VCC": "5v", "GND": "gnd", "HORZ": "A0", "VERT": "A1", "SEL": None},
+             place_note=", its five pins in five columns")
+    L.button(2, label="the On/Off button"); L.button(3, label="the Click button"); L.led(5)
+    L.upload("Press the On/Off button (the LED lights), then push the joystick: the mouse pointer moves. The other button clicks.")
+    return L
+
+
+def keyboard_and_mouse():
+    L = Lesson("keyboard-mouse-control", "Keyboard and Mouse Control", "Buttons type letters on your computer, and letters you send move the mouse.",
+               D + "usb/KeyboardAndMouseControl/", "Keyboard and Mouse Control", requires=["button-mouse-control"], full_board=True, **LEO, code="""
+/*
+  KeyboardAndMouseControl (Arduino Leonardo / Micro)
+  Each button (pins 2-6) types a letter (u, d, l, r, m); sending u, d, l, r or m from the Serial Monitor moves or clicks the mouse.
+*/
+#include "Keyboard.h"
+#include "Mouse.h"
+
+const int upButton = 2;
+const int downButton = 3;
+const int leftButton = 4;
+const int rightButton = 5;
+const int mouseButton = 6;
+
+void setup() {
+  pinMode(upButton, INPUT);
+  pinMode(downButton, INPUT);
+  pinMode(leftButton, INPUT);
+  pinMode(rightButton, INPUT);
+  pinMode(mouseButton, INPUT);
+  Serial.begin(9600);
+  Mouse.begin();
+  Keyboard.begin();
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    char inChar = Serial.read();
+    switch (inChar) {
+      case 'u': Mouse.move(0, -40); break;
+      case 'd': Mouse.move(0, 40); break;
+      case 'l': Mouse.move(-40, 0); break;
+      case 'r': Mouse.move(40, 0); break;
+      case 'm': Mouse.click(MOUSE_LEFT); break;
+    }
+  }
+  if (digitalRead(upButton) == HIGH) {
+    Keyboard.write('u');
+  }
+  if (digitalRead(downButton) == HIGH) {
+    Keyboard.write('d');
+  }
+  if (digitalRead(leftButton) == HIGH) {
+    Keyboard.write('l');
+  }
+  if (digitalRead(rightButton) == HIGH) {
+    Keyboard.write('r');
+  }
+  if (digitalRead(mouseButton) == HIGH) {
+    Keyboard.write('m');
+  }
+}
+""")
+    for pin, name in ((2, "the U button"), (3, "the D button"), (4, "the L button"), (5, "the R button"), (6, "the M button")):
+        L.button(pin, label=name)
+    L.upload("Open a text editor and press the buttons: the letters appear. Send u, d, l, r or m from the Serial Monitor to move or click the mouse.")
+    return L
+
+
+def keyboard_logout():
+    L = Lesson("keyboard-logout", "Keyboard Logout", "Press a button and the Leonardo types the key combination that logs you out of your computer.",
+               D + "usb/KeyboardLogout/", "Keyboard Logout", requires=["input-pullup-serial"], **LEO, code="""
+/*
+  Keyboard logout (Arduino Leonardo / Micro)
+  Waits for the button on pin 2 (to GND, using the internal pull-up), then types your system's logout keys.
+  Set `platform` to your computer first!
+*/
+#include "Keyboard.h"
+
+#define OSX 0
+#define WINDOWS 1
+#define UBUNTU 2
+
+int platform = OSX;             // change to WINDOWS or UBUNTU
+
+void setup() {
+  pinMode(2, INPUT_PULLUP);
+  Keyboard.begin();
+}
+
+void loop() {
+  while (digitalRead(2) == HIGH) {
+    delay(500);                 // wait for the button
+  }
+  delay(1000);
+  switch (platform) {
+    case OSX:
+      Keyboard.press(KEY_LEFT_GUI);
+      Keyboard.press(KEY_LEFT_SHIFT);
+      Keyboard.press('Q');
+      delay(100);
+      Keyboard.releaseAll();
+      Keyboard.write(KEY_RETURN);
+      break;
+    case WINDOWS:
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.press(KEY_LEFT_ALT);
+      Keyboard.press(KEY_DELETE);
+      delay(100);
+      Keyboard.releaseAll();
+      delay(2000);
+      Keyboard.press(KEY_LEFT_ALT);
+      Keyboard.press('l');
+      Keyboard.releaseAll();
+      break;
+    case UBUNTU:
+      Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.press(KEY_LEFT_ALT);
+      Keyboard.press(KEY_DELETE);
+      delay(1000);
+      Keyboard.releaseAll();
+      Keyboard.write(KEY_RETURN);
+      break;
+  }
+  while (true) {
+  }                             // done — stop here
+}
+""")
+    L.button(2, pulldown=False)
+    L.upload("Save your work first! Then press the button: the Leonardo logs you out.")
+    return L
+
+
+def keyboard_message():
+    L = Lesson("keyboard-message", "Keyboard Message", "Each button press makes the Leonardo type a message on your computer.", D + "usb/KeyboardMessage/",
+               "Keyboard Message", requires=["state-change-detection"], **LEO, code="""
+/*
+  Keyboard Message test (Arduino Leonardo / Micro)
+  Each press of the button on pin 4 types "You pressed the button N times."
+*/
+#include "Keyboard.h"
+
+const int buttonPin = 4;
+int previousButtonState = HIGH;
+int counter = 0;
+
+void setup() {
+  pinMode(buttonPin, INPUT);
+  Keyboard.begin();
+}
+
+void loop() {
+  int buttonState = digitalRead(buttonPin);
+  if ((buttonState != previousButtonState) && (buttonState == HIGH)) {
+    counter++;
+    Keyboard.print("You pressed the button ");
+    Keyboard.print(counter);
+    Keyboard.println(" times.");
+  }
+  previousButtonState = buttonState;
+}
+""")
+    L.button(4)
+    L.upload("Open a text editor, click in it, and press the button: the Leonardo types the message.")
+    return L
+
+
+def keyboard_reprogram():
+    L = Lesson("keyboard-reprogram", "Keyboard Reprogram", "Press a button and the Leonardo opens a new sketch in the Arduino IDE, types Blink and uploads it — by itself.",
+               D + "usb/KeyboardReprogram/", "Keyboard Reprogram", requires=["keyboard-message"], **LEO, code="""
+/*
+  Arduino Programs Blink (Arduino Leonardo / Micro)
+  With the Arduino IDE open and in front, press the button on pin 2 (to GND): the Leonardo opens a new
+  sketch, types the Blink program into it and uploads it.
+*/
+#include "Keyboard.h"
+
+char ctrlKey = KEY_LEFT_GUI;     // on a Mac; use KEY_LEFT_CTRL on Windows / Linux
+
+void setup() {
+  pinMode(2, INPUT_PULLUP);
+  Keyboard.begin();
+}
+
+void loop() {
+  while (digitalRead(2) == HIGH) {
+    delay(500);                  // wait for the button
+  }
+  delay(1000);
+  Keyboard.press(ctrlKey);       // new sketch
+  Keyboard.press('n');
+  delay(100);
+  Keyboard.releaseAll();
+  delay(1000);
+  Keyboard.press(ctrlKey);       // select all, delete
+  Keyboard.press('a');
+  delay(500);
+  Keyboard.releaseAll();
+  Keyboard.write(KEY_BACKSPACE);
+  delay(500);
+  Keyboard.println("void setup() {");
+  Keyboard.print("pinMode");
+  Keyboard.println("(13, OUTPUT);");
+  Keyboard.println("}");
+  Keyboard.println();
+  Keyboard.println("void loop() {");
+  Keyboard.print("digitalWrite");
+  Keyboard.println("(13, HIGH);");
+  Keyboard.println("delay(3000);");
+  Keyboard.print("digitalWrite");
+  Keyboard.println("(13, LOW);");
+  Keyboard.println("delay(1000);");
+  Keyboard.println("}");
+  Keyboard.press(ctrlKey);       // tidy up the formatting
+  Keyboard.press('t');
+  delay(100);
+  Keyboard.releaseAll();
+  delay(3000);
+  Keyboard.press(ctrlKey);       // upload
+  Keyboard.press('u');
+  delay(100);
+  Keyboard.releaseAll();
+  while (true) {
+  }
+}
+""")
+    L.button(2, pulldown=False)
+    L.upload("Open the Arduino IDE and click on it so it's in front. Press the button and watch the Leonardo write and upload Blink by itself.")
+    return L
+
+
+LESSONS += [button_mouse, joystick_mouse, keyboard_and_mouse, keyboard_logout, keyboard_message, keyboard_reprogram]

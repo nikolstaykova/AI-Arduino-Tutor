@@ -69,7 +69,7 @@ _TEMPLATES = {"wokwi-resistor": "resistor", "wokwi-led": "led", "wokwi-potentiom
               "wokwi-slide-potentiometer": "pot", "wokwi-pushbutton": "button", "wokwi-pushbutton-6mm": "button",
               "wokwi-slide-switch": "switch", "wokwi-buzzer": "buzzer", "wokwi-pir-motion-sensor": "pir",
               "cq-photoresistor": "ldr", "cq-fsr": "fsr",
-              "cq-ping": "module", "cq-adxl335": "module", "cq-memsic2125": "module", "wokwi-rgb-led": "rgb", "wokwi-led-bar-graph": "bargraph", "cq-led-matrix-8x8": "matrix", "cq-midi-jack": "module"}
+              "cq-ping": "module", "cq-adxl335": "module", "cq-memsic2125": "module", "wokwi-rgb-led": "rgb", "wokwi-led-bar-graph": "bargraph", "cq-led-matrix-8x8": "matrix", "cq-midi-jack": "module", "wokwi-analog-joystick": "module"}
 
 sessions = {}  # session id -> {"lesson", "library", "state", "log"}
 

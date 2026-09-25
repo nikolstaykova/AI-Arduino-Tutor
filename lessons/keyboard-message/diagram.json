@@ -11,18 +11,20 @@
       "attrs": {}
     },
     {
-      "type": "wokwi-arduino-uno",
-      "id": "uno",
+      "type": "cq-arduino-leonardo",
+      "id": "leo",
       "top": 19.8,
       "left": -231,
       "attrs": {}
     },
     {
-      "type": "cq-midi-jack",
-      "id": "midi1",
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
       "top": 0,
       "left": 120,
-      "attrs": {}
+      "attrs": {
+        "color": "green"
+      }
     },
     {
       "type": "wokwi-resistor",
@@ -30,13 +32,21 @@
       "top": 0,
       "left": 180,
       "attrs": {
-        "value": "220"
+        "value": "10000"
       }
     }
   ],
   "connections": [
     [
-      "midi1:1",
+      "btn1:1.l",
+      "bb1:1t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn1:1.r",
       "bb1:1b.f",
       "green",
       [
@@ -44,15 +54,15 @@
       ]
     ],
     [
-      "midi1:2",
-      "bb1:2b.f",
+      "btn1:2.l",
+      "bb1:3t.e",
       "green",
       [
         "v0"
       ]
     ],
     [
-      "midi1:3",
+      "btn1:2.r",
       "bb1:3b.f",
       "green",
       [
@@ -60,32 +70,24 @@
       ]
     ],
     [
-      "midi1:4",
-      "bb1:4b.f",
-      "green",
+      "bb1:1t.a",
+      "leo:4",
+      "orange",
       [
         "v0"
       ]
     ],
     [
-      "midi1:5",
-      "bb1:5b.f",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:2b.j",
-      "bb1:bn.2",
-      "black",
+      "bb1:3b.j",
+      "bb1:bp.3",
+      "red",
       [
         "v0"
       ]
     ],
     [
       "r1:1",
-      "bb1:4b.h",
+      "bb1:1b.h",
       "green",
       [
         "v0"
@@ -93,40 +95,32 @@
     ],
     [
       "r1:2",
-      "bb1:8b.h",
+      "bb1:5b.h",
       "green",
       [
         "v0"
       ]
     ],
     [
-      "bb1:8b.j",
-      "bb1:bp.7",
-      "red",
-      [
-        "v0"
-      ]
-    ],
-    [
       "bb1:5b.j",
-      "uno:1",
-      "orange",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:bn.1",
-      "uno:GND.1",
+      "bb1:bn.5",
       "black",
       [
         "v0"
       ]
     ],
     [
-      "uno:5V",
+      "leo:5V",
       "bb1:bp.1",
       "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "leo:GND.1",
+      "black",
       [
         "v0"
       ]

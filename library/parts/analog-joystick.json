@@ -5,12 +5,31 @@
   "legs_placed_together": true,
   "wokwi_type": "wokwi-analog-joystick",
   "display_name": "Analog Joystick",
-  "aliases": ["joystick", "analog joystick"],
+  "aliases": [
+    "joystick",
+    "analog joystick"
+  ],
   "description": "A 2-axis analog joystick with an integrated push button.",
   "how_to_use": "VCC/GND power, VERT/HORZ are analog outputs (each axis reads ~VCC/2 at rest/center), SEL is the button — normally open, shorts to GND when the stick is pressed straight down.",
   "image": "analog-joystick.png",
   "plain": {
-    "what": "A thumb joystick like on a game controller — it reads left/right, up/down, and a click.",
-    "how": "5V and GND for power, VRx and VRy to two analog pins, SW to a digital pin for the click."
+    "what": "A thumb joystick like on a game controller — it tells the Arduino which way you push it.",
+    "how": "VCC to 5V, GND to GND, HORZ and VERT to two analog pins. Centred, both read about 512; push the stick and the numbers change.",
+    "pins": {
+      "VCC": "power +",
+      "GND": "power −",
+      "HORZ": "left–right (to an analog pin)",
+      "VERT": "up–down (to an analog pin)",
+      "SEL": "the click (optional)"
+    }
+  },
+  "polarized": true,
+  "leads": "pin",
+  "pins": {
+    "VCC": "power +5 V",
+    "VERT": "up–down: an analog voltage, mid-way when centred",
+    "HORZ": "left–right: an analog voltage, mid-way when centred",
+    "SEL": "the push-down button: joins GND when pressed",
+    "GND": "ground"
   }
 }

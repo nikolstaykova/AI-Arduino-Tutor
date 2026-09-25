@@ -1,0 +1,147 @@
+{
+  "id": "keyboard-message",
+  "title": "Keyboard Message",
+  "description": "Each button press makes the Leonardo type a message on your computer.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/usb/KeyboardMessage/",
+    "title": "Arduino docs: Keyboard Message"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-leonardo",
+  "requires": [
+    "state-change-detection"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-leonardo",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "pushbutton",
+    "resistor-10k"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Leonardo and its USB cable, a breadboard, 1 × pushbutton, 1 × 10 kΩ resistor, and some jumper wires.",
+      "items": [
+        "arduino-leonardo",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "pushbutton",
+        "resistor-10k"
+      ]
+    },
+    {
+      "id": "btn1-place",
+      "phase": "build",
+      "clip": "Push the button in across the middle gap: two legs above the gap, two below.",
+      "expected_landing": [
+        "btn1:1.r",
+        "btn1:2.r"
+      ],
+      "strict": false,
+      "hints": [
+        "The two legs in one column (above and below the gap) are always joined inside the button.",
+        "Pressing joins the left column to the right column."
+      ],
+      "goal": "Put the button across the middle gap."
+    },
+    {
+      "id": "btn1-pin",
+      "phase": "build",
+      "clip": "Run a wire from the button's <b>left</b> column (top half) to pin <b>4</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "btn1:1.r",
+          "leo:4"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works.",
+        "Pin 4 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect one side of the button to pin 4."
+    },
+    {
+      "id": "btn1-5v",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The button's right column (bottom half) → that same row.",
+      "expected_nets": [
+        [
+          "btn1:2.r",
+          "leo:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "When you press, 5V flows through the button to the pin."
+      ],
+      "goal": "Connect the other side of the button to 5V."
+    },
+    {
+      "id": "btn1-pulldown",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in the button's <b>left</b> column (bottom half), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "btn1:1.r"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "This is a pull-down: it keeps the pin LOW until you press.",
+        "Without it the pin 'floats' and reads random values."
+      ],
+      "goal": "Put a 10 kΩ resistor on the button's pin side."
+    },
+    {
+      "id": "btn1-pulldown-gnd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The 10 kΩ resistor's other leg → that same row.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "leo:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the pin reads LOW, and HIGH only while you press."
+      ],
+      "goal": "Connect the pull-down resistor to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Open a text editor, click in it, and press the button: the Leonardo types the message.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "btn1:1.r",
+        "leo:4"
+      ],
+      [
+        "btn1:2.r",
+        "leo:5V"
+      ],
+      [
+        "r1:1",
+        "btn1:1.r"
+      ],
+      [
+        "r1:2",
+        "leo:GND.1"
+      ]
+    ]
+  }
+}

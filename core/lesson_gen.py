@@ -53,7 +53,7 @@ MAX_ATTEMPTS = 3
 # facts (pins, internal connections, interchangeable legs, polarity, how
 # they're placed) are read from the library cards — see part_facts().
 MODELLED_TYPES = ["wokwi-led", "wokwi-resistor", "wokwi-potentiometer", "wokwi-pushbutton", "wokwi-slide-switch", "wokwi-buzzer", "wokwi-pir-motion-sensor",
-                   "cq-photoresistor", "cq-fsr", "cq-ping", "cq-adxl335", "cq-memsic2125", "wokwi-rgb-led", "wokwi-led-bar-graph", "cq-led-matrix-8x8", "cq-midi-jack"]
+                   "cq-photoresistor", "cq-fsr", "cq-ping", "cq-adxl335", "cq-memsic2125", "wokwi-rgb-led", "wokwi-led-bar-graph", "cq-led-matrix-8x8", "cq-midi-jack", "wokwi-analog-joystick"]
 UNO_PINS = ({str(n) for n in range(14)} | {f"A{n}" for n in range(6)}
             | {"5V", "3.3V", "VIN", "GND.1", "GND.2", "GND.3", "AREF", "IOREF", "RESET"})
 BREADBOARD_TYPES = {"wokwi-breadboard", "wokwi-breadboard-half", "wokwi-breadboard-mini"}
@@ -94,8 +94,21 @@ def part_facts(library=None):
     return facts
 
 
+# power / control pins a board card doesn't list in its pin_domains
+BOARD_POWER_PINS = {"5V", "3.3V", "VIN", "AREF", "IOREF", "RESET", "5V.1", "5V.2"} | {f"GND.{n}" for n in range(1, 6)}
+
+
 def part_pins(library=None):
+    """{wokwi_type: valid pin names}: the Uno, every other board card (its I/O
+    pins from pin_domains, plus 0/1 and the power pins), and the modelled parts."""
+    library = library or load_library()
     pins = {"wokwi-arduino-uno": UNO_PINS}
+    for card in library.cards.values():
+        if card.get("subtype") == "board" and card.get("wokwi_type") and card.get("pin_domains"):
+            io = {p for dom in card["pin_domains"].values() for p in dom}
+            wtypes = card["wokwi_type"] if isinstance(card["wokwi_type"], list) else [card["wokwi_type"]]
+            for wtype in wtypes:
+                pins.setdefault(wtype, io | {"0", "1"} | BOARD_POWER_PINS)
     pins.update({wtype: set(f["pins"]) for wtype, f in part_facts(library).items()})
     return pins
 
@@ -508,15 +521,18 @@ def _check_code_followable(code, errors):
                           "who uses a different pin.")
 
 
-def _check_code(diagram, code, errors):
+def _check_code(diagram, code, errors, fixed_pins=False):
+    boards = [p["id"] for p in diagram.get("parts", []) if re.match(r"(wokwi|cq)-arduino", p.get("type", ""))] or ["uno"]
+    board = boards[0]
     used = set(physics.pin_modes_from_code(code))
     used |= set(re.findall(r"digital(?:Read|Write)\s*\(\s*(A?\d+)", code))
-    wired = {pin.split(":", 1)[1] for c in diagram.get("connections", []) for pin in c[:2] if pin.startswith("uno:")}
+    wired = {pin.split(":", 1)[1] for c in diagram.get("connections", []) for pin in c[:2] if pin.startswith(f"{board}:")}
     for pin in sorted(used - wired):
-        errors.append(f"The sketch uses pin {pin}, but nothing in diagram_json is wired to uno:{pin}.")
+        errors.append(f"The sketch uses pin {pin}, but nothing in diagram_json is wired to {board}:{pin}.")
     if "void setup" not in code or "void loop" not in code:
         errors.append("The sketch must define setup() and loop().")
-    _check_code_followable(code, errors)
+    if not fixed_pins:                 # a fixed-pins lesson never moves a pin, so nothing needs rewriting
+        _check_code_followable(code, errors)
 
 
 def _check_physics(diagram, code, library, errors):
@@ -628,7 +644,7 @@ def _validate(data, diagram, code, library=None):
     _check_consistency(data, diagram, library, errors)
     _check_physical_steps(data, diagram, library, errors)
     _check_diagram_placement(diagram, library, errors)
-    _check_code(diagram, code, errors)
+    _check_code(diagram, code, errors, fixed_pins=bool(data.get("fixed_pins")))
     _check_physics(diagram, code, library, errors)
     if errors:
         return errors

@@ -92,7 +92,8 @@
           "lesson": "analog-input"
         },
         {
-          "title": "Analog Write (Mega)"
+          "title": "Analog Write (Mega)",
+          "lesson": "analog-write-mega"
         },
         {
           "title": "Calibration",
@@ -232,22 +233,28 @@
       "blurb": "Make the board act as a keyboard or mouse (Leonardo / Micro boards).",
       "levels": [
         {
-          "title": "Button Mouse Control"
+          "title": "Button Mouse Control",
+          "lesson": "button-mouse-control"
         },
         {
-          "title": "Joystick Mouse Control"
+          "title": "Joystick Mouse Control",
+          "lesson": "joystick-mouse-control"
         },
         {
-          "title": "Keyboard and Mouse Control"
+          "title": "Keyboard and Mouse Control",
+          "lesson": "keyboard-mouse-control"
         },
         {
-          "title": "Keyboard Logout"
+          "title": "Keyboard Logout",
+          "lesson": "keyboard-logout"
         },
         {
-          "title": "Keyboard Message"
+          "title": "Keyboard Message",
+          "lesson": "keyboard-message"
         },
         {
-          "title": "Keyboard Reprogram"
+          "title": "Keyboard Reprogram",
+          "lesson": "keyboard-reprogram"
         }
       ]
     },

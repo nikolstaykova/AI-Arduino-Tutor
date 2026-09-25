@@ -94,6 +94,7 @@ _VARRES_TYPES = {
 _MODULE_TYPES = {
     "cq-ping": {"vcc": "5V", "gnd": ["GND"], "min": 4.5, "outputs": {"SIG": 0.0}},
     "cq-adxl335": {"vcc": "VCC", "gnd": ["GND"], "min": 1.8, "outputs": {"X": 0.5, "Y": 0.5, "Z": 0.6}},
+    "wokwi-analog-joystick": {"vcc": "VCC", "gnd": ["GND"], "min": 3.0, "outputs": {"VERT": 0.5, "HORZ": 0.5}},
     "cq-memsic2125": {"vcc": "VDD", "gnd": ["GND.1", "GND.2"], "min": 3.0, "outputs": {"XOUT": 0.0, "YOUT": 0.0}},
 }
 MODULE_SUPPLY_RESISTANCE = 20_000.0
@@ -151,6 +152,18 @@ def pin_modes_from_code(code):
     for pin, mode in re.findall(r"pinMode\s*\(\s*(\w+)\s*,\s*(OUTPUT|INPUT_PULLUP|INPUT)\s*\)", code):
         if resolve(pin):
             modes[resolve(pin)] = mode
+    # a counting loop — for (int p = 2; p <= 13; p++) { pinMode(p, OUTPUT); } — sets every pin it counts through
+    for var, lo, op, hi in re.findall(r"for\s*\(\s*(?:int|byte)\s+(\w+)\s*=\s*(\w+)\s*;\s*\w+\s*(<=|<)\s*(\w+)", code):
+        lo_v, hi_v = resolve(lo), resolve(hi)
+        if not (lo_v and hi_v and lo_v.isdigit() and hi_v.isdigit()):
+            continue
+        span = range(int(lo_v), int(hi_v) + (1 if op == "<=" else 0))
+        for mode in re.findall(rf"pinMode\s*\(\s*{var}\s*,\s*(OUTPUT|INPUT_PULLUP|INPUT)\s*\)", code):
+            for pin in span:
+                modes[str(pin)] = mode
+        if re.search(rf"analogWrite\s*\(\s*{var}\s*,", code):
+            for pin in span:
+                modes.setdefault(str(pin), "OUTPUT")
     # a pin array — pinMode(ledPins[i], OUTPUT) sets every pin in it
     arrays = {}
     for name, items in re.findall(r"(\w*[Pp]ins?\w*)\s*\[\s*\d*\s*\]\s*=\s*\{([^{}]*)\}", code):

@@ -1,0 +1,63 @@
+{
+  "id": "arduino-leonardo",
+  "type": "part",
+  "subtype": "board",
+  "wokwi_type": "cq-arduino-leonardo",
+  "display_name": "Arduino Leonardo",
+  "aliases": [
+    "leonardo",
+    "arduino leonardo",
+    "32u4",
+    "arduino micro"
+  ],
+  "mcu_family": "avr",
+  "led_builtin": "13",
+  "spoken_name": "Arduino Leonardo",
+  "description": "An Arduino with the Uno's shape and pin layout, built around the ATmega32U4 — which has USB built in, so it can pretend to be a mouse or a keyboard.",
+  "how_to_use": "Same headers as the Uno (digital 0–13, A0–A5, 5V, 3.3V, GND). Plug in with a micro-USB cable. With Mouse.h / Keyboard.h it appears to your computer as a USB mouse or keyboard. Note: its I2C pins are 2 (SDA) and 3 (SCL), not A4/A5.",
+  "image": "arduino-leonardo.png",
+  "pin_domains": {
+    "analog": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+    ],
+    "digital": [
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13"
+    ]
+  },
+  "pin_aliases": {
+    "mode": "prefix",
+    "prefixes": [
+      "GND"
+    ]
+  },
+  "protocol_pins": {
+    "2": {
+      "protocol": "I2C",
+      "role": "SDA"
+    },
+    "3": {
+      "protocol": "I2C",
+      "role": "SCL"
+    }
+  },
+  "plain": {
+    "what": "An Arduino that can pretend to be a USB mouse or keyboard for your computer.",
+    "how": "Wire it just like an Uno (same pins in the same places) and plug it in with a micro-USB cable. Its code can then move your mouse or type."
+  }
+}

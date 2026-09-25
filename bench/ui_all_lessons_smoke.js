@@ -6,7 +6,7 @@
 const puppeteer = require('puppeteer-core');
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 (async () => {
-  const browser = await puppeteer.launch({executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: 'new', protocolTimeout: 180000,
+  const browser = await puppeteer.launch({executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: 'new', protocolTimeout: 400000,
     args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader']});
   let failed = 0;
   try {
@@ -23,6 +23,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       await page.goto(url, {waitUntil: 'networkidle0'});
       await page.waitForFunction(() => window.__bench3d, {timeout: 30000, polling: 500});
       if (process.env.DEBUG_LEGS) await page.evaluate(() => { window.DEBUG_LEGS = true; });
+      if (process.env.SHOTS_ONLY) await page.evaluate(() => { window.__shotOnly = true; });   // SHOTS_ONLY=1: build and photograph, no checking
       const verdict = await page.evaluate(async (id) => {
         const m = await import('/bench/app.js'); await m.bench.start(id, 'beginner');
         document.querySelectorAll('.screen').forEach(s => s.hidden = s.id !== 'lessonScreen');
@@ -48,9 +49,10 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
           const end = (e) => e.startsWith(bb + ':') ? 'bb:' + e.slice(bb.length + 1) : e;
           T.addWire(end(a), end(b));
         }
+        if (window.__shotOnly) { window.__bench3d.B.view('3d'); return 'COMPLETE (picture only)'; }
         // the board is built ahead: Check walks through every step, then Final check
         let text = '';
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 90; i++) {
           const btn = document.getElementById('finishBtn');
           (btn && !btn.hidden && btn.offsetParent ? btn : document.getElementById('checkBtn')).click();
           await new Promise(r => setTimeout(r, 700));
@@ -62,7 +64,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       }, id);
       if (process.env.SHOTS) {                                   // SHOTS=dir: a picture of each finished build
         await page.evaluate(() => { const p = document.getElementById('levelPop'); if (p) p.hidden = true; window.__bench3d.B.view('3d'); });
-        await sleep(900); await page.screenshot({path: `${process.env.SHOTS}/built_${id}.png`});
+        await sleep(1500);
+        await page.evaluate(() => { document.querySelectorAll('.modal').forEach((m) => { m.hidden = true; }); document.querySelectorAll('.confetti, canvas.fx').forEach((c) => c.remove()); });
+        await sleep(300); await page.screenshot({path: `${process.env.SHOTS}/built_${id}.png`});
       }
       const ok = /COMPLETE|skipped/.test(verdict);
       if (!ok) failed++;

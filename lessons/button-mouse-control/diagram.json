@@ -4,25 +4,27 @@
   "editor": "wokwi",
   "parts": [
     {
-      "type": "wokwi-breadboard-half",
+      "type": "wokwi-breadboard",
       "id": "bb1",
       "top": 73.8,
       "left": 156.4,
       "attrs": {}
     },
     {
-      "type": "wokwi-arduino-uno",
-      "id": "uno",
+      "type": "cq-arduino-leonardo",
+      "id": "leo",
       "top": 19.8,
       "left": -231,
       "attrs": {}
     },
     {
-      "type": "wokwi-led-bar-graph",
-      "id": "bar1",
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
       "top": 0,
       "left": 120,
-      "attrs": {}
+      "attrs": {
+        "color": "green"
+      }
     },
     {
       "type": "wokwi-resistor",
@@ -30,101 +32,85 @@
       "top": 0,
       "left": 180,
       "attrs": {
-        "value": "220"
+        "value": "10000"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn2",
+      "top": 0,
+      "left": 240,
+      "attrs": {
+        "color": "green"
       }
     },
     {
       "type": "wokwi-resistor",
       "id": "r2",
       "top": 0,
-      "left": 240,
+      "left": 300,
       "attrs": {
-        "value": "220"
+        "value": "10000"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn3",
+      "top": 0,
+      "left": 360,
+      "attrs": {
+        "color": "green"
       }
     },
     {
       "type": "wokwi-resistor",
       "id": "r3",
       "top": 0,
-      "left": 300,
+      "left": 420,
       "attrs": {
-        "value": "220"
+        "value": "10000"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn4",
+      "top": 0,
+      "left": 480,
+      "attrs": {
+        "color": "green"
       }
     },
     {
       "type": "wokwi-resistor",
       "id": "r4",
       "top": 0,
-      "left": 360,
+      "left": 540,
       "attrs": {
-        "value": "220"
+        "value": "10000"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn5",
+      "top": 0,
+      "left": 600,
+      "attrs": {
+        "color": "green"
       }
     },
     {
       "type": "wokwi-resistor",
       "id": "r5",
       "top": 0,
-      "left": 420,
-      "attrs": {
-        "value": "220"
-      }
-    },
-    {
-      "type": "wokwi-resistor",
-      "id": "r6",
-      "top": 0,
-      "left": 480,
-      "attrs": {
-        "value": "220"
-      }
-    },
-    {
-      "type": "wokwi-resistor",
-      "id": "r7",
-      "top": 0,
-      "left": 540,
-      "attrs": {
-        "value": "220"
-      }
-    },
-    {
-      "type": "wokwi-resistor",
-      "id": "r8",
-      "top": 0,
-      "left": 600,
-      "attrs": {
-        "value": "220"
-      }
-    },
-    {
-      "type": "wokwi-resistor",
-      "id": "r9",
-      "top": 0,
       "left": 660,
       "attrs": {
-        "value": "220"
+        "value": "10000"
       }
-    },
-    {
-      "type": "wokwi-resistor",
-      "id": "r10",
-      "top": 0,
-      "left": 720,
-      "attrs": {
-        "value": "220"
-      }
-    },
-    {
-      "type": "wokwi-potentiometer",
-      "id": "pot1",
-      "top": 0,
-      "left": 780,
-      "attrs": {}
     }
   ],
   "connections": [
     [
-      "bar1:A1",
+      "btn1:1.l",
       "bb1:1t.e",
       "green",
       [
@@ -132,7 +118,7 @@
       ]
     ],
     [
-      "bar1:C1",
+      "btn1:1.r",
       "bb1:1b.f",
       "green",
       [
@@ -140,23 +126,7 @@
       ]
     ],
     [
-      "bar1:A2",
-      "bb1:2t.e",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:C2",
-      "bb1:2b.f",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:A3",
+      "btn1:2.l",
       "bb1:3t.e",
       "green",
       [
@@ -164,7 +134,7 @@
       ]
     ],
     [
-      "bar1:C3",
+      "btn1:2.r",
       "bb1:3b.f",
       "green",
       [
@@ -172,129 +142,17 @@
       ]
     ],
     [
-      "bar1:A4",
-      "bb1:4t.e",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:C4",
-      "bb1:4b.f",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:A5",
-      "bb1:5t.e",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:C5",
-      "bb1:5b.f",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:A6",
-      "bb1:6t.e",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:C6",
-      "bb1:6b.f",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:A7",
-      "bb1:7t.e",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:C7",
-      "bb1:7b.f",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:A8",
-      "bb1:8t.e",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:C8",
-      "bb1:8b.f",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:A9",
-      "bb1:9t.e",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:C9",
-      "bb1:9b.f",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:A10",
-      "bb1:10t.e",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bar1:C10",
-      "bb1:10b.f",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
       "bb1:1t.a",
-      "uno:2",
+      "leo:2",
       "orange",
       [
         "v0"
       ]
     ],
     [
-      "bb1:bn.1",
-      "uno:GND.1",
-      "black",
+      "bb1:3b.j",
+      "bb1:bp.3",
+      "red",
       [
         "v0"
       ]
@@ -309,94 +167,6 @@
     ],
     [
       "r1:2",
-      "bb1:bn.1",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:2t.a",
-      "uno:3",
-      "orange",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r2:1",
-      "bb1:2b.h",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r2:2",
-      "bb1:bn.2",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:3t.a",
-      "uno:4",
-      "orange",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r3:1",
-      "bb1:3b.h",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r3:2",
-      "bb1:bn.3",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:4t.a",
-      "uno:5",
-      "orange",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r4:1",
-      "bb1:4b.h",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r4:2",
-      "bb1:bn.4",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:5t.a",
-      "uno:6",
-      "orange",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r5:1",
       "bb1:5b.h",
       "green",
       [
@@ -404,64 +174,56 @@
       ]
     ],
     [
-      "r5:2",
+      "bb1:5b.j",
       "bb1:bn.5",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:6t.a",
-      "uno:7",
-      "orange",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:6b.j",
-      "bb1:11b.j",
       "black",
       [
         "v0"
       ]
     ],
     [
-      "r6:1",
-      "bb1:11b.h",
+      "leo:5V",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "leo:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn2:1.l",
+      "bb1:8t.e",
       "green",
       [
         "v0"
       ]
     ],
     [
-      "r6:2",
-      "bb1:bn.9",
+      "btn2:1.r",
+      "bb1:8b.f",
       "green",
       [
         "v0"
       ]
     ],
     [
-      "bb1:7t.a",
-      "uno:8",
-      "orange",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r7:1",
-      "bb1:7b.h",
+      "btn2:2.l",
+      "bb1:10t.e",
       "green",
       [
         "v0"
       ]
     ],
     [
-      "r7:2",
-      "bb1:bn.5",
+      "btn2:2.r",
+      "bb1:10b.f",
       "green",
       [
         "v0"
@@ -469,14 +231,22 @@
     ],
     [
       "bb1:8t.a",
-      "uno:9",
+      "leo:3",
       "orange",
       [
         "v0"
       ]
     ],
     [
-      "r8:1",
+      "bb1:10b.j",
+      "bb1:bp.9",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r2:1",
       "bb1:8b.h",
       "green",
       [
@@ -484,113 +254,233 @@
       ]
     ],
     [
-      "r8:2",
-      "bb1:bn.6",
+      "r2:2",
+      "bb1:12b.h",
       "green",
       [
         "v0"
       ]
     ],
     [
-      "bb1:9t.a",
-      "uno:10",
-      "orange",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r9:1",
-      "bb1:9b.h",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r9:2",
-      "bb1:bn.7",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:10t.a",
-      "uno:11",
-      "orange",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r10:1",
-      "bb1:10b.h",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "r10:2",
-      "bb1:bn.8",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:13b.f",
-      "pot1:GND",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:14b.f",
-      "pot1:SIG",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:15b.f",
-      "pot1:VCC",
-      "green",
-      [
-        "v0"
-      ]
-    ],
-    [
-      "bb1:13b.j",
-      "bb1:bn.11",
+      "bb1:12b.j",
+      "bb1:bn.10",
       "black",
       [
         "v0"
       ]
     ],
     [
-      "bb1:15b.j",
-      "bb1:bp.13",
-      "red",
+      "btn3:1.l",
+      "bb1:15t.e",
+      "green",
       [
         "v0"
       ]
     ],
     [
-      "bb1:14b.h",
-      "uno:A0",
+      "btn3:1.r",
+      "bb1:15b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn3:2.l",
+      "bb1:17t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn3:2.r",
+      "bb1:17b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:15t.a",
+      "leo:4",
       "orange",
       [
         "v0"
       ]
     ],
     [
-      "uno:5V",
-      "bb1:bp.1",
+      "bb1:17b.j",
+      "bb1:bp.15",
       "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r3:1",
+      "bb1:15b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r3:2",
+      "bb1:19b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:19b.j",
+      "bb1:bn.16",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn4:1.l",
+      "bb1:22t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn4:1.r",
+      "bb1:22b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn4:2.l",
+      "bb1:24t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn4:2.r",
+      "bb1:24b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:22t.a",
+      "leo:5",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:24b.j",
+      "bb1:bp.20",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r4:1",
+      "bb1:22b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r4:2",
+      "bb1:26b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:26b.j",
+      "bb1:bn.22",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn5:1.l",
+      "bb1:29t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn5:1.r",
+      "bb1:29b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn5:2.l",
+      "bb1:31t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn5:2.r",
+      "bb1:31b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:29t.a",
+      "leo:6",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:31b.j",
+      "bb1:bp.26",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r5:1",
+      "bb1:29b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r5:2",
+      "bb1:33b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:33b.j",
+      "bb1:bn.28",
+      "black",
       [
         "v0"
       ]

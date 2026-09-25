@@ -38,7 +38,15 @@ class Library:
     def find_by_wokwi_type(self, wokwi_type, wokwi_value=None):
         """Find library cards matching a Wokwi diagram part's type (+ value,
         for ambiguous types like resistors where the type alone doesn't say
-        which real-world part it is)."""
+        which real-world part it is). Memoised: the engine asks this hundreds
+        of thousands of times per lesson check, and the cards never change."""
+        key = (wokwi_type, wokwi_value)
+        cache = self.__dict__.setdefault("_by_type", {})
+        if key not in cache:
+            cache[key] = self._find_by_wokwi_type(wokwi_type, wokwi_value)
+        return list(cache[key])
+
+    def _find_by_wokwi_type(self, wokwi_type, wokwi_value=None):
         matches = []
         for card in self.cards.values():
             wt = card.get("wokwi_type")

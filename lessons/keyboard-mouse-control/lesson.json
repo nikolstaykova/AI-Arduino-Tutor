@@ -1,0 +1,535 @@
+{
+  "id": "keyboard-mouse-control",
+  "title": "Keyboard and Mouse Control",
+  "description": "Buttons type letters on your computer, and letters you send move the mouse.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/usb/KeyboardAndMouseControl/",
+    "title": "Arduino docs: Keyboard and Mouse Control"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-leonardo",
+  "requires": [
+    "button-mouse-control"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-leonardo",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "pushbutton",
+    "resistor-10k"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Leonardo and its USB cable, a breadboard, 5 × pushbutton, 5 × 10 kΩ resistor, and some jumper wires.",
+      "items": [
+        "arduino-leonardo",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "pushbutton",
+        "resistor-10k"
+      ]
+    },
+    {
+      "id": "btn1-place",
+      "phase": "build",
+      "clip": "Push the U button in across the middle gap: two legs above the gap, two below.",
+      "expected_landing": [
+        "btn1:1.r",
+        "btn1:2.r"
+      ],
+      "strict": false,
+      "hints": [
+        "The two legs in one column (above and below the gap) are always joined inside the button.",
+        "Pressing joins the left column to the right column."
+      ],
+      "goal": "Put the U button across the middle gap."
+    },
+    {
+      "id": "btn1-pin",
+      "phase": "build",
+      "clip": "Run a wire from the U button's <b>left</b> column (top half) to pin <b>2</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "btn1:1.r",
+          "leo:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works.",
+        "Pin 2 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect one side of the U button to pin 2."
+    },
+    {
+      "id": "btn1-5v",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The U button's right column (bottom half) → that same row.",
+      "expected_nets": [
+        [
+          "btn1:2.r",
+          "leo:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "When you press, 5V flows through the button to the pin."
+      ],
+      "goal": "Connect the other side of the U button to 5V."
+    },
+    {
+      "id": "btn1-pulldown",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in the U button's <b>left</b> column (bottom half), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "btn1:1.r"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "This is a pull-down: it keeps the pin LOW until you press.",
+        "Without it the pin 'floats' and reads random values."
+      ],
+      "goal": "Put a 10 kΩ resistor on the U button's pin side."
+    },
+    {
+      "id": "btn1-pulldown-gnd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The 10 kΩ resistor's other leg → that same row.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "leo:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the pin reads LOW, and HIGH only while you press."
+      ],
+      "goal": "Connect the pull-down resistor to GND."
+    },
+    {
+      "id": "btn2-place",
+      "phase": "build",
+      "clip": "Push the D button in across the middle gap: two legs above the gap, two below.",
+      "expected_landing": [
+        "btn2:1.r",
+        "btn2:2.r"
+      ],
+      "strict": false,
+      "hints": [
+        "The two legs in one column (above and below the gap) are always joined inside the button.",
+        "Pressing joins the left column to the right column."
+      ],
+      "goal": "Put the D button across the middle gap."
+    },
+    {
+      "id": "btn2-pin",
+      "phase": "build",
+      "clip": "Run a wire from the D button's <b>left</b> column (top half) to pin <b>3</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "btn2:1.r",
+          "leo:3"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works.",
+        "Pin 3 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect one side of the D button to pin 3."
+    },
+    {
+      "id": "btn2-5v",
+      "phase": "build",
+      "clip": "Run a wire from the D button's right column (bottom half) to the red + row.",
+      "expected_nets": [
+        [
+          "btn2:2.r",
+          "leo:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "When you press, 5V flows through the button to the pin."
+      ],
+      "goal": "Connect the other side of the D button to 5V."
+    },
+    {
+      "id": "btn2-pulldown",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in the D button's <b>left</b> column (bottom half), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r2:1",
+          "btn2:1.r"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "This is a pull-down: it keeps the pin LOW until you press.",
+        "Without it the pin 'floats' and reads random values."
+      ],
+      "goal": "Put a 10 kΩ resistor on the D button's pin side."
+    },
+    {
+      "id": "btn2-pulldown-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the 10 kΩ resistor's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "r2:2",
+          "leo:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the pin reads LOW, and HIGH only while you press."
+      ],
+      "goal": "Connect the pull-down resistor to GND."
+    },
+    {
+      "id": "btn3-place",
+      "phase": "build",
+      "clip": "Push the L button in across the middle gap: two legs above the gap, two below.",
+      "expected_landing": [
+        "btn3:1.r",
+        "btn3:2.r"
+      ],
+      "strict": false,
+      "hints": [
+        "The two legs in one column (above and below the gap) are always joined inside the button.",
+        "Pressing joins the left column to the right column."
+      ],
+      "goal": "Put the L button across the middle gap."
+    },
+    {
+      "id": "btn3-pin",
+      "phase": "build",
+      "clip": "Run a wire from the L button's <b>left</b> column (top half) to pin <b>4</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "btn3:1.r",
+          "leo:4"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works.",
+        "Pin 4 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect one side of the L button to pin 4."
+    },
+    {
+      "id": "btn3-5v",
+      "phase": "build",
+      "clip": "Run a wire from the L button's right column (bottom half) to the red + row.",
+      "expected_nets": [
+        [
+          "btn3:2.r",
+          "leo:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "When you press, 5V flows through the button to the pin."
+      ],
+      "goal": "Connect the other side of the L button to 5V."
+    },
+    {
+      "id": "btn3-pulldown",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in the L button's <b>left</b> column (bottom half), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r3:1",
+          "btn3:1.r"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "This is a pull-down: it keeps the pin LOW until you press.",
+        "Without it the pin 'floats' and reads random values."
+      ],
+      "goal": "Put a 10 kΩ resistor on the L button's pin side."
+    },
+    {
+      "id": "btn3-pulldown-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the 10 kΩ resistor's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "r3:2",
+          "leo:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the pin reads LOW, and HIGH only while you press."
+      ],
+      "goal": "Connect the pull-down resistor to GND."
+    },
+    {
+      "id": "btn4-place",
+      "phase": "build",
+      "clip": "Push the R button in across the middle gap: two legs above the gap, two below.",
+      "expected_landing": [
+        "btn4:1.r",
+        "btn4:2.r"
+      ],
+      "strict": false,
+      "hints": [
+        "The two legs in one column (above and below the gap) are always joined inside the button.",
+        "Pressing joins the left column to the right column."
+      ],
+      "goal": "Put the R button across the middle gap."
+    },
+    {
+      "id": "btn4-pin",
+      "phase": "build",
+      "clip": "Run a wire from the R button's <b>left</b> column (top half) to pin <b>5</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "btn4:1.r",
+          "leo:5"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works.",
+        "Pin 5 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect one side of the R button to pin 5."
+    },
+    {
+      "id": "btn4-5v",
+      "phase": "build",
+      "clip": "Run a wire from the R button's right column (bottom half) to the red + row.",
+      "expected_nets": [
+        [
+          "btn4:2.r",
+          "leo:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "When you press, 5V flows through the button to the pin."
+      ],
+      "goal": "Connect the other side of the R button to 5V."
+    },
+    {
+      "id": "btn4-pulldown",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in the R button's <b>left</b> column (bottom half), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r4:1",
+          "btn4:1.r"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "This is a pull-down: it keeps the pin LOW until you press.",
+        "Without it the pin 'floats' and reads random values."
+      ],
+      "goal": "Put a 10 kΩ resistor on the R button's pin side."
+    },
+    {
+      "id": "btn4-pulldown-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the 10 kΩ resistor's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "r4:2",
+          "leo:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the pin reads LOW, and HIGH only while you press."
+      ],
+      "goal": "Connect the pull-down resistor to GND."
+    },
+    {
+      "id": "btn5-place",
+      "phase": "build",
+      "clip": "Push the M button in across the middle gap: two legs above the gap, two below.",
+      "expected_landing": [
+        "btn5:1.r",
+        "btn5:2.r"
+      ],
+      "strict": false,
+      "hints": [
+        "The two legs in one column (above and below the gap) are always joined inside the button.",
+        "Pressing joins the left column to the right column."
+      ],
+      "goal": "Put the M button across the middle gap."
+    },
+    {
+      "id": "btn5-pin",
+      "phase": "build",
+      "clip": "Run a wire from the M button's <b>left</b> column (top half) to pin <b>6</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "btn5:1.r",
+          "leo:6"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works.",
+        "Pin 6 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect one side of the M button to pin 6."
+    },
+    {
+      "id": "btn5-5v",
+      "phase": "build",
+      "clip": "Run a wire from the M button's right column (bottom half) to the red + row.",
+      "expected_nets": [
+        [
+          "btn5:2.r",
+          "leo:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "When you press, 5V flows through the button to the pin."
+      ],
+      "goal": "Connect the other side of the M button to 5V."
+    },
+    {
+      "id": "btn5-pulldown",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in the M button's <b>left</b> column (bottom half), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r5:1",
+          "btn5:1.r"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "This is a pull-down: it keeps the pin LOW until you press.",
+        "Without it the pin 'floats' and reads random values."
+      ],
+      "goal": "Put a 10 kΩ resistor on the M button's pin side."
+    },
+    {
+      "id": "btn5-pulldown-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the 10 kΩ resistor's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "r5:2",
+          "leo:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the pin reads LOW, and HIGH only while you press."
+      ],
+      "goal": "Connect the pull-down resistor to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Open a text editor and press the buttons: the letters appear. Send u, d, l, r or m from the Serial Monitor to move or click the mouse.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "btn1:1.r",
+        "leo:2"
+      ],
+      [
+        "btn1:2.r",
+        "leo:5V"
+      ],
+      [
+        "r1:1",
+        "btn1:1.r"
+      ],
+      [
+        "r1:2",
+        "leo:GND.1"
+      ],
+      [
+        "btn2:1.r",
+        "leo:3"
+      ],
+      [
+        "btn2:2.r",
+        "leo:5V"
+      ],
+      [
+        "r2:1",
+        "btn2:1.r"
+      ],
+      [
+        "r2:2",
+        "leo:GND.1"
+      ],
+      [
+        "btn3:1.r",
+        "leo:4"
+      ],
+      [
+        "btn3:2.r",
+        "leo:5V"
+      ],
+      [
+        "r3:1",
+        "btn3:1.r"
+      ],
+      [
+        "r3:2",
+        "leo:GND.1"
+      ],
+      [
+        "btn4:1.r",
+        "leo:5"
+      ],
+      [
+        "btn4:2.r",
+        "leo:5V"
+      ],
+      [
+        "r4:1",
+        "btn4:1.r"
+      ],
+      [
+        "r4:2",
+        "leo:GND.1"
+      ],
+      [
+        "btn5:1.r",
+        "leo:6"
+      ],
+      [
+        "btn5:2.r",
+        "leo:5V"
+      ],
+      [
+        "r5:1",
+        "btn5:1.r"
+      ],
+      [
+        "r5:2",
+        "leo:GND.1"
+      ]
+    ]
+  }
+}

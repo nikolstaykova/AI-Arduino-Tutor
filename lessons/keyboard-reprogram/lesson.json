@@ -1,0 +1,105 @@
+{
+  "id": "keyboard-reprogram",
+  "title": "Keyboard Reprogram",
+  "description": "Press a button and the Leonardo opens a new sketch in the Arduino IDE, types Blink and uploads it — by itself.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/usb/KeyboardReprogram/",
+    "title": "Arduino docs: Keyboard Reprogram"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-leonardo",
+  "requires": [
+    "keyboard-message"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-leonardo",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "pushbutton"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Leonardo and its USB cable, a breadboard, 1 × pushbutton, and some jumper wires.",
+      "items": [
+        "arduino-leonardo",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "pushbutton"
+      ]
+    },
+    {
+      "id": "btn1-place",
+      "phase": "build",
+      "clip": "Push the button in across the middle gap: two legs above the gap, two below.",
+      "expected_landing": [
+        "btn1:1.r",
+        "btn1:2.r"
+      ],
+      "strict": false,
+      "hints": [
+        "The two legs in one column (above and below the gap) are always joined inside the button.",
+        "Pressing joins the left column to the right column."
+      ],
+      "goal": "Put the button across the middle gap."
+    },
+    {
+      "id": "btn1-pin",
+      "phase": "build",
+      "clip": "Run a wire from the button's <b>left</b> column (top half) to pin <b>2</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "btn1:1.r",
+          "leo:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works.",
+        "Pin 2 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect one side of the button to pin 2."
+    },
+    {
+      "id": "btn1-gnd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The button's right column (bottom half) → that same row.",
+      "expected_nets": [
+        [
+          "btn1:2.r",
+          "leo:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "No resistor needed: INPUT_PULLUP turns on one inside the chip.",
+        "So the pin reads HIGH, and LOW while you press."
+      ],
+      "goal": "Connect the other side of the button to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Open the Arduino IDE and click on it so it's in front. Press the button and watch the Leonardo write and upload Blink by itself.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "btn1:1.r",
+        "leo:2"
+      ],
+      [
+        "btn1:2.r",
+        "leo:GND.1"
+      ]
+    ]
+  }
+}
