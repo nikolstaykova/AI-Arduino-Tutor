@@ -124,7 +124,8 @@
           "lesson": "graph"
         },
         {
-          "title": "MIDI Note Player"
+          "title": "MIDI Note Player",
+          "lesson": "midi"
         },
         {
           "title": "Physical Pixel",
@@ -214,10 +215,12 @@
       "blurb": "Show things with lots of LEDs.",
       "levels": [
         {
-          "title": "LED Bar Graph"
+          "title": "LED Bar Graph",
+          "lesson": "led-bar-graph"
         },
         {
-          "title": "8x8 LED Matrix"
+          "title": "8x8 LED Matrix",
+          "lesson": "row-column-scanning"
         }
       ]
     },

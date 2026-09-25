@@ -1103,3 +1103,138 @@ void loop() {
 
 
 LESSONS += [knock, ping, adxl3xx, memsic2125, read_ascii_string]
+
+
+# ---- display world ------------------------------------------------------------------------------
+def led_bar_graph():
+    L = Lesson("led-bar-graph", "LED Bar Graph", "Turn a knob and watch a 10-segment bar graph fill up like a level meter.", D + "display/BarGraph/",
+               "LED Bar Graph", requires=["arrays", "analog-input"], code="""
+/*
+  LED bar graph
+  Turns on a series of LEDs based on the value of the knob on A0 — a level meter.
+*/
+const int analogPin = A0;
+const int ledCount = 10;
+int ledPins[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+
+void setup() {
+  for (int thisLed = 0; thisLed < ledCount; thisLed++) {
+    pinMode(ledPins[thisLed], OUTPUT);
+  }
+}
+
+void loop() {
+  int sensorReading = analogRead(analogPin);
+  int ledLevel = map(sensorReading, 0, 1023, 0, ledCount);
+  for (int thisLed = 0; thisLed < ledCount; thisLed++) {
+    if (thisLed < ledLevel) {
+      digitalWrite(ledPins[thisLed], HIGH);
+    } else {
+      digitalWrite(ledPins[thisLed], LOW);
+    }
+  }
+}
+""")
+    L.bargraph([2, 3, 4, 5, 6, 7, 8, 9, 10, 11]); L.pot("A0")
+    L.upload("Turn the knob: the bar fills up from one end to the other.")
+    return L
+
+
+LESSONS += [led_bar_graph]
+
+
+def row_column_scanning():
+    L = Lesson("row-column-scanning", "8x8 LED Matrix", "Two knobs move a dot around an 8×8 LED matrix — lit by scanning its rows fast.",
+               D + "display/RowColumnScanning/", "Row-Column Scanning", requires=["led-bar-graph", "arrays"], code="""
+/*
+  Row-Column Scanning an 8x8 LED matrix with X-Y input
+  The knobs on A0 and A1 move a lit dot. (Arduino's example writes pins 16-19 as numbers;
+  on an Uno those are A2-A5, written here by name.)
+*/
+const int rowPins[8] = { 2, 7, A5, 5, 13, A4, 12, A2 };   // R1-R8: the anodes (+)
+const int colPins[8] = { 6, 11, 10, 3, A3, 4, 8, 9 };     // C1-C8: the cathodes (-)
+int pixels[8][8];
+int x = 5;
+int y = 5;
+
+void setup() {
+  for (int thisPin = 0; thisPin < 8; thisPin++) {
+    pinMode(colPins[thisPin], OUTPUT);
+    pinMode(rowPins[thisPin], OUTPUT);
+    digitalWrite(colPins[thisPin], HIGH);          // columns HIGH: all dots off
+  }
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      pixels[i][j] = HIGH;
+    }
+  }
+}
+
+void loop() {
+  readSensors();
+  refreshScreen();
+}
+
+void readSensors() {
+  pixels[x][y] = HIGH;                               // clear the old dot
+  x = 7 - map(analogRead(A0), 0, 1023, 0, 7);
+  y = map(analogRead(A1), 0, 1023, 0, 7);
+  pixels[x][y] = LOW;                                // a LOW column lights the dot
+}
+
+void refreshScreen() {
+  for (int thisRow = 0; thisRow < 8; thisRow++) {
+    digitalWrite(rowPins[thisRow], HIGH);            // one row at a time
+    for (int thisCol = 0; thisCol < 8; thisCol++) {
+      int thisPixel = pixels[thisRow][thisCol];
+      digitalWrite(colPins[thisCol], thisPixel);
+      if (thisPixel == LOW) {
+        digitalWrite(colPins[thisCol], HIGH);
+      }
+    }
+    digitalWrite(rowPins[thisRow], LOW);
+  }
+}
+""", full_board=True)
+    L.matrix([2, 7, "A5", 5, 13, "A4", 12, "A2"], [6, 11, 10, 3, "A3", 4, 8, 9]); L.pot("A0"); L.pot("A1")
+    L.upload("Turn the two knobs: the lit dot moves around the matrix — one knob left–right, the other up–down.")
+    return L
+
+
+LESSONS += [row_column_scanning]
+
+
+def midi():
+    L = Lesson("midi", "MIDI Note Player", "Play a run of notes on a keyboard or synth over a MIDI cable.", D + "communication/Midi/", "MIDI Note Player",
+               requires=["tone-melody"], code="""
+/*
+  MIDI note player
+  Plays MIDI notes from F#-0 (0x1E) to F#-5 (0x5A) on the MIDI socket (TX, pin 1).
+  Unplug the MIDI cable while uploading.
+*/
+void setup() {
+  Serial.begin(31250);          // the MIDI speed
+}
+
+void loop() {
+  for (int note = 0x1E; note < 0x5A; note++) {
+    noteOn(0x90, note, 0x45);   // note on, channel 1, middle velocity
+    delay(100);
+    noteOn(0x90, note, 0x00);   // velocity 0: note off
+    delay(100);
+  }
+}
+
+// a MIDI message: command, pitch, velocity
+void noteOn(int cmd, int pitch, int velocity) {
+  Serial.write(cmd);
+  Serial.write(pitch);
+  Serial.write(velocity);
+}
+""")
+    L.midi()
+    L.upload("Plug a MIDI cable from the socket into a keyboard or a USB-MIDI adapter: it plays a rising run of notes.")
+    return L
+
+
+LESSONS += [midi]

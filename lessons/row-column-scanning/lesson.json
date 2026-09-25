@@ -1,0 +1,714 @@
+{
+  "id": "row-column-scanning",
+  "title": "8x8 LED Matrix",
+  "description": "Two knobs move a dot around an 8×8 LED matrix — lit by scanning its rows fast.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/display/RowColumnScanning/",
+    "title": "Arduino docs: Row-Column Scanning"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "led-bar-graph",
+    "arrays"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "led-matrix-8x8",
+    "resistor-220",
+    "potentiometer-10k"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × 8×8 LED matrix, 8 × 220 Ω resistor, 2 × knob (10 kΩ potentiometer), and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "led-matrix-8x8",
+        "resistor-220",
+        "potentiometer-10k"
+      ]
+    },
+    {
+      "id": "mx1-place",
+      "phase": "build",
+      "clip": "Push the 8×8 matrix into the middle of the breadboard (columns 5–12): its top pins in row a, its bottom pins in row j. It covers the holes between — that's fine.",
+      "expected_landing": [
+        "mx1:R1",
+        "mx1:R2",
+        "mx1:R3",
+        "mx1:R4",
+        "mx1:R5",
+        "mx1:R6",
+        "mx1:R7",
+        "mx1:R8",
+        "mx1:C1",
+        "mx1:C2",
+        "mx1:C3",
+        "mx1:C4",
+        "mx1:C5",
+        "mx1:C6",
+        "mx1:C7",
+        "mx1:C8"
+      ],
+      "strict": false,
+      "hints": [
+        "The top 8 pins are the rows (+), the bottom 8 the columns (−).",
+        "Wires can still go into the covered holes."
+      ],
+      "goal": "Put the LED matrix on the breadboard."
+    },
+    {
+      "id": "mx1-r1",
+      "phase": "build",
+      "clip": "Run a wire from row pin <b>R1</b> (column 5, top half) to pin <b>2</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "mx1:R1",
+          "uno:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column's top half works."
+      ],
+      "goal": "Connect row 1 to pin 2."
+    },
+    {
+      "id": "mx1-r2",
+      "phase": "build",
+      "clip": "Run a wire from row pin <b>R2</b> (column 6, top half) to pin <b>7</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "mx1:R2",
+          "uno:7"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column's top half works."
+      ],
+      "goal": "Connect row 2 to pin 7."
+    },
+    {
+      "id": "mx1-r3",
+      "phase": "build",
+      "clip": "Run a wire from row pin <b>R3</b> (column 7, top half) to pin <b>A5</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "mx1:R3",
+          "uno:A5"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column's top half works."
+      ],
+      "goal": "Connect row 3 to pin A5."
+    },
+    {
+      "id": "mx1-r4",
+      "phase": "build",
+      "clip": "Run a wire from row pin <b>R4</b> (column 8, top half) to pin <b>5</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "mx1:R4",
+          "uno:5"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column's top half works."
+      ],
+      "goal": "Connect row 4 to pin 5."
+    },
+    {
+      "id": "mx1-r5",
+      "phase": "build",
+      "clip": "Run a wire from row pin <b>R5</b> (column 9, top half) to pin <b>13</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "mx1:R5",
+          "uno:13"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column's top half works."
+      ],
+      "goal": "Connect row 5 to pin 13."
+    },
+    {
+      "id": "mx1-r6",
+      "phase": "build",
+      "clip": "Run a wire from row pin <b>R6</b> (column 10, top half) to pin <b>A4</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "mx1:R6",
+          "uno:A4"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column's top half works."
+      ],
+      "goal": "Connect row 6 to pin A4."
+    },
+    {
+      "id": "mx1-r7",
+      "phase": "build",
+      "clip": "Run a wire from row pin <b>R7</b> (column 11, top half) to pin <b>12</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "mx1:R7",
+          "uno:12"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column's top half works."
+      ],
+      "goal": "Connect row 7 to pin 12."
+    },
+    {
+      "id": "mx1-r8",
+      "phase": "build",
+      "clip": "Run a wire from row pin <b>R8</b> (column 12, top half) to pin <b>A2</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "mx1:R8",
+          "uno:A2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column's top half works."
+      ],
+      "goal": "Connect row 8 to pin A2."
+    },
+    {
+      "id": "mx1-c1-r",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in column pin <b>C1</b>'s column (5, bottom half), the other leg in the empty column 1.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "mx1:C1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Every column needs its own resistor, like any LED."
+      ],
+      "goal": "Put a resistor on column 1."
+    },
+    {
+      "id": "mx1-c1-pin",
+      "phase": "build",
+      "clip": "Run a wire from column 1 (the resistor's other leg) to pin <b>6</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "uno:6"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "6 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect column 1's resistor to pin 6."
+    },
+    {
+      "id": "mx1-c2-r",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in column pin <b>C2</b>'s column (6, bottom half), the other leg in the empty column 2.",
+      "expected_nets": [
+        [
+          "r2:1",
+          "mx1:C2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Every column needs its own resistor, like any LED."
+      ],
+      "goal": "Put a resistor on column 2."
+    },
+    {
+      "id": "mx1-c2-pin",
+      "phase": "build",
+      "clip": "Run a wire from column 2 (the resistor's other leg) to pin <b>11</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r2:2",
+          "uno:11"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "11 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect column 2's resistor to pin 11."
+    },
+    {
+      "id": "mx1-c3-r",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in column pin <b>C3</b>'s column (7, bottom half), the other leg in the empty column 3.",
+      "expected_nets": [
+        [
+          "r3:1",
+          "mx1:C3"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Every column needs its own resistor, like any LED."
+      ],
+      "goal": "Put a resistor on column 3."
+    },
+    {
+      "id": "mx1-c3-pin",
+      "phase": "build",
+      "clip": "Run a wire from column 3 (the resistor's other leg) to pin <b>10</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r3:2",
+          "uno:10"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "10 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect column 3's resistor to pin 10."
+    },
+    {
+      "id": "mx1-c4-r",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in column pin <b>C4</b>'s column (8, bottom half), the other leg in the empty column 4.",
+      "expected_nets": [
+        [
+          "r4:1",
+          "mx1:C4"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Every column needs its own resistor, like any LED."
+      ],
+      "goal": "Put a resistor on column 4."
+    },
+    {
+      "id": "mx1-c4-pin",
+      "phase": "build",
+      "clip": "Run a wire from column 4 (the resistor's other leg) to pin <b>3</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r4:2",
+          "uno:3"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "3 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect column 4's resistor to pin 3."
+    },
+    {
+      "id": "mx1-c5-r",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in column pin <b>C5</b>'s column (9, bottom half), the other leg in the empty column 13.",
+      "expected_nets": [
+        [
+          "r5:1",
+          "mx1:C5"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Every column needs its own resistor, like any LED."
+      ],
+      "goal": "Put a resistor on column 5."
+    },
+    {
+      "id": "mx1-c5-pin",
+      "phase": "build",
+      "clip": "Run a wire from column 13 (the resistor's other leg) to pin <b>A3</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r5:2",
+          "uno:A3"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A3 is on the Arduino's ANALOG IN side."
+      ],
+      "goal": "Connect column 5's resistor to pin A3."
+    },
+    {
+      "id": "mx1-c6-r",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in column pin <b>C6</b>'s column (10, bottom half), the other leg in the empty column 14.",
+      "expected_nets": [
+        [
+          "r6:1",
+          "mx1:C6"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Every column needs its own resistor, like any LED."
+      ],
+      "goal": "Put a resistor on column 6."
+    },
+    {
+      "id": "mx1-c6-pin",
+      "phase": "build",
+      "clip": "Run a wire from column 14 (the resistor's other leg) to pin <b>4</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r6:2",
+          "uno:4"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "4 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect column 6's resistor to pin 4."
+    },
+    {
+      "id": "mx1-c7-r",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in column pin <b>C7</b>'s column (11, bottom half), the other leg in the empty column 15.",
+      "expected_nets": [
+        [
+          "r7:1",
+          "mx1:C7"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Every column needs its own resistor, like any LED."
+      ],
+      "goal": "Put a resistor on column 7."
+    },
+    {
+      "id": "mx1-c7-pin",
+      "phase": "build",
+      "clip": "Run a wire from column 15 (the resistor's other leg) to pin <b>8</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r7:2",
+          "uno:8"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "8 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect column 7's resistor to pin 8."
+    },
+    {
+      "id": "mx1-c8-r",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in column pin <b>C8</b>'s column (12, bottom half), the other leg in the empty column 16.",
+      "expected_nets": [
+        [
+          "r8:1",
+          "mx1:C8"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Every column needs its own resistor, like any LED."
+      ],
+      "goal": "Put a resistor on column 8."
+    },
+    {
+      "id": "mx1-c8-pin",
+      "phase": "build",
+      "clip": "Run a wire from column 16 (the resistor's other leg) to pin <b>9</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r8:2",
+          "uno:9"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "9 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect column 8's resistor to pin 9."
+    },
+    {
+      "id": "pot1-place",
+      "phase": "build",
+      "clip": "Push the knob into the breadboard, each of its three legs in its own column.",
+      "expected_landing": [
+        "pot1:GND",
+        "pot1:SIG",
+        "pot1:VCC"
+      ],
+      "strict": false,
+      "hints": [
+        "The two outer legs are for power; the middle leg gives the reading."
+      ],
+      "goal": "Put the knob on the breadboard."
+    },
+    {
+      "id": "pot1-gnd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. One outer leg of the knob → that same row.",
+      "expected_nets": [
+        [
+          "pot1:GND",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either outer leg works."
+      ],
+      "goal": "Connect one outer leg to GND."
+    },
+    {
+      "id": "pot1-5v",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The knob's other outer leg → that same row.",
+      "expected_nets": [
+        [
+          "pot1:VCC",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the knob has 0 V at one end and 5 V at the other."
+      ],
+      "goal": "Connect the other outer leg to 5V."
+    },
+    {
+      "id": "pot1-pin",
+      "phase": "build",
+      "clip": "Run a wire from the knob's <b>middle</b> leg to pin <b>A0</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "pot1:SIG",
+          "uno:A0"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A0 is on the ANALOG IN side of the Arduino.",
+        "The middle leg's voltage follows the knob: 0 V to 5 V."
+      ],
+      "goal": "Connect the knob's middle leg to A0."
+    },
+    {
+      "id": "pot2-place",
+      "phase": "build",
+      "clip": "Push the knob into the breadboard, each of its three legs in its own column.",
+      "expected_landing": [
+        "pot2:GND",
+        "pot2:SIG",
+        "pot2:VCC"
+      ],
+      "strict": false,
+      "hints": [
+        "The two outer legs are for power; the middle leg gives the reading."
+      ],
+      "goal": "Put the knob on the breadboard."
+    },
+    {
+      "id": "pot2-gnd",
+      "phase": "build",
+      "clip": "Run a wire from one outer leg of the knob to the blue − row.",
+      "expected_nets": [
+        [
+          "pot2:GND",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either outer leg works."
+      ],
+      "goal": "Connect one outer leg to GND."
+    },
+    {
+      "id": "pot2-5v",
+      "phase": "build",
+      "clip": "Run a wire from the knob's other outer leg to the red + row.",
+      "expected_nets": [
+        [
+          "pot2:VCC",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the knob has 0 V at one end and 5 V at the other."
+      ],
+      "goal": "Connect the other outer leg to 5V."
+    },
+    {
+      "id": "pot2-pin",
+      "phase": "build",
+      "clip": "Run a wire from the knob's <b>middle</b> leg to pin <b>A1</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "pot2:SIG",
+          "uno:A1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A1 is on the ANALOG IN side of the Arduino.",
+        "The middle leg's voltage follows the knob: 0 V to 5 V."
+      ],
+      "goal": "Connect the knob's middle leg to A1."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Turn the two knobs: the lit dot moves around the matrix — one knob left–right, the other up–down.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "mx1:R1",
+        "uno:2"
+      ],
+      [
+        "mx1:R2",
+        "uno:7"
+      ],
+      [
+        "mx1:R3",
+        "uno:A5"
+      ],
+      [
+        "mx1:R4",
+        "uno:5"
+      ],
+      [
+        "mx1:R5",
+        "uno:13"
+      ],
+      [
+        "mx1:R6",
+        "uno:A4"
+      ],
+      [
+        "mx1:R7",
+        "uno:12"
+      ],
+      [
+        "mx1:R8",
+        "uno:A2"
+      ],
+      [
+        "r1:1",
+        "mx1:C1"
+      ],
+      [
+        "r1:2",
+        "uno:6"
+      ],
+      [
+        "r2:1",
+        "mx1:C2"
+      ],
+      [
+        "r2:2",
+        "uno:11"
+      ],
+      [
+        "r3:1",
+        "mx1:C3"
+      ],
+      [
+        "r3:2",
+        "uno:10"
+      ],
+      [
+        "r4:1",
+        "mx1:C4"
+      ],
+      [
+        "r4:2",
+        "uno:3"
+      ],
+      [
+        "r5:1",
+        "mx1:C5"
+      ],
+      [
+        "r5:2",
+        "uno:A3"
+      ],
+      [
+        "r6:1",
+        "mx1:C6"
+      ],
+      [
+        "r6:2",
+        "uno:4"
+      ],
+      [
+        "r7:1",
+        "mx1:C7"
+      ],
+      [
+        "r7:2",
+        "uno:8"
+      ],
+      [
+        "r8:1",
+        "mx1:C8"
+      ],
+      [
+        "r8:2",
+        "uno:9"
+      ],
+      [
+        "pot1:GND",
+        "uno:GND.1"
+      ],
+      [
+        "pot1:VCC",
+        "uno:5V"
+      ],
+      [
+        "pot1:SIG",
+        "uno:A0"
+      ],
+      [
+        "pot2:GND",
+        "uno:GND.1"
+      ],
+      [
+        "pot2:VCC",
+        "uno:5V"
+      ],
+      [
+        "pot2:SIG",
+        "uno:A1"
+      ]
+    ]
+  }
+}

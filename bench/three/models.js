@@ -413,8 +413,11 @@ export const PART_PINS = {
   "cq-adxl335": [["ST", 0, 0], ["Z", 1, 0], ["Y", 2, 0], ["X", 3, 0], ["GND", 4, 0], ["VCC", 5, 0]],
   "cq-memsic2125": [["TOUT", 0, 0], ["YOUT", 1, 0], ["GND.1", 2, 0], ["VDD", 0, 3], ["XOUT", 1, 3], ["GND.2", 2, 3]],
   "wokwi-rgb-led": [["R", 0, 0], ["COM", 1, 0], ["G", 2, 0], ["B", 3, 0]],
+  "cq-midi-jack": [["1", 0, 0], ["2", 1, 0], ["3", 2, 0], ["4", 3, 0], ["5", 4, 0]],
+  "cq-led-matrix-8x8": [...Array.from({ length: 8 }, (_, k) => [`R${k + 1}`, k, 0]), ...Array.from({ length: 8 }, (_, k) => [`C${k + 1}`, k, 11])],
+  "wokwi-led-bar-graph": [...Array.from({ length: 10 }, (_, k) => [`A${k + 1}`, k, 0]), ...Array.from({ length: 10 }, (_, k) => [`C${k + 1}`, k, 3])],
 };
-export const LIFT = { "cq-ping": 2.5, "cq-adxl335": 8.5, "cq-memsic2125": 0.6, "wokwi-rgb-led": 2.2, "cq-photoresistor": 5, "cq-fsr": 4, "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
+export const LIFT = { "cq-midi-jack": 0.5, "cq-led-matrix-8x8": 1, "wokwi-led-bar-graph": 0.6, "cq-ping": 2.5, "cq-adxl335": 8.5, "cq-memsic2125": 0.6, "wokwi-rgb-led": 2.2, "cq-photoresistor": 5, "cq-fsr": 4, "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
 
 function resistorBands(value) {
   const ohms = Math.round(Number(String(value || "1000").replace(/k/i, "e3").replace(/M/, "e6")) || 1000);
@@ -672,8 +675,51 @@ function makeRGB() {
   return g;
 }
 
+// A 10-segment LED bar graph straddling the gap: black body, ten coloured
+// bar windows on top that light when their segment conducts.
+function makeBarGraph() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["wokwi-led-bar-graph"], cx = 4.5 * PITCH, cz = 1.5 * PITCH;
+  const body = mesh(new THREE.BoxGeometry(25.4, 8, 10.1), M.blackPlastic); body.position.set(cx, y0 + 4, cz); g.add(body);
+  const bars = [];
+  for (let k = 0; k < 10; k++) {
+    const col = k < 7 ? 0x50e050 : k < 9 ? 0xf0d020 : 0xff3a2a;
+    const mat = new THREE.MeshStandardMaterial({ color: 0x151515, emissive: col, emissiveIntensity: 0, roughness: 0.4 });
+    const bar = mesh(new THREE.BoxGeometry(1.7, 0.1, 5.2), mat); bar.position.set(k * PITCH, y0 + 8.05, cz); g.add(bar); bars.push(mat);
+    for (const z of [0, 3 * PITCH]) g.add(lead([[k * PITCH, BB_TOP - 1.2, z], [k * PITCH, y0 + 0.5, z]], 0.25));
+  }
+  g.userData.setLit = (k, on) => { if (bars[k]) bars[k].emissiveIntensity = on ? 1.6 : 0; };
+  return g;
+}
+
+// An 8x8 LED matrix: a 32 mm black block with 64 red dots, its 16 pins in rows
+// a and j. Its body covers the holes between — clicks go through it.
+function makeMatrix() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-led-matrix-8x8"], cx = 3.5 * PITCH, cz = 5.5 * PITCH;
+  const body = mesh(new THREE.BoxGeometry(32, 7, 32), M.blackPlastic); body.position.set(cx, y0 + 3.5, cz); body.userData.passThrough = true; g.add(body);
+  const dots = [];
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) {
+    const mat = new THREE.MeshStandardMaterial({ color: 0x3a1512, emissive: 0xff2a1a, emissiveIntensity: 0, roughness: 0.4 });
+    const dot = mesh(new THREE.CylinderGeometry(1.4, 1.4, 0.2, 16), mat, false);
+    dot.position.set(cx - 14 + c * 4, y0 + 7.05, cz - 14 + r * 4); dot.userData.passThrough = true; g.add(dot); dots.push(mat);
+  }
+  for (let k = 0; k < 8; k++) for (const z of [0, 11 * PITCH]) g.add(lead([[k * PITCH, BB_TOP - 1.2, z], [k * PITCH, y0 + 0.5, z]], 0.25));
+  g.userData.setDot = (r, c, on) => { const m = dots[r * 8 + c]; if (m) m.emissiveIntensity = on ? 1.8 : 0; };
+  return g;
+}
+
+// A PCB-mount 5-pin DIN (MIDI) socket: a black block with the round socket facing you.
+function makeMidiJack() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-midi-jack"], cx = 2 * PITCH;
+  const body = mesh(new RoundedBoxGeometry(20, 19, 20, 2, 1), M.blackPlastic); body.position.set(cx, y0 + 9.5, -8); g.add(body);
+  const face = mesh(new THREE.CylinderGeometry(7.5, 7.5, 1, 40), M.metal); face.rotation.x = Math.PI / 2; face.position.set(cx, y0 + 10, 2.3); g.add(face);
+  const hole = mesh(new THREE.CylinderGeometry(6.2, 6.2, 1.1, 40), M.chip, false); hole.rotation.x = Math.PI / 2; hole.position.set(cx, y0 + 10, 2.4); g.add(hole);
+  for (let i = 0; i < 5; i++) { const a = Math.PI * (0.15 + i * 0.175); const pinH = mesh(new THREE.CylinderGeometry(0.6, 0.6, 1.2, 12), M.metal, false); pinH.rotation.x = Math.PI / 2; pinH.position.set(cx + Math.cos(a) * 4, y0 + 10 + Math.sin(a) * 4 - 1, 2.6); g.add(pinH); }
+  for (let i = 0; i < 5; i++) g.add(lead([[i * PITCH, BB_TOP - 1.2, 0], [i * PITCH, y0 + 1, 0], [i * PITCH, y0 + 1, -2]], 0.3));
+  return g;
+}
+
 export function makePart(wokwiType, attrs = {}) {
-  const build = { "cq-ping": makePing, "cq-adxl335": makeADXL, "cq-memsic2125": makeMemsic, "wokwi-rgb-led": makeRGB, "cq-photoresistor": makeLDR, "cq-fsr": makeFSR, "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
+  const build = { "cq-midi-jack": makeMidiJack, "cq-led-matrix-8x8": makeMatrix, "wokwi-led-bar-graph": makeBarGraph, "cq-ping": makePing, "cq-adxl335": makeADXL, "cq-memsic2125": makeMemsic, "wokwi-rgb-led": makeRGB, "cq-photoresistor": makeLDR, "cq-fsr": makeFSR, "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
                   "wokwi-pushbutton-6mm": makePushbutton, "wokwi-potentiometer": makePotentiometer }[wokwiType]
                 || (() => makeGeneric(wokwiType));
   const g = build(attrs);

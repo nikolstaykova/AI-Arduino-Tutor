@@ -101,6 +101,10 @@ MODULE_OUTPUT_RESISTANCE = 1_000.0
 # An RGB LED: three LEDs sharing the COM leg — its anode (common anode, the
 # default) or its cathode (attrs common: "cathode").
 _RGB_TYPES = {"wokwi-rgb-led"}
+# A 10-segment LED bar graph: ten independent LEDs, segment k from Ak to Ck.
+_BARGRAPH_TYPES = {"wokwi-led-bar-graph"}
+# An 8x8 LED matrix: the LED at row r, column c runs from Rr (anode) to Cc (cathode).
+_MATRIX_TYPES = {"cq-led-matrix-8x8"}
 RGB_FORWARD_VOLTAGE = {"R": 2.0, "G": 3.0, "B": 3.0}
 _POT_TYPES = {"wokwi-potentiometer", "wokwi-slide-potentiometer"}
 _SUPPLY_PINS = {"5V": 5.0, "3.3V": 3.3, "3V3": 3.3}
@@ -253,6 +257,14 @@ class _Circuit:
                 self.modules.append((pid, vcc, gnds, spec["min"], outs))
                 self.resistors.append((f"{pid} (supply)", vcc, gnds[0], MODULE_SUPPLY_RESISTANCE))
                 self.module_powered[pid] = True
+            elif wtype in _MATRIX_TYPES:
+                for r in range(1, 9):
+                    for c in range(1, 9):
+                        self.leds.append((f"{pid}.r{r}c{c}", self.node(f"{pid}:R{r}"), self.node(f"{pid}:C{c}"), 2.0))
+            elif wtype in _BARGRAPH_TYPES:
+                vf = LED_FORWARD_VOLTAGE.get(str(attrs.get("color", "red")).lower(), 2.0)
+                for k in range(1, 11):
+                    self.leds.append((f"{pid}.{k}", self.node(f"{pid}:A{k}"), self.node(f"{pid}:C{k}"), vf))
             elif wtype in _RGB_TYPES:
                 com = self.node(f"{pid}:COM")
                 cathode_common = str(attrs.get("common", "anode")).lower() == "cathode"

@@ -1,0 +1,148 @@
+{
+  "id": "midi",
+  "title": "MIDI Note Player",
+  "description": "Play a run of notes on a keyboard or synth over a MIDI cable.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/communication/Midi/",
+    "title": "Arduino docs: MIDI Note Player"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "tone-melody"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "midi-jack",
+    "resistor-220"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × MIDI socket (5-pin DIN), 1 × 220 Ω resistor, and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "midi-jack",
+        "resistor-220"
+      ]
+    },
+    {
+      "id": "midi1-place",
+      "phase": "build",
+      "clip": "Push the MIDI socket in, its five pins in five columns (numbered 1–5 from the left), the round socket facing you.",
+      "expected_landing": [
+        "midi1:1",
+        "midi1:2",
+        "midi1:3",
+        "midi1:4",
+        "midi1:5"
+      ],
+      "strict": false,
+      "hints": [
+        "Only pins 2, 4 and 5 are used; 1 and 3 stay empty."
+      ],
+      "goal": "Put the MIDI socket on the breadboard."
+    },
+    {
+      "id": "midi1-gnd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The socket's pin 2 → that same row.",
+      "expected_nets": [
+        [
+          "midi1:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 2 is the cable's shield."
+      ],
+      "goal": "Connect pin 2 to GND."
+    },
+    {
+      "id": "midi1-resistor",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor in: one leg in pin 4's column, the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "midi1:4"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "MIDI sends a small current through the cable: this resistor limits it."
+      ],
+      "goal": "Put a 220 Ω resistor on pin 4."
+    },
+    {
+      "id": "midi1-5v",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The resistor's other leg → that same row.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 4 is the current source."
+      ],
+      "goal": "Connect the resistor to 5V."
+    },
+    {
+      "id": "midi1-tx",
+      "phase": "build",
+      "clip": "Run a wire from the socket's pin 5 to pin <b>1</b> (TX → 1) on the Arduino.",
+      "expected_nets": [
+        [
+          "midi1:5",
+          "uno:1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "TX is the Arduino's serial output — the MIDI notes come out here.",
+        "Unplug the MIDI cable while uploading: uploads use this pin too."
+      ],
+      "goal": "Connect pin 5 to TX (pin 1)."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Plug a MIDI cable from the socket into a keyboard or a USB-MIDI adapter: it plays a rising run of notes.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "midi1:2",
+        "uno:GND.1"
+      ],
+      [
+        "r1:1",
+        "midi1:4"
+      ],
+      [
+        "r1:2",
+        "uno:5V"
+      ],
+      [
+        "midi1:5",
+        "uno:1"
+      ]
+    ]
+  }
+}

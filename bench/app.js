@@ -783,6 +783,10 @@ function applyPhysics() {
   const scenario = currentScenario();
   Object.values(S.placed).forEach((p) => {
     const o = B.parts[p.def.id];
+    if (p.def.wokwi_type === "wokwi-led-bar-graph" && o) {       // each segment is an LED of its own
+      for (let k = 1; k <= 10; k++) { const seg = scenario && scenario.leds[`${p.def.id}.${k}`]; o.userData.setLit(k - 1, !!seg && seg.state !== "off"); }
+      return;
+    }
     if (p.def.wokwi_type !== "wokwi-led" || !o) return;
     const led = scenario && scenario.leds[p.def.id];
     o.userData.setLit(!!led && led.state !== "off", led && led.state === "dim");

@@ -262,7 +262,33 @@ function irRemote() {
   return g;
 }
 
+function matrix1088() {
+  // 1088AS 8x8 matrix: a 32 mm black block, 64 red dots (a smiley lit), 16 pins in two rows
+  const g = new THREE.Group();
+  g.add(at(box(32, 7, 32, M.plastic(0x141417, 0.5)), 0, 3.5, 0));
+  const smile = ["00111100", "01000010", "10100101", "10000001", "10100101", "10011001", "01000010", "00111100"];
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++)
+    g.add(at(cyl(1.5, 1.5, 0.3, smile[r][c] === "1" ? M.glow(0xff2a1a, 1.4) : M.epoxy(0x5a1a14), 20), -14 + c * 4, 7.05, -14 + r * 4));
+  g.add(at(sideDecal(20, 3, (ctx, W, H, k) => { ctx.clearRect(0, 0, W, H); text(ctx, "1088AS", W / 2, H / 2, { size: 2 * k, color: "#777" }); }, { pxPerMm: 30 }), 0, 3.5, 16.02));
+  for (let k = 0; k < 8; k++) for (const z of [-12.7, 12.7]) g.add(at(cyl(0.25, 0.25, 6, M.tin(), 8), -8.9 + k * 2.54, -3, z));
+  return g;
+}
+
+function midiJack() {
+  // PCB-mount 5-pin DIN socket: black housing, metal ring, five contacts in a half circle
+  const g = new THREE.Group();
+  g.add(at(rbox(20, 19, 20, 1, M.plastic(0x141417, 0.5)), 0, 9.5, 0));
+  const ring = torus(7.4, 0.6, M.chrome(), 10, 48); g.add(at(ring, 0, 10, 10.1));
+  g.add(at(cyl(6.6, 6.6, 0.4, M.plastic(0x050505, 1), 40), 0, 10, 10.05, Math.PI / 2, 0, 0));
+  for (let i = 0; i < 5; i++) { const a = Math.PI * (0.1 + i * 0.2); g.add(at(cyl(0.7, 0.7, 0.8, M.chrome(), 12), Math.cos(a) * 4, 10 + Math.sin(a) * 4 - 1, 10.3, Math.PI / 2, 0, 0)); }
+  g.add(at(box(2.4, 2, 1, M.plastic(0x050505, 1)), 0, 16, 10.2));
+  for (let i = 0; i < 5; i++) g.add(at(cyl(0.3, 0.3, 5, M.tin(), 8), -5.08 + i * 2.54, -2.5, -6));
+  return g;
+}
+
 export const DISPLAYS = {
+  "led-matrix-8x8": matrix1088,
+  "midi-jack": midiJack,
   "ili9341-lcd": () => tft(false),
   "ili9341-touch-lcd": () => tft(true),
   "lcd1602": lcd1602,

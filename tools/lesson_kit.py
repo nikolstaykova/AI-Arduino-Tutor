@@ -21,7 +21,8 @@ CARD = {"led": "led", "r220": "resistor-220", "r10k": "resistor-10k", "button": 
 SINGULAR = {"resistor-220": "220 Ω resistor", "resistor-10k": "10 kΩ resistor", "resistor-4k7": "4.7 kΩ resistor", "led": "LED",
             "pushbutton": "pushbutton", "potentiometer-10k": "knob (10 kΩ potentiometer)", "buzzer": "piezo buzzer",
             "photoresistor": "light sensor (photoresistor)", "fsr": "force sensor (FSR)", "resistor-1m": "1 MΩ resistor",
-            "ping-sensor": "Ping))) ultrasonic sensor", "adxl335": "ADXL335 accelerometer", "memsic2125": "Memsic 2125 accelerometer", "rgb-led": "RGB LED (common anode)"}
+            "ping-sensor": "Ping))) ultrasonic sensor", "adxl335": "ADXL335 accelerometer", "memsic2125": "Memsic 2125 accelerometer", "rgb-led": "RGB LED (common anode)",
+            "led-bar-graph": "10-segment LED bar graph", "led-matrix-8x8": "8×8 LED matrix", "midi-jack": "MIDI socket (5-pin DIN)"}
 NAME = {"resistor-220": "220 Ω resistors", "resistor-10k": "10 kΩ resistors", "resistor-4k7": "a 4.7 kΩ resistor", "led": "LEDs",
         "pushbutton": "a pushbutton", "potentiometer-10k": "a knob (10 kΩ potentiometer)", "buzzer": "a piezo buzzer",
         "photoresistor": "a light sensor (photoresistor)", "fsr": "force sensors (FSR)"}
@@ -304,6 +305,120 @@ class Lesson:
                 self.nets.append([f"{mid}:{name}", f"uno:{board_pin}"])
         return mid
 
+    @staticmethod
+    def rail_index(col):
+        """The − / + row hole under column `col` (the rows have a gap every 6th column), or None."""
+        for n in range(1, 60):
+            if 1 + (n - 1) + (n - 1) // 5 == col:
+                return n
+        return None
+
+    def bargraph(self, pins):
+        """A 10-segment bar graph across the gap: each segment's + leg to its pin,
+        its − leg through a 220 Ω resistor that hops straight into the − row
+        (turned sideways, from row h). A column over a gap in the − row gets a
+        short wire to a free column first."""
+        self.power_rails()
+        c = self.col; self.col += 10
+        bar = self._id("bar")
+        self._part("wokwi-led-bar-graph", bar); self._need("led-bar-graph")
+        for k in range(1, 11):
+            self._wire(f"{bar}:A{k}", f"bb1:{c + k - 1}t.e"); self._wire(f"{bar}:C{k}", f"bb1:{c + k - 1}b.f")
+        self._step(f"{bar}-place", "Push the bar graph in across the middle gap: ten legs above the gap, ten below. The printed side (the + legs) goes on top.",
+                   "Put the bar graph across the middle gap.", ["Each of the ten bars is its own little LED: + leg on top, − leg below the gap."],
+                   landing=[f"{bar}:A{k}" for k in range(1, 11)] + [f"{bar}:C{k}" for k in range(1, 11)])
+        spare = self.col; self.col += 2
+        first_gnd = True
+        for k, pin in enumerate(pins, start=1):
+            col = c + k - 1
+            self._wire(f"bb1:{col}t.a", f"uno:{pin}", "orange")
+            self._step(f"{bar}-a{k}", f"Run a wire from bar <b>{k}</b>'s + leg (top half) to pin <b>{pin}</b> on the Arduino.",
+                       f"Connect bar {k}'s + leg to pin {pin}.", ["Any hole in that column works."], nets=[[f"{bar}:A{k}", f"uno:{pin}"]])
+            r = self._id("r"); self._part("wokwi-resistor", r, {"value": "220"}); self._need("resistor-220")
+            n = self.rail_index(col)
+            if first_gnd:
+                self._gnd_done = True; self._wire("bb1:bn.1", "uno:GND.1", "black"); first_gnd = False
+                gnd_first = "First, run a wire from the Arduino's <b>GND</b> pin to the blue − row at the bottom.<br>Then: "
+            else:
+                gnd_first = ""
+            if n:
+                self._wire(f"{r}:1", f"bb1:{col}b.h"); self._wire(f"{r}:2", f"bb1:bn.{n}")
+                self._step(f"{bar}-c{k}", f"{gnd_first}turn a 220 Ω resistor upright: one leg in bar {k}'s − column (bottom half, row h), the other leg straight "
+                           "into the blue − row just below it." if gnd_first else f"Turn a 220 Ω resistor upright: one leg in bar {k}'s − column (row h), "
+                           "the other leg straight into the blue − row just below it.",
+                           f"Connect bar {k}'s − leg to GND through a 220 Ω resistor.", ["Each bar needs its own resistor, like any LED."],
+                           nets=[[f"{r}:1", f"{bar}:C{k}"], [f"{r}:2", "uno:GND.1"]])
+            else:
+                n2 = self.rail_index(spare)
+                self._wire(f"bb1:{col}b.j", f"bb1:{spare}b.j", "black")
+                self._wire(f"{r}:1", f"bb1:{spare}b.h"); self._wire(f"{r}:2", f"bb1:bn.{n2}")
+                self._step(f"{bar}-c{k}", f"{gnd_first}bar {k}'s column sits over a gap in the − row, so first a short wire from its − column (row j) to the empty "
+                           f"column {spare}. Then turn a 220 Ω resistor upright from column {spare} (row h) into the − row below it.",
+                           f"Connect bar {k}'s − leg to GND through a 220 Ω resistor.", ["The − row has a small gap every few holes — this bar sits over one."],
+                           nets=[[f"{r}:1", f"{bar}:C{k}"], [f"{r}:2", "uno:GND.1"]])
+            self.nets += [[f"{bar}:A{k}", f"uno:{pin}"], [f"{r}:1", f"{bar}:C{k}"], [f"{r}:2", "uno:GND.1"]]
+        return bar
+
+    def matrix(self, row_pins, col_pins):
+        """An 8x8 LED matrix: pins in rows a (R1–R8) and j (C1–C8) of columns 5–12.
+        Rows wire straight to their pins; each column goes through a 220 Ω
+        resistor out to a free column 4 holes away (1–4 on the left, 13–16 on
+        the right), then a wire to its pin."""
+        self.power_rails()
+        c = 5; self.col = max(self.col, 17)
+        m = self._id("mx")
+        self._part("cq-led-matrix-8x8", m); self._need("led-matrix-8x8")
+        for k in range(1, 9):
+            self._wire(f"{m}:R{k}", f"bb1:{c + k - 1}t.a"); self._wire(f"{m}:C{k}", f"bb1:{c + k - 1}b.j")
+        self._step(f"{m}-place", "Push the 8×8 matrix into the middle of the breadboard (columns 5–12): its top pins in row a, its bottom pins in row j. "
+                   "It covers the holes between — that's fine.", "Put the LED matrix on the breadboard.",
+                   ["The top 8 pins are the rows (+), the bottom 8 the columns (−).", "Wires can still go into the covered holes."],
+                   landing=[f"{m}:R{k}" for k in range(1, 9)] + [f"{m}:C{k}" for k in range(1, 9)])
+        for k, pin in enumerate(row_pins, start=1):
+            self._wire(f"bb1:{c + k - 1}t.c", f"uno:{pin}", "orange")
+            self._step(f"{m}-r{k}", f"Run a wire from row pin <b>R{k}</b> (column {c + k - 1}, top half) to pin <b>{pin}</b> on the Arduino.",
+                       f"Connect row {k} to pin {pin}.", ["Any hole in that column's top half works."], nets=[[f"{m}:R{k}", f"uno:{pin}"]])
+            self.nets.append([f"{m}:R{k}", f"uno:{pin}"])
+        for k, pin in enumerate(col_pins, start=1):
+            col = c + k - 1
+            free = col - 4 if k <= 4 else col + 4
+            r = self._id("r"); self._part("wokwi-resistor", r, {"value": "220"}); self._need("resistor-220")
+            self._wire(f"{r}:1", f"bb1:{col}b.h"); self._wire(f"{r}:2", f"bb1:{free}b.h")
+            self._wire(f"bb1:{free}b.j", f"uno:{pin}", "orange")
+            self._step(f"{m}-c{k}-r", f"Push a 220 Ω resistor in: one leg in column pin <b>C{k}</b>'s column ({col}, bottom half), the other leg in the empty "
+                       f"column {free}.", f"Put a resistor on column {k}.", ["Every column needs its own resistor, like any LED."],
+                       nets=[[f"{r}:1", f"{m}:C{k}"]])
+            self._step(f"{m}-c{k}-pin", f"Run a wire from column {free} (the resistor's other leg) to pin <b>{pin}</b> on the Arduino.",
+                       f"Connect column {k}'s resistor to pin {pin}.", [f"{pin} is on the Arduino's {'ANALOG IN side' if str(pin).startswith('A') else 'row of numbered sockets'}."],
+                       nets=[[f"{r}:2", f"uno:{pin}"]])
+            self.nets += [[f"{r}:1", f"{m}:C{k}"], [f"{r}:2", f"uno:{pin}"]]
+        return m
+
+    def midi(self):
+        """A MIDI out socket: pin 4 through 220 Ω to 5V, pin 5 to TX (pin 1), pin 2 to GND."""
+        self.power_rails()
+        c = self.col; self.col += 9
+        j, r = self._id("midi"), self._id("r")
+        self._part("cq-midi-jack", j); self._part("wokwi-resistor", r, {"value": "220"})
+        self._need("midi-jack"); self._need("resistor-220")
+        for k in range(1, 6):
+            self._wire(f"{j}:{k}", f"bb1:{c + k - 1}b.f")
+        self._wire(f"bb1:{c + 1}b.j", f"bb1:bn.{c + 1}", "black")
+        self._wire(f"{r}:1", f"bb1:{c + 3}b.h"); self._wire(f"{r}:2", f"bb1:{c + 7}b.h"); self._wire(f"bb1:{c + 7}b.j", f"bb1:bp.{c + 7}", "red")
+        self._wire(f"bb1:{c + 4}b.j", "uno:1", "orange")
+        self._step(f"{j}-place", "Push the MIDI socket in, its five pins in five columns (numbered 1–5 from the left), the round socket facing you.",
+                   "Put the MIDI socket on the breadboard.", ["Only pins 2, 4 and 5 are used; 1 and 3 stay empty."], landing=[f"{j}:{k}" for k in range(1, 6)])
+        self._step(f"{j}-gnd", self._to_rail("gnd", "the socket's pin 2"), "Connect pin 2 to GND.", ["Pin 2 is the cable's shield."], nets=[[f"{j}:2", "uno:GND.1"]])
+        self._step(f"{j}-resistor", "Push a 220 Ω resistor in: one leg in pin 4's column, the other leg in an empty column.", "Put a 220 Ω resistor on pin 4.",
+                   ["MIDI sends a small current through the cable: this resistor limits it."], nets=[[f"{r}:1", f"{j}:4"]])
+        self._step(f"{j}-5v", self._to_rail("5v", "the resistor's other leg"), "Connect the resistor to 5V.", ["Pin 4 is the current source."],
+                   nets=[[f"{r}:2", "uno:5V"]])
+        self._step(f"{j}-tx", "Run a wire from the socket's pin 5 to pin <b>1</b> (TX → 1) on the Arduino.", "Connect pin 5 to TX (pin 1).",
+                   ["TX is the Arduino's serial output — the MIDI notes come out here.", "Unplug the MIDI cable while uploading: uploads use this pin too."],
+                   nets=[[f"{j}:5", "uno:1"]])
+        self.nets += [[f"{j}:2", "uno:GND.1"], [f"{r}:1", f"{j}:4"], [f"{r}:2", "uno:5V"], [f"{j}:5", "uno:1"]]
+        return j
+
     def rgb(self, red, green, blue):
         """A common-anode RGB LED: COM to 5V, each colour through a 220 Ω resistor to its pin."""
         self.power_rails()
@@ -342,7 +457,7 @@ class Lesson:
         # how many of each part, from the diagram ("6 LEDs", "1 knob")
         card_of = {"wokwi-led": "led", "wokwi-pushbutton": "pushbutton", "wokwi-potentiometer": "potentiometer-10k", "wokwi-buzzer": "buzzer",
                    "cq-photoresistor": "photoresistor", "cq-fsr": "fsr", "cq-ping": "ping-sensor", "cq-adxl335": "adxl335",
-                   "cq-memsic2125": "memsic2125", "wokwi-rgb-led": "rgb-led"}
+                   "cq-memsic2125": "memsic2125", "wokwi-rgb-led": "rgb-led", "wokwi-led-bar-graph": "led-bar-graph", "cq-led-matrix-8x8": "led-matrix-8x8", "cq-midi-jack": "midi-jack"}
         count = {}
         for part in self.parts:
             cid = card_of.get(part["type"]) or ({"220": "resistor-220", "10000": "resistor-10k", "4700": "resistor-4k7", "1000000": "resistor-1m"}.get(part["attrs"].get("value"))

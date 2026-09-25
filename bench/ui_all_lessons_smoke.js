@@ -22,6 +22,7 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       page.on('pageerror', e => errors.push(`${id}: ${e.message}`));
       await page.goto(url, {waitUntil: 'networkidle0'});
       await page.waitForFunction(() => window.__bench3d, {timeout: 30000, polling: 500});
+      if (process.env.DEBUG_LEGS) await page.evaluate(() => { window.DEBUG_LEGS = true; });
       const verdict = await page.evaluate(async (id) => {
         const m = await import('/bench/app.js'); await m.bench.start(id, 'beginner');
         document.querySelectorAll('.screen').forEach(s => s.hidden = s.id !== 'lessonScreen');
@@ -35,9 +36,9 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
           const cand = ref.map(([a, b]) => [a, b].find(e => e.startsWith(d.id + ':'))).filter(Boolean);
           let placed = false;
           for (const leg of cand) { const h = holeOf(leg); if (!h) continue;
-            for (const rot of [0, 1, 2, 3]) { T.placePart(d.id, h, rot);
+            for (const rot of [0, 90, 180, 270]) { T.placePart(d.id, h, rot);
               const legs = T.S.placed[d.id] && T.S.placed[d.id].legs;
-              if (legs && Object.entries(legs).every(([p, hole]) => { const want = holeOf(`${d.id}:${p}`); return !want || !hole || want.replace(/\.\w$/, '') === hole.replace(/\.\w$/, ''); })) { placed = true; break; } }
+              if (legs && Object.entries(legs).every(([p, hole]) => { const want = holeOf(`${d.id}:${p}`); return !want || (!!hole && want.replace(/\.\w$/, '') === hole.replace(/\.\w$/, '')); })) { placed = true; break; } }
             if (placed) break; }
           if (!placed) return `couldn't place ${d.id}`;
         }
@@ -56,8 +57,13 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
           text = document.getElementById('feedback').innerText.replace(/\s+/g, ' ');
           if (/COMPLETE|NOT YET|WRONG|⚠|🔌/.test(text)) break;
         }
-        return text.slice(0, 140);
+        if (window.DEBUG_LEGS) text += ' | ' + JSON.stringify(Object.fromEntries(Object.entries(T.S.placed).map(([k, v]) => [k, v.legs]))) + ' | ' + JSON.stringify(T.S.wires.map(w => [w.a, w.b]));
+        return text.slice(0, window.DEBUG_LEGS ? 9000 : 140);
       }, id);
+      if (process.env.SHOTS) {                                   // SHOTS=dir: a picture of each finished build
+        await page.evaluate(() => { const p = document.getElementById('levelPop'); if (p) p.hidden = true; window.__bench3d.B.view('3d'); });
+        await sleep(900); await page.screenshot({path: `${process.env.SHOTS}/built_${id}.png`});
+      }
       const ok = /COMPLETE|skipped/.test(verdict);
       if (!ok) failed++;
       console.log((ok ? 'OK  ' : 'FAIL') + ' ' + id.padEnd(28) + verdict);

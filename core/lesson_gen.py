@@ -53,7 +53,7 @@ MAX_ATTEMPTS = 3
 # facts (pins, internal connections, interchangeable legs, polarity, how
 # they're placed) are read from the library cards — see part_facts().
 MODELLED_TYPES = ["wokwi-led", "wokwi-resistor", "wokwi-potentiometer", "wokwi-pushbutton", "wokwi-slide-switch", "wokwi-buzzer", "wokwi-pir-motion-sensor",
-                   "cq-photoresistor", "cq-fsr", "cq-ping", "cq-adxl335", "cq-memsic2125", "wokwi-rgb-led"]
+                   "cq-photoresistor", "cq-fsr", "cq-ping", "cq-adxl335", "cq-memsic2125", "wokwi-rgb-led", "wokwi-led-bar-graph", "cq-led-matrix-8x8", "cq-midi-jack"]
 UNO_PINS = ({str(n) for n in range(14)} | {f"A{n}" for n in range(6)}
             | {"5V", "3.3V", "VIN", "GND.1", "GND.2", "GND.3", "AREF", "IOREF", "RESET"})
 BREADBOARD_TYPES = {"wokwi-breadboard", "wokwi-breadboard-half", "wokwi-breadboard-mini"}

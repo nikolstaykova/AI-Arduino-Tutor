@@ -1,0 +1,641 @@
+{
+  "id": "led-bar-graph",
+  "title": "LED Bar Graph",
+  "description": "Turn a knob and watch a 10-segment bar graph fill up like a level meter.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/display/BarGraph/",
+    "title": "Arduino docs: LED Bar Graph"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "arrays",
+    "analog-input"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "led-bar-graph",
+    "resistor-220",
+    "potentiometer-10k"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × 10-segment LED bar graph, 10 × 220 Ω resistor, 1 × knob (10 kΩ potentiometer), and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "led-bar-graph",
+        "resistor-220",
+        "potentiometer-10k"
+      ]
+    },
+    {
+      "id": "bar1-place",
+      "phase": "build",
+      "clip": "Push the bar graph in across the middle gap: ten legs above the gap, ten below. The printed side (the + legs) goes on top.",
+      "expected_landing": [
+        "bar1:A1",
+        "bar1:A2",
+        "bar1:A3",
+        "bar1:A4",
+        "bar1:A5",
+        "bar1:A6",
+        "bar1:A7",
+        "bar1:A8",
+        "bar1:A9",
+        "bar1:A10",
+        "bar1:C1",
+        "bar1:C2",
+        "bar1:C3",
+        "bar1:C4",
+        "bar1:C5",
+        "bar1:C6",
+        "bar1:C7",
+        "bar1:C8",
+        "bar1:C9",
+        "bar1:C10"
+      ],
+      "strict": false,
+      "hints": [
+        "Each of the ten bars is its own little LED: + leg on top, − leg below the gap."
+      ],
+      "goal": "Put the bar graph across the middle gap."
+    },
+    {
+      "id": "bar1-a1",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>1</b>'s + leg (top half) to pin <b>2</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A1",
+          "uno:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 1's + leg to pin 2."
+    },
+    {
+      "id": "bar1-c1",
+      "phase": "build",
+      "clip": "First, run a wire from the Arduino's <b>GND</b> pin to the blue − row at the bottom.<br>Then: turn a 220 Ω resistor upright: one leg in bar 1's − column (bottom half, row h), the other leg straight into the blue − row just below it.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "bar1:C1"
+        ],
+        [
+          "r1:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each bar needs its own resistor, like any LED."
+      ],
+      "goal": "Connect bar 1's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "bar1-a2",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>2</b>'s + leg (top half) to pin <b>3</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A2",
+          "uno:3"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 2's + leg to pin 3."
+    },
+    {
+      "id": "bar1-c2",
+      "phase": "build",
+      "clip": "Turn a 220 Ω resistor upright: one leg in bar 2's − column (row h), the other leg straight into the blue − row just below it.",
+      "expected_nets": [
+        [
+          "r2:1",
+          "bar1:C2"
+        ],
+        [
+          "r2:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each bar needs its own resistor, like any LED."
+      ],
+      "goal": "Connect bar 2's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "bar1-a3",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>3</b>'s + leg (top half) to pin <b>4</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A3",
+          "uno:4"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 3's + leg to pin 4."
+    },
+    {
+      "id": "bar1-c3",
+      "phase": "build",
+      "clip": "Turn a 220 Ω resistor upright: one leg in bar 3's − column (row h), the other leg straight into the blue − row just below it.",
+      "expected_nets": [
+        [
+          "r3:1",
+          "bar1:C3"
+        ],
+        [
+          "r3:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each bar needs its own resistor, like any LED."
+      ],
+      "goal": "Connect bar 3's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "bar1-a4",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>4</b>'s + leg (top half) to pin <b>5</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A4",
+          "uno:5"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 4's + leg to pin 5."
+    },
+    {
+      "id": "bar1-c4",
+      "phase": "build",
+      "clip": "Turn a 220 Ω resistor upright: one leg in bar 4's − column (row h), the other leg straight into the blue − row just below it.",
+      "expected_nets": [
+        [
+          "r4:1",
+          "bar1:C4"
+        ],
+        [
+          "r4:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each bar needs its own resistor, like any LED."
+      ],
+      "goal": "Connect bar 4's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "bar1-a5",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>5</b>'s + leg (top half) to pin <b>6</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A5",
+          "uno:6"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 5's + leg to pin 6."
+    },
+    {
+      "id": "bar1-c5",
+      "phase": "build",
+      "clip": "Turn a 220 Ω resistor upright: one leg in bar 5's − column (row h), the other leg straight into the blue − row just below it.",
+      "expected_nets": [
+        [
+          "r5:1",
+          "bar1:C5"
+        ],
+        [
+          "r5:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each bar needs its own resistor, like any LED."
+      ],
+      "goal": "Connect bar 5's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "bar1-a6",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>6</b>'s + leg (top half) to pin <b>7</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A6",
+          "uno:7"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 6's + leg to pin 7."
+    },
+    {
+      "id": "bar1-c6",
+      "phase": "build",
+      "clip": "bar 6's column sits over a gap in the − row, so first a short wire from its − column (row j) to the empty column 11. Then turn a 220 Ω resistor upright from column 11 (row h) into the − row below it.",
+      "expected_nets": [
+        [
+          "r6:1",
+          "bar1:C6"
+        ],
+        [
+          "r6:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The − row has a small gap every few holes — this bar sits over one."
+      ],
+      "goal": "Connect bar 6's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "bar1-a7",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>7</b>'s + leg (top half) to pin <b>8</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A7",
+          "uno:8"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 7's + leg to pin 8."
+    },
+    {
+      "id": "bar1-c7",
+      "phase": "build",
+      "clip": "Turn a 220 Ω resistor upright: one leg in bar 7's − column (row h), the other leg straight into the blue − row just below it.",
+      "expected_nets": [
+        [
+          "r7:1",
+          "bar1:C7"
+        ],
+        [
+          "r7:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each bar needs its own resistor, like any LED."
+      ],
+      "goal": "Connect bar 7's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "bar1-a8",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>8</b>'s + leg (top half) to pin <b>9</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A8",
+          "uno:9"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 8's + leg to pin 9."
+    },
+    {
+      "id": "bar1-c8",
+      "phase": "build",
+      "clip": "Turn a 220 Ω resistor upright: one leg in bar 8's − column (row h), the other leg straight into the blue − row just below it.",
+      "expected_nets": [
+        [
+          "r8:1",
+          "bar1:C8"
+        ],
+        [
+          "r8:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each bar needs its own resistor, like any LED."
+      ],
+      "goal": "Connect bar 8's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "bar1-a9",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>9</b>'s + leg (top half) to pin <b>10</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A9",
+          "uno:10"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 9's + leg to pin 10."
+    },
+    {
+      "id": "bar1-c9",
+      "phase": "build",
+      "clip": "Turn a 220 Ω resistor upright: one leg in bar 9's − column (row h), the other leg straight into the blue − row just below it.",
+      "expected_nets": [
+        [
+          "r9:1",
+          "bar1:C9"
+        ],
+        [
+          "r9:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each bar needs its own resistor, like any LED."
+      ],
+      "goal": "Connect bar 9's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "bar1-a10",
+      "phase": "build",
+      "clip": "Run a wire from bar <b>10</b>'s + leg (top half) to pin <b>11</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bar1:A10",
+          "uno:11"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Any hole in that column works."
+      ],
+      "goal": "Connect bar 10's + leg to pin 11."
+    },
+    {
+      "id": "bar1-c10",
+      "phase": "build",
+      "clip": "Turn a 220 Ω resistor upright: one leg in bar 10's − column (row h), the other leg straight into the blue − row just below it.",
+      "expected_nets": [
+        [
+          "r10:1",
+          "bar1:C10"
+        ],
+        [
+          "r10:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each bar needs its own resistor, like any LED."
+      ],
+      "goal": "Connect bar 10's − leg to GND through a 220 Ω resistor."
+    },
+    {
+      "id": "pot1-place",
+      "phase": "build",
+      "clip": "Push the knob into the breadboard, each of its three legs in its own column.",
+      "expected_landing": [
+        "pot1:GND",
+        "pot1:SIG",
+        "pot1:VCC"
+      ],
+      "strict": false,
+      "hints": [
+        "The two outer legs are for power; the middle leg gives the reading."
+      ],
+      "goal": "Put the knob on the breadboard."
+    },
+    {
+      "id": "pot1-gnd",
+      "phase": "build",
+      "clip": "Run a wire from one outer leg of the knob to the blue − row.",
+      "expected_nets": [
+        [
+          "pot1:GND",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either outer leg works."
+      ],
+      "goal": "Connect one outer leg to GND."
+    },
+    {
+      "id": "pot1-5v",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The knob's other outer leg → that same row.",
+      "expected_nets": [
+        [
+          "pot1:VCC",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the knob has 0 V at one end and 5 V at the other."
+      ],
+      "goal": "Connect the other outer leg to 5V."
+    },
+    {
+      "id": "pot1-pin",
+      "phase": "build",
+      "clip": "Run a wire from the knob's <b>middle</b> leg to pin <b>A0</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "pot1:SIG",
+          "uno:A0"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A0 is on the ANALOG IN side of the Arduino.",
+        "The middle leg's voltage follows the knob: 0 V to 5 V."
+      ],
+      "goal": "Connect the knob's middle leg to A0."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Turn the knob: the bar fills up from one end to the other.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "bar1:A1",
+        "uno:2"
+      ],
+      [
+        "r1:1",
+        "bar1:C1"
+      ],
+      [
+        "r1:2",
+        "uno:GND.1"
+      ],
+      [
+        "bar1:A2",
+        "uno:3"
+      ],
+      [
+        "r2:1",
+        "bar1:C2"
+      ],
+      [
+        "r2:2",
+        "uno:GND.1"
+      ],
+      [
+        "bar1:A3",
+        "uno:4"
+      ],
+      [
+        "r3:1",
+        "bar1:C3"
+      ],
+      [
+        "r3:2",
+        "uno:GND.1"
+      ],
+      [
+        "bar1:A4",
+        "uno:5"
+      ],
+      [
+        "r4:1",
+        "bar1:C4"
+      ],
+      [
+        "r4:2",
+        "uno:GND.1"
+      ],
+      [
+        "bar1:A5",
+        "uno:6"
+      ],
+      [
+        "r5:1",
+        "bar1:C5"
+      ],
+      [
+        "r5:2",
+        "uno:GND.1"
+      ],
+      [
+        "bar1:A6",
+        "uno:7"
+      ],
+      [
+        "r6:1",
+        "bar1:C6"
+      ],
+      [
+        "r6:2",
+        "uno:GND.1"
+      ],
+      [
+        "bar1:A7",
+        "uno:8"
+      ],
+      [
+        "r7:1",
+        "bar1:C7"
+      ],
+      [
+        "r7:2",
+        "uno:GND.1"
+      ],
+      [
+        "bar1:A8",
+        "uno:9"
+      ],
+      [
+        "r8:1",
+        "bar1:C8"
+      ],
+      [
+        "r8:2",
+        "uno:GND.1"
+      ],
+      [
+        "bar1:A9",
+        "uno:10"
+      ],
+      [
+        "r9:1",
+        "bar1:C9"
+      ],
+      [
+        "r9:2",
+        "uno:GND.1"
+      ],
+      [
+        "bar1:A10",
+        "uno:11"
+      ],
+      [
+        "r10:1",
+        "bar1:C10"
+      ],
+      [
+        "r10:2",
+        "uno:GND.1"
+      ],
+      [
+        "pot1:GND",
+        "uno:GND.1"
+      ],
+      [
+        "pot1:VCC",
+        "uno:5V"
+      ],
+      [
+        "pot1:SIG",
+        "uno:A0"
+      ]
+    ]
+  }
+}

@@ -1,16 +1,48 @@
 {
   "id": "led-bar-graph",
   "type": "part",
-  "subtype": "led",
+  "subtype": "led-bar-graph",
   "legs_placed_together": true,
   "wokwi_type": "wokwi-led-bar-graph",
   "display_name": "LED Bar Graph (10-segment)",
-  "aliases": ["led bar graph", "bar graph"],
+  "aliases": [
+    "led bar graph",
+    "bar graph"
+  ],
   "description": "10 individual LEDs in one package, each with its own anode/cathode pair (A1/C1 through A10/C10).",
   "how_to_use": "Each LED segment is independent — its anode (`AN`) and cathode (`CN`) are only that one LED's pins, not shared with any other segment, and not interchangeable with a different segment's pins (each drives a specific position in the bar).",
   "image": "led-bar-graph.png",
   "plain": {
     "what": "Ten LEDs side by side in one package — great for a level meter.",
-    "how": "Each bar is a separate LED with its own + and − leg; wire them like normal LEDs with resistors."
+    "how": "Put it across the middle gap. Each bar has its own + leg (on the printed side) and − leg: + to an Arduino pin, − through a 220 Ω resistor to GND.",
+    "pins": {
+      "A1": "bar 1's + leg (A2…A10 the same for the others)",
+      "C1": "bar 1's − leg (C2…C10 the same)"
+    }
+  },
+  "polarized": true,
+  "straddles_center_gap": true,
+  "leads": "pin",
+  "pins": {
+    "A1": "segment 1's anode (+)",
+    "A2": "segment 2's anode (+)",
+    "A3": "segment 3's anode (+)",
+    "A4": "segment 4's anode (+)",
+    "A5": "segment 5's anode (+)",
+    "A6": "segment 6's anode (+)",
+    "A7": "segment 7's anode (+)",
+    "A8": "segment 8's anode (+)",
+    "A9": "segment 9's anode (+)",
+    "A10": "segment 10's anode (+)",
+    "C1": "segment 1's cathode (−)",
+    "C2": "segment 2's cathode (−)",
+    "C3": "segment 3's cathode (−)",
+    "C4": "segment 4's cathode (−)",
+    "C5": "segment 5's cathode (−)",
+    "C6": "segment 6's cathode (−)",
+    "C7": "segment 7's cathode (−)",
+    "C8": "segment 8's cathode (−)",
+    "C9": "segment 9's cathode (−)",
+    "C10": "segment 10's cathode (−)"
   }
 }

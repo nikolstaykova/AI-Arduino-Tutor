@@ -1,0 +1,46 @@
+{
+  "id": "led-matrix-8x8",
+  "type": "part",
+  "subtype": "led-matrix",
+  "legs_placed_together": true,
+  "straddles_center_gap": true,
+  "polarized": true,
+  "wokwi_type": "cq-led-matrix-8x8",
+  "display_name": "8x8 LED Matrix (1088AS)",
+  "aliases": [
+    "8x8 matrix",
+    "led matrix 8x8",
+    "1088as",
+    "dot matrix"
+  ],
+  "leads": "pin",
+  "description": "64 red LEDs in an 8×8 grid behind 16 pins: each row's LEDs share an anode pin (R1–R8) and each column's LEDs share a cathode pin (C1–C8).",
+  "how_to_use": "An LED lights when its row pin is HIGH and its column pin is LOW. Drive all 16 pins from the Arduino (column pins through 220 Ω resistors) and scan the rows fast enough that the eye sees a steady picture (row-column scanning).",
+  "pins": {
+    "R1": "row 1: the anodes (+) of the 8 LEDs in that row",
+    "R2": "row 2: the anodes (+) of the 8 LEDs in that row",
+    "R3": "row 3: the anodes (+) of the 8 LEDs in that row",
+    "R4": "row 4: the anodes (+) of the 8 LEDs in that row",
+    "R5": "row 5: the anodes (+) of the 8 LEDs in that row",
+    "R6": "row 6: the anodes (+) of the 8 LEDs in that row",
+    "R7": "row 7: the anodes (+) of the 8 LEDs in that row",
+    "R8": "row 8: the anodes (+) of the 8 LEDs in that row",
+    "C1": "column 1: the cathodes (−) of the 8 LEDs in that column",
+    "C2": "column 2: the cathodes (−) of the 8 LEDs in that column",
+    "C3": "column 3: the cathodes (−) of the 8 LEDs in that column",
+    "C4": "column 4: the cathodes (−) of the 8 LEDs in that column",
+    "C5": "column 5: the cathodes (−) of the 8 LEDs in that column",
+    "C6": "column 6: the cathodes (−) of the 8 LEDs in that column",
+    "C7": "column 7: the cathodes (−) of the 8 LEDs in that column",
+    "C8": "column 8: the cathodes (−) of the 8 LEDs in that column"
+  },
+  "image": "led-matrix-8x8.png",
+  "plain": {
+    "what": "64 little red lights in an 8×8 grid — draw dots, letters and pictures.",
+    "how": "8 row pins (+) and 8 column pins (−). A dot lights where its row is HIGH and its column is LOW; the Arduino flicks through the rows so fast it looks steady.",
+    "pins": {
+      "R1": "row 1 (+) — R2…R8 the same",
+      "C1": "column 1 (−) — C2…C8 the same"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "midi-jack",
+  "type": "part",
+  "subtype": "connector",
+  "legs_placed_together": true,
+  "wokwi_type": "cq-midi-jack",
+  "display_name": "MIDI Socket (5-pin DIN)",
+  "aliases": [
+    "midi jack",
+    "midi socket",
+    "din-5",
+    "midi connector",
+    "5-pin din"
+  ],
+  "leads": "pin",
+  "polarized": true,
+  "description": "A female 5-pin DIN socket for a MIDI cable. For MIDI out, pin 4 goes to +5 V through 220 Ω, pin 5 carries the data from the Arduino's TX pin, and pin 2 is the shield/GND. Pins 1 and 3 are unused.",
+  "how_to_use": "Pin 4 → 220 Ω → 5V; pin 5 → TX (digital pin 1); pin 2 → GND. Send notes with Serial.begin(31250) and Serial.write(). Unplug the MIDI cable while uploading (the upload uses the same TX pin).",
+  "pins": {
+    "1": "not used",
+    "2": "shield / GND",
+    "3": "not used",
+    "4": "current source: to 5V through 220 Ω",
+    "5": "data: to the Arduino's TX pin"
+  },
+  "image": "midi-jack.png",
+  "plain": {
+    "what": "The round socket a MIDI cable plugs into — so the Arduino can play notes on a keyboard or computer.",
+    "how": "Pin 4 goes through a 220 Ω resistor to 5V, pin 5 to TX (pin 1), pin 2 to GND.",
+    "pins": {
+      "2": "GND",
+      "4": "to 5V through 220 Ω",
+      "5": "data, to TX (pin 1)",
+      "1": "not used",
+      "3": "not used"
+    }
+  }
+}

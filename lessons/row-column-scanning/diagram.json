@@ -1,0 +1,613 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "cq-led-matrix-8x8",
+      "id": "mx1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 0,
+      "left": 180,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 0,
+      "left": 240,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": 0,
+      "left": 300,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r4",
+      "top": 0,
+      "left": 360,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r5",
+      "top": 0,
+      "left": 420,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r6",
+      "top": 0,
+      "left": 480,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r7",
+      "top": 0,
+      "left": 540,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r8",
+      "top": 0,
+      "left": 600,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot1",
+      "top": 0,
+      "left": 660,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot2",
+      "top": 0,
+      "left": 720,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "mx1:R1",
+      "bb1:5t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:C1",
+      "bb1:5b.j",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:R2",
+      "bb1:6t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:C2",
+      "bb1:6b.j",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:R3",
+      "bb1:7t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:C3",
+      "bb1:7b.j",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:R4",
+      "bb1:8t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:C4",
+      "bb1:8b.j",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:R5",
+      "bb1:9t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:C5",
+      "bb1:9b.j",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:R6",
+      "bb1:10t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:C6",
+      "bb1:10b.j",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:R7",
+      "bb1:11t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:C7",
+      "bb1:11b.j",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:R8",
+      "bb1:12t.a",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "mx1:C8",
+      "bb1:12b.j",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:5t.c",
+      "uno:2",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:6t.c",
+      "uno:7",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:7t.c",
+      "uno:A5",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:8t.c",
+      "uno:5",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:9t.c",
+      "uno:13",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:10t.c",
+      "uno:A4",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:11t.c",
+      "uno:12",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:12t.c",
+      "uno:A2",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:1",
+      "bb1:5b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:2",
+      "bb1:1b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:1b.j",
+      "uno:6",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r2:1",
+      "bb1:6b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r2:2",
+      "bb1:2b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:2b.j",
+      "uno:11",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r3:1",
+      "bb1:7b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r3:2",
+      "bb1:3b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:3b.j",
+      "uno:10",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r4:1",
+      "bb1:8b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r4:2",
+      "bb1:4b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:4b.j",
+      "uno:3",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r5:1",
+      "bb1:9b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r5:2",
+      "bb1:13b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:13b.j",
+      "uno:A3",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r6:1",
+      "bb1:10b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r6:2",
+      "bb1:14b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:14b.j",
+      "uno:4",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r7:1",
+      "bb1:11b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r7:2",
+      "bb1:15b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:15b.j",
+      "uno:8",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r8:1",
+      "bb1:12b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r8:2",
+      "bb1:16b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:16b.j",
+      "uno:9",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:17b.f",
+      "pot1:GND",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:18b.f",
+      "pot1:SIG",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:19b.f",
+      "pot1:VCC",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:17b.j",
+      "bb1:bn.17",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:19b.j",
+      "bb1:bp.19",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:18b.h",
+      "uno:A0",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:5V",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:21b.f",
+      "pot2:GND",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:22b.f",
+      "pot2:SIG",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:23b.f",
+      "pot2:VCC",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:21b.j",
+      "bb1:bn.21",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:23b.j",
+      "bb1:bp.23",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:22b.h",
+      "uno:A1",
+      "orange",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

@@ -1,0 +1,136 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "cq-midi-jack",
+      "id": "midi1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 0,
+      "left": 180,
+      "attrs": {
+        "value": "220"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "midi1:1",
+      "bb1:1b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "midi1:2",
+      "bb1:2b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "midi1:3",
+      "bb1:3b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "midi1:4",
+      "bb1:4b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "midi1:5",
+      "bb1:5b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:2b.j",
+      "bb1:bn.2",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:1",
+      "bb1:4b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:2",
+      "bb1:8b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:8b.j",
+      "bb1:bp.8",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:5b.j",
+      "uno:1",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:5V",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}
