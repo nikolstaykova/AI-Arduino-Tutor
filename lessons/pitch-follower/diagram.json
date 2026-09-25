@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "cq-photoresistor",
+      "id": "ldr1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 0,
+      "left": 180,
+      "attrs": {
+        "value": "4700"
+      }
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": 0,
+      "left": 240,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "ldr1:1",
+      "bb1:1b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "ldr1:2",
+      "bb1:3b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:1b.j",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:3b.i",
+      "uno:A0",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:1",
+      "bb1:3b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:2",
+      "bb1:7b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:7b.j",
+      "bb1:bn.7",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:5V",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bz1:1",
+      "bb1:9b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bz1:2",
+      "bb1:12b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:9b.j",
+      "bb1:bn.9",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:12b.j",
+      "uno:9",
+      "orange",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

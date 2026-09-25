@@ -80,6 +80,13 @@ PIR_SUPPLY_RESISTANCE = 50_000.0      # ~0.1 mA quiescent draw
 PIR_OUTPUT_RESISTANCE = 1_000.0
 PIR_HIGH_VOLTS = 3.3
 PIR_MIN_SUPPLY = 4.0                  # the module's regulator needs about 4.5–20 V
+# Two-legged resistive sensors with two states the learner switches on the
+# bench: (resistance at rest, resistance when "on", words for off/on).
+# Photoresistor: lit ~2 kΩ, covered by a hand ~50 kΩ. FSR: open until pressed.
+_VARRES_TYPES = {
+    "cq-photoresistor": (2_000.0, 50_000.0, "in the light", "covered"),
+    "cq-fsr": (10_000_000.0, 1_000.0, "not pressed", "pressed"),
+}
 _POT_TYPES = {"wokwi-potentiometer", "wokwi-slide-potentiometer"}
 _SUPPLY_PINS = {"5V": 5.0, "3.3V": 3.3, "3V3": 3.3}
 _BOARD_PINS_NOT_MODELLED = {"VIN", "AREF", "IOREF", "RESET"}
@@ -139,7 +146,9 @@ def pin_modes_from_code(code):
             modes.setdefault(resolve(pin), "OUTPUT")
     for pin in re.findall(r"analogRead\s*\(\s*(\w+)\s*\)", code):
         if resolve(pin):
-            modes.setdefault(resolve(pin), "ANALOG_IN")
+            p = resolve(pin)
+            # analogRead(0) is A0 on an Arduino: a bare channel number means the analog input
+            modes.setdefault(f"A{p}" if p.isdigit() and int(p) < 6 else p, "ANALOG_IN")
     return modes
 
 
@@ -200,6 +209,7 @@ class _Circuit:
         self.buzzers = []     # (id, node_plus, node_minus)
         self.pots = []        # (id, gnd_end, wiper, vcc_end, ohms)
         self.pirs = []        # (id, vcc, out, gnd)
+        self.varres = []      # (id, node_1, node_2, rest_ohms, on_ohms)
         self.pir_powered = {}
         self.unmodeled = []
         for part in diagram_parts:
@@ -219,6 +229,9 @@ class _Circuit:
                 self.resistors.append((pid, plus, minus, BUZZER_RESISTANCE))
             elif wtype in _SLIDE_TYPES:
                 self.slides.append((pid, self.node(f"{pid}:1"), self.node(f"{pid}:2"), self.node(f"{pid}:3")))
+            elif wtype in _VARRES_TYPES:
+                rest, on, *_ = _VARRES_TYPES[wtype]
+                self.varres.append((pid, self.node(f"{pid}:1"), self.node(f"{pid}:2"), rest, on))
             elif wtype in _PIR_TYPES:
                 vcc, out, gnd = self.node(f"{pid}:VCC"), self.node(f"{pid}:OUT"), self.node(f"{pid}:GND")
                 self.pirs.append((pid, vcc, out, gnd))
@@ -310,6 +323,8 @@ class _Circuit:
                 conductance(n1, n2, 1.0 / BUTTON_CLOSED_RESISTANCE)
         for pid, n1, nc, n3 in self.slides:
             conductance(nc, n3 if pressed.get(pid) else n1, 1.0 / BUTTON_CLOSED_RESISTANCE)
+        for pid, n1, n2, rest, on in self.varres:
+            conductance(n1, n2, 1.0 / (on if pressed.get(pid) else rest))
         for _, end_gnd, wiper, end_vcc, ohms in self.pots:
             conductance(end_gnd, wiper, 1.0 / (ohms / 2))
             conductance(wiper, end_vcc, 1.0 / (ohms / 2))
@@ -394,6 +409,8 @@ class _Circuit:
         for _, e1, w, e2, _ in self.pots:
             link(e1, w)
             link(w, e2)
+        for _, n1, n2, _, _ in self.varres:
+            link(n1, n2)
         for pid, anode, cathode, _ in self.leds:
             if led_on.get(pid):
                 link(anode, cathode)
@@ -432,8 +449,9 @@ def analyze(pairs, diagram_parts, code, library=None):
     }"""
     library = library or load_library()
     circuit = _Circuit(pairs, diagram_parts, code, library)
-    button_ids = [pid for pid, *_ in circuit.buttons] + [pid for pid, *_ in circuit.slides] + [pid for pid, *_ in circuit.pirs]
+    button_ids = [pid for pid, *_ in circuit.buttons] + [pid for pid, *_ in circuit.slides] + [pid for pid, *_ in circuit.pirs] + [pid for pid, *_ in circuit.varres]
     slide_ids = {pid for pid, *_ in circuit.slides}
+    varres_words = {pid: _VARRES_TYPES[t][2:] for pid, t in ((p["id"], p.get("type")) for p in diagram_parts) if t in _VARRES_TYPES}
     pir_ids = {pid for pid, *_ in circuit.pirs}
 
     def state_word(pid, on):
@@ -441,6 +459,8 @@ def analyze(pairs, diagram_parts, code, library=None):
             return "at pin 3" if on else "at pin 1"
         if pid in pir_ids:
             return "sees motion" if on else "sees no motion"
+        if pid in varres_words:
+            return varres_words[pid][1] if on else varres_words[pid][0]
         return "pressed" if on else "released"
     scenarios, findings = [], []
     seen_findings = set()

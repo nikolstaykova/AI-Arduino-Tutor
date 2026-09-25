@@ -407,7 +407,7 @@ export class Bench3D {
       const id = o.userData.partId;
       let k = o; while (k && !k.userData.kind && k.userData.partId) k = k.parent;
       const kind = o.userData.kind === "knob" || (k && k.userData.kind === "knob") ? "knob"
-        : o.userData.kind === "buttonCap" ? "buttonCap" : o.userData.kind === "slider" ? "slider" : o.userData.kind === "pir" ? "pir" : "part";
+        : o.userData.kind === "buttonCap" ? "buttonCap" : o.userData.kind === "slider" ? "slider" : o.userData.kind === "pir" ? "pir" : o.userData.kind === "ldr" ? "ldr" : "part";
       return { kind, id, point };
     }
     if (this.bb && this._within(o, this.bb)) {

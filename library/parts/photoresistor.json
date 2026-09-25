@@ -1,0 +1,36 @@
+{
+  "id": "photoresistor",
+  "type": "part",
+  "subtype": "sensor",
+  "wokwi_type": "cq-photoresistor",
+  "display_name": "Photoresistor (LDR)",
+  "aliases": [
+    "ldr",
+    "light dependent resistor",
+    "light sensor",
+    "photocell",
+    "photo resistor"
+  ],
+  "description": "A light-dependent resistor: its resistance falls in bright light (about 2 kΩ) and rises in the dark (about 50 kΩ).",
+  "how_to_use": "Two legs, no polarity. Use it in a voltage divider: one leg to 5V, the other leg to an analog pin AND through a fixed resistor (usually 10 kΩ, the examples also use 4.7 kΩ) to GND. analogRead() then rises with brighter light. Covering it with a hand makes the reading drop.",
+  "pins": {
+    "1": "one leg",
+    "2": "the other leg (either way round)"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "leads": "wire-lead",
+  "image": "photoresistor.png",
+  "plain": {
+    "what": "A light sensor: a little disc whose resistance changes with how bright it is.",
+    "how": "One leg to 5V, the other leg to an analog pin and through a 10 kΩ resistor to GND. The Arduino then reads a bigger number when it's brighter.",
+    "pins": {
+      "1": "a leg (either way round)",
+      "2": "the other leg"
+    }
+  }
+}

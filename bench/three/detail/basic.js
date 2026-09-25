@@ -202,11 +202,46 @@ function relayKS2E() {
   return g;
 }
 
+function photoresistor() {
+  // GL5528-style LDR: ceramic disc, orange cadmium-sulphide track, clear lacquer, two long legs
+  const g = new THREE.Group();
+  const disc = cyl(2.6, 2.6, 2, M.ceramic(0xe6d7b0), 48); disc.rotation.x = Math.PI / 2; g.add(at(disc, 0, 6, 0));
+  g.add(at(sideDecal(4.8, 4.8, (ctx, W, H, k) => {
+    ctx.clearRect(0, 0, W, H); ctx.save(); ctx.beginPath(); ctx.arc(W / 2, H / 2, W / 2, 0, 7); ctx.clip(); ctx.fillStyle = "#e6d7b0"; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = "#b5522a"; ctx.lineWidth = 0.42 * k; ctx.beginPath(); let y = 0.6 * k, dir = 1; ctx.moveTo(0.4 * k, y);
+    while (y < H - 0.6 * k) { ctx.lineTo(dir > 0 ? W - 0.4 * k : 0.4 * k, y); y += 0.62 * k; ctx.lineTo(dir > 0 ? W - 0.4 * k : 0.4 * k, y); dir = -dir; }
+    ctx.stroke(); ctx.fillStyle = "#c9ccd1"; ctx.fillRect(0, 0, 0.7 * k, H); ctx.fillRect(W - 0.7 * k, 0, 0.7 * k, H); ctx.restore();
+  }, { pxPerMm: 80 }), 0, 6, 1.02));
+  g.add(at(cyl(2.65, 2.65, 0.25, M.glass(0xfff8e0, 0.3), 48), 0, 6, 1.1, Math.PI / 2, 0, 0));
+  for (const x of [-1.7, 1.7]) g.add(bentWire([[x * 0.6, 3.8, 0], [x, 2.6, 0], [x, -14, 0]], 0.25, M.tin()));
+  return g;
+}
+
+function fsr() {
+  // Interlink FSR 402: a round black sensing pad on a flat tail, two crimped pins
+  const g = new THREE.Group();
+  g.add(at(cyl(9, 9, 0.5, M.plastic(0x1f2024, 0.45), 64), 0, 0.25, -28));
+  g.add(at(decal(15, 15, (ctx, W, H, k) => {
+    ctx.clearRect(0, 0, W, H); ctx.save(); ctx.beginPath(); ctx.arc(W / 2, H / 2, W / 2, 0, 7); ctx.clip();
+    ctx.fillStyle = "#2c2d33"; ctx.fillRect(0, 0, W, H); ctx.strokeStyle = "#51535c"; ctx.lineWidth = 0.35 * k;
+    for (let i = 1; i < 12; i++) { ctx.beginPath(); ctx.arc(W / 2, H / 2, i * 0.62 * k, 0, 7); ctx.stroke(); }
+    ctx.restore();
+  }, { pxPerMm: 50 }), 0, 0.52, -28));
+  g.add(at(box(6.5, 0.4, 20, M.plastic(0x1f2024, 0.45)), 0, 0.2, -10));
+  g.add(at(decal(5.5, 18, (ctx, W, H, k) => { ctx.clearRect(0, 0, W, H); ctx.strokeStyle = "#c9a45a"; ctx.lineWidth = 0.5 * k;
+    for (const x of [1.6, 3.9]) { ctx.beginPath(); ctx.moveTo(x * k, 0); ctx.lineTo(x * k, H); ctx.stroke(); } }, { pxPerMm: 40 }), 0, 0.42, -10));
+  g.add(at(box(7, 1.6, 4, M.plastic(0xd8d8d0, 0.4)), 0, 0.8, 1));
+  for (const x of [-1.27, 1.27]) g.add(bentWire([[x, 0.8, 2.5], [x, 0.8, 4], [x, -8, 4]], 0.32, M.tin()));
+  return g;
+}
+
 const OHMS = { "resistor-100": 100, "resistor-150": 150, "resistor-220": 220, "resistor-330": 330, "resistor-470": 470, "resistor-680": 680,
   "resistor-1k": 1000, "resistor-2k2": 2200, "resistor-4k7": 4700, "resistor-10k": 10000, "resistor-22k": 22000, "resistor-47k": 47000, "resistor-100k": 100000 };
 
 export const BASIC = {
   "led": () => led5(0xff2a1a),
+  "photoresistor": photoresistor,
+  "fsr": fsr,
   "rgb-led": rgbLed,
   "pushbutton": pushbutton,
   "potentiometer-10k": potentiometer,

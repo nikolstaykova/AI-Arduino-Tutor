@@ -1,0 +1,390 @@
+{
+  "id": "tone-keyboard",
+  "title": "Tone Keyboard",
+  "description": "Three force sensors are keys: press one and the buzzer plays its note.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/digital/toneKeyboard/",
+    "title": "Arduino docs: Tone Keyboard"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "tone-melody"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "fsr",
+    "resistor-10k",
+    "buzzer"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 3 × force sensor (FSR), 3 × 10 kΩ resistor, 1 × piezo buzzer, and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "fsr",
+        "resistor-10k",
+        "buzzer"
+      ]
+    },
+    {
+      "id": "fsr1-place",
+      "phase": "build",
+      "clip": "Push the force sensor in, its two legs in two different columns.",
+      "expected_landing": [
+        "fsr1:1",
+        "fsr1:2"
+      ],
+      "strict": false,
+      "hints": [
+        "It works either way round."
+      ],
+      "goal": "Put the force sensor on the breadboard."
+    },
+    {
+      "id": "fsr1-5v",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The force sensor's first leg → that same row.",
+      "expected_nets": [
+        [
+          "fsr1:1",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either leg works."
+      ],
+      "goal": "Connect one leg of the force sensor to 5V."
+    },
+    {
+      "id": "fsr1-pin",
+      "phase": "build",
+      "clip": "Run a wire from the force sensor's <b>other</b> leg to pin <b>A0</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "fsr1:2",
+          "uno:A0"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A0 is on the ANALOG IN side of the Arduino."
+      ],
+      "goal": "Connect the force sensor's other leg to A0."
+    },
+    {
+      "id": "fsr1-resistor",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in that same column (the force sensor's other leg), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "fsr1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The force sensor and this resistor share the 5 V between them — so the pin's voltage changes as the force sensor does."
+      ],
+      "goal": "Put a 10 kΩ resistor on the force sensor's pin side."
+    },
+    {
+      "id": "fsr1-gnd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The 10 kΩ resistor's other leg → that same row.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the reading goes up when the pad is pressed."
+      ],
+      "goal": "Connect the resistor to GND."
+    },
+    {
+      "id": "fsr2-place",
+      "phase": "build",
+      "clip": "Push the force sensor in, its two legs in two different columns.",
+      "expected_landing": [
+        "fsr2:1",
+        "fsr2:2"
+      ],
+      "strict": false,
+      "hints": [
+        "It works either way round."
+      ],
+      "goal": "Put the force sensor on the breadboard."
+    },
+    {
+      "id": "fsr2-5v",
+      "phase": "build",
+      "clip": "Run a wire from the force sensor's first leg to the red + row.",
+      "expected_nets": [
+        [
+          "fsr2:1",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either leg works."
+      ],
+      "goal": "Connect one leg of the force sensor to 5V."
+    },
+    {
+      "id": "fsr2-pin",
+      "phase": "build",
+      "clip": "Run a wire from the force sensor's <b>other</b> leg to pin <b>A1</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "fsr2:2",
+          "uno:A1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A1 is on the ANALOG IN side of the Arduino."
+      ],
+      "goal": "Connect the force sensor's other leg to A1."
+    },
+    {
+      "id": "fsr2-resistor",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in that same column (the force sensor's other leg), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r2:1",
+          "fsr2:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The force sensor and this resistor share the 5 V between them — so the pin's voltage changes as the force sensor does."
+      ],
+      "goal": "Put a 10 kΩ resistor on the force sensor's pin side."
+    },
+    {
+      "id": "fsr2-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the 10 kΩ resistor's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "r2:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the reading goes up when the pad is pressed."
+      ],
+      "goal": "Connect the resistor to GND."
+    },
+    {
+      "id": "fsr3-place",
+      "phase": "build",
+      "clip": "Push the force sensor in, its two legs in two different columns.",
+      "expected_landing": [
+        "fsr3:1",
+        "fsr3:2"
+      ],
+      "strict": false,
+      "hints": [
+        "It works either way round."
+      ],
+      "goal": "Put the force sensor on the breadboard."
+    },
+    {
+      "id": "fsr3-5v",
+      "phase": "build",
+      "clip": "Run a wire from the force sensor's first leg to the red + row.",
+      "expected_nets": [
+        [
+          "fsr3:1",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either leg works."
+      ],
+      "goal": "Connect one leg of the force sensor to 5V."
+    },
+    {
+      "id": "fsr3-pin",
+      "phase": "build",
+      "clip": "Run a wire from the force sensor's <b>other</b> leg to pin <b>A2</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "fsr3:2",
+          "uno:A2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A2 is on the ANALOG IN side of the Arduino."
+      ],
+      "goal": "Connect the force sensor's other leg to A2."
+    },
+    {
+      "id": "fsr3-resistor",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in that same column (the force sensor's other leg), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r3:1",
+          "fsr3:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The force sensor and this resistor share the 5 V between them — so the pin's voltage changes as the force sensor does."
+      ],
+      "goal": "Put a 10 kΩ resistor on the force sensor's pin side."
+    },
+    {
+      "id": "fsr3-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the 10 kΩ resistor's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "r3:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the reading goes up when the pad is pressed."
+      ],
+      "goal": "Connect the resistor to GND."
+    },
+    {
+      "id": "bz1-place",
+      "phase": "build",
+      "clip": "Push the buzzer in, its two legs in two different columns.",
+      "expected_landing": [
+        "bz1:1",
+        "bz1:2"
+      ],
+      "strict": false,
+      "hints": [
+        "The + leg is marked on top (and is usually longer).",
+        "It only works one way round."
+      ],
+      "goal": "Put the buzzer on the breadboard."
+    },
+    {
+      "id": "bz1-pin",
+      "phase": "build",
+      "clip": "Run a wire from the buzzer's <b>+</b> leg to pin <b>8</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "bz1:2",
+          "uno:8"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "tone() on this pin makes the buzzer sing."
+      ],
+      "goal": "Connect the buzzer's + leg to pin 8."
+    },
+    {
+      "id": "bz1-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the buzzer's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "bz1:1",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "GND is the minus side of the circuit."
+      ],
+      "goal": "Connect the buzzer's − leg to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Press each force sensor: each one plays its own note.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "fsr1:1",
+        "uno:5V"
+      ],
+      [
+        "fsr1:2",
+        "uno:A0"
+      ],
+      [
+        "r1:1",
+        "fsr1:2"
+      ],
+      [
+        "r1:2",
+        "uno:GND.1"
+      ],
+      [
+        "fsr2:1",
+        "uno:5V"
+      ],
+      [
+        "fsr2:2",
+        "uno:A1"
+      ],
+      [
+        "r2:1",
+        "fsr2:2"
+      ],
+      [
+        "r2:2",
+        "uno:GND.1"
+      ],
+      [
+        "fsr3:1",
+        "uno:5V"
+      ],
+      [
+        "fsr3:2",
+        "uno:A2"
+      ],
+      [
+        "r3:1",
+        "fsr3:2"
+      ],
+      [
+        "r3:2",
+        "uno:GND.1"
+      ],
+      [
+        "bz1:2",
+        "uno:8"
+      ],
+      [
+        "bz1:1",
+        "uno:GND.1"
+      ]
+    ]
+  },
+  "fixed_pins": true
+}

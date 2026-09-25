@@ -360,6 +360,10 @@ function wireStage() {
     if (p.kind === "pir") {                          // PIR: a click is a wave in front of it — motion for a few seconds
       waveAt(p.id); return true;
     }
+    if (p.kind === "ldr") {                          // light sensor: a click covers it with your hand (and uncovers it)
+      S.pressed[p.id] = !S.pressed[p.id]; B.parts[p.id].userData.setCovered(S.pressed[p.id]); applyPhysics();
+      toast(S.pressed[p.id] ? "✋ You covered the light sensor — it's dark now." : "☀️ Light sensor uncovered."); return true;
+    }
     if (p.kind === "part") { partDown = { id: p.id, x: e.clientX, y: e.clientY }; return true; }
     if (p.kind === "wire") { selectWire(p.index); return true; }
     select(null);
@@ -400,7 +404,7 @@ function wireStage() {
   });
   B.on("hover", (p, e) => { if (!drag && !knob) hover(p, e); });
   B.on("dbl", (p) => {
-    if (["part", "knob", "buttonCap", "slider", "pir", "leg"].includes(p.kind)) openInspector(partTarget(p.id));
+    if (["part", "knob", "buttonCap", "slider", "pir", "ldr", "leg"].includes(p.kind)) openInspector(partTarget(p.id));
     else if (p.kind === "board" || p.kind === "boardPin") openInspector({ kind: "board", wokwiType: G.boardType, label: G.boardType.replace("wokwi-", "").replace(/-/g, " "), instance: G.boardId, focus: p.component, pin: p.pin });
     else if (p.kind === "hole" || p.kind === "breadboard") openInspector({ kind: "breadboard", wokwiType: G.bbType, label: "Breadboard", cardId: "breadboard" });
   });
@@ -472,9 +476,9 @@ async function hover(p, e) {
     const data = await cardFor(part.def.wokwi_type, part.def.attrs, part.def.card_id);
     const meaning = data && data.card.pins && data.card.pins[p.pin];
     html = `<b>${esc(part.def.label)} · ${esc(p.pin)}</b>${meaning ? " — " + esc(meaning) : ""}<br>${leads.length ? "connected to " + esc(leads.join(", ")) : "bare leg — drag from here to connect it"}`;
-  } else if (p.kind === "part" || p.kind === "knob" || p.kind === "buttonCap" || p.kind === "slider" || p.kind === "pir") {
+  } else if (p.kind === "part" || p.kind === "knob" || p.kind === "buttonCap" || p.kind === "slider" || p.kind === "pir" || p.kind === "ldr") {
     const part = S.placed[p.id];
-    const extra = p.kind === "knob" ? "drag the knob sideways to turn it" : p.kind === "buttonCap" ? "hold to press" : p.kind === "slider" ? `click to slide it (now toward pin ${S.pressed[p.id] ? 3 : 1})` : p.kind === "pir" ? "click to wave your hand in front of it" : "drag to move · double-click to inspect";
+    const extra = p.kind === "knob" ? "drag the knob sideways to turn it" : p.kind === "buttonCap" ? "hold to press" : p.kind === "slider" ? `click to slide it (now toward pin ${S.pressed[p.id] ? 3 : 1})` : p.kind === "pir" ? "click to wave your hand in front of it" : p.kind === "ldr" ? `click to ${S.pressed[p.id] ? "uncover" : "cover"} it with your hand` : "drag to move · double-click to inspect";
     html = `<b>${esc(part.def.label)}</b> — ${extra}${part.at ? "" : `<br>${Object.entries(part.legs).map(([k, v]) => `${esc(k)}→${esc(v || "air")}`).join(" · ")}`}`;
   } else if (p.kind === "board" && UNO_COMPONENTS[p.component] && G.boardType === "wokwi-arduino-uno") {
     const c = UNO_COMPONENTS[p.component];

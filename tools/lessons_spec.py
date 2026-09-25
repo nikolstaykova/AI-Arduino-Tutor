@@ -720,3 +720,186 @@ void loop() {
 LESSONS = [read_analog_voltage, fade, blink_without_delay, button, debounce, input_pullup, state_change, tone_melody, tone_multiple,
            analog_in_out, analog_input, fading, smoothing, dimmer, graph, physical_pixel, virtual_color_mixer,
            lambda: serial_call_response(False), lambda: serial_call_response(True), arrays, for_loop, switch_case_serial, if_statement]
+
+
+# ---- light sensor (photoresistor) and force sensor (FSR) --------------------------------------
+def pitch_follower():
+    L = Lesson("pitch-follower", "Pitch Follower", "A light sensor sets the pitch of a buzzer: brighter light, higher note.", D + "digital/tonePitchFollower/",
+               "Pitch Follower", requires=["tone-melody", "analog-read-serial"], code="""
+/*
+  Pitch follower
+  Plays a pitch that changes with the light on the photoresistor (A0), on the buzzer on pin 9.
+*/
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int sensorReading = analogRead(A0);
+  Serial.println(sensorReading);                        // see your own light range here
+  int thisPitch = map(sensorReading, 400, 1000, 120, 1500);
+  tone(9, thisPitch, 10);
+  delay(1);
+}
+""")
+    L.sensor("ldr", "A0", ohms=4700); L.buzzer(9)
+    L.upload("Wave your hand over the light sensor: the note goes down when it's darker and up when it's brighter.")
+    return L
+
+
+def calibration():
+    L = Lesson("calibration", "Calibration", "For the first five seconds the Arduino learns the darkest and brightest light, then dims an LED to match.",
+               D + "analog/Calibration/", "Calibration", requires=["analog-in-out-serial"], code="""
+/*
+  Calibration
+  For 5 seconds after starting, records the lowest and highest readings of the light sensor on A0
+  (the LED on pin 13 is on while it learns), then maps the light to the LED on pin 9's brightness.
+*/
+const int sensorPin = A0;
+const int ledPin = 9;
+const int indicatorPin = 13;
+int sensorValue = 0;
+int sensorMin = 1023;
+int sensorMax = 0;
+
+void setup() {
+  pinMode(indicatorPin, OUTPUT);
+  digitalWrite(indicatorPin, HIGH);          // learning…
+  while (millis() < 5000) {
+    sensorValue = analogRead(sensorPin);
+    if (sensorValue > sensorMax) {
+      sensorMax = sensorValue;
+    }
+    if (sensorValue < sensorMin) {
+      sensorMin = sensorValue;
+    }
+  }
+  digitalWrite(indicatorPin, LOW);           // done
+}
+
+void loop() {
+  sensorValue = analogRead(sensorPin);
+  sensorValue = constrain(sensorValue, sensorMin, sensorMax);
+  sensorValue = map(sensorValue, sensorMin, sensorMax, 0, 255);
+  analogWrite(ledPin, sensorValue);
+}
+""")
+    L.sensor("ldr", "A0"); L.led(9); L.led(13, label="the second LED")
+    L.upload("While the second LED is on (5 seconds), cover and uncover the light sensor. After that, the first LED follows the light.")
+    return L
+
+
+def switch_case_sensor():
+    L = Lesson("switch-case-sensor", "Switch Case (sensor)", "Sort a light reading into dark, dim, medium or bright — with switch/case.", D + "control-structures/SwitchCase/",
+               "Switch Case", requires=["if-statement"], code="""
+/*
+  Switch statement
+  Reads the light sensor on A0 and prints dark, dim, medium or bright.
+*/
+const int sensorMin = 0;
+const int sensorMax = 600;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int sensorReading = analogRead(A0);
+  int range = map(sensorReading, sensorMin, sensorMax, 0, 3);
+  switch (range) {
+    case 0: Serial.println("dark"); break;
+    case 1: Serial.println("dim"); break;
+    case 2: Serial.println("medium"); break;
+    case 3: Serial.println("bright"); break;
+  }
+  delay(1);
+}
+""")
+    L.sensor("ldr", "A0")
+    L.upload("Open the Serial Monitor and cover the light sensor bit by bit: it goes from bright to medium, dim and dark.")
+    return L
+
+
+def while_loop():
+    L = Lesson("while-loop", "While Loop", "Hold a button to re-calibrate a light sensor — the code stays in a while loop as long as you press.",
+               D + "control-structures/WhileStatementConditional/", "While Statement Conditional", requires=["calibration", "button"], code="""
+/*
+  Conditionals - while statement
+  While the button on pin 2 is pressed, the sketch calibrates the light sensor (the LED on 13 lights).
+  Otherwise it sets the LED on pin 9 from the light.
+*/
+const int sensorPin = A0;
+const int ledPin = 9;
+const int indicatorLedPin = 13;
+const int buttonPin = 2;
+int sensorMin = 1023;
+int sensorMax = 0;
+int sensorValue = 0;
+
+void setup() {
+  pinMode(indicatorLedPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buttonPin, INPUT);
+}
+
+void loop() {
+  while (digitalRead(buttonPin) == HIGH) {
+    calibrate();
+  }
+  digitalWrite(indicatorLedPin, LOW);
+  sensorValue = analogRead(sensorPin);
+  sensorValue = map(sensorValue, sensorMin, sensorMax, 0, 255);
+  sensorValue = constrain(sensorValue, 0, 255);
+  analogWrite(ledPin, sensorValue);
+}
+
+void calibrate() {
+  digitalWrite(indicatorLedPin, HIGH);
+  sensorValue = analogRead(sensorPin);
+  if (sensorValue > sensorMax) {
+    sensorMax = sensorValue;
+  }
+  if (sensorValue < sensorMin) {
+    sensorMin = sensorValue;
+  }
+}
+""")
+    L.sensor("ldr", "A0"); L.button(2); L.led(9); L.led(13, label="the second LED")
+    L.upload("Hold the button and cover and uncover the light sensor (the second LED is on while you hold). Let go: the first LED follows the light.")
+    return L
+
+
+def tone_keyboard():
+    L = Lesson("tone-keyboard", "Tone Keyboard", "Three force sensors are keys: press one and the buzzer plays its note.", D + "digital/toneKeyboard/",
+               "Tone Keyboard", requires=["tone-melody"], fixed_pins=True, code="""
+/*
+  Keyboard
+  Plays a note on the buzzer (pin 8) while one of the three force sensors (A0, A1, A2) is pressed.
+*/
+#define NOTE_A4  440
+#define NOTE_B4  494
+#define NOTE_C3  131
+
+const int threshold = 10;              // a reading above this counts as a press
+int notes[] = { NOTE_A4, NOTE_B4, NOTE_C3 };
+
+void setup() {
+}
+
+void loop() {
+  for (int thisSensor = 0; thisSensor < 3; thisSensor++) {
+    int sensorReading = analogRead(thisSensor);     // A0, A1, A2 in turn
+    if (sensorReading > threshold) {
+      tone(8, notes[thisSensor], 20);
+    }
+  }
+}
+""")
+    for pin in ("A0", "A1", "A2"):
+        L.sensor("fsr", pin)
+    L.buzzer(8)
+    L.upload("Press each force sensor: each one plays its own note.")
+    return L
+
+
+LESSONS += [pitch_follower, calibration, switch_case_sensor, while_loop, tone_keyboard]

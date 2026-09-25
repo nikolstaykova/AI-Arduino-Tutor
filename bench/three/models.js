@@ -407,8 +407,10 @@ export const PART_PINS = {
   "wokwi-slide-switch": [["1", 0, 0], ["2", 1, 0], ["3", 2, 0]],
   "wokwi-buzzer": [["1", 0, 0], ["2", 3, 0]],
   "wokwi-pir-motion-sensor": [["VCC", 0, 0], ["OUT", 1, 0], ["GND", 2, 0]],
+  "cq-photoresistor": [["1", 0, 0], ["2", 2, 0]],
+  "cq-fsr": [["1", 0, 0], ["2", 2, 0]],
 };
-export const LIFT = { "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
+export const LIFT = { "cq-photoresistor": 5, "cq-fsr": 4, "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
 
 function resistorBands(value) {
   const ohms = Math.round(Number(String(value || "1000").replace(/k/i, "e3").replace(/M/, "e6")) || 1000);
@@ -588,8 +590,38 @@ function makePIR() {
   return g;
 }
 
+// A photoresistor: a ceramic disc with its orange zig-zag track under clear
+// lacquer, on two legs. Click it to cover it with your hand (it goes dark).
+function makeLDR() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-photoresistor"], cx = PITCH;
+  const tex = (() => { const c = document.createElement("canvas"); c.width = c.height = 128; const ctx = c.getContext("2d");
+    ctx.fillStyle = "#e6d7b0"; ctx.fillRect(0, 0, 128, 128); ctx.strokeStyle = "#b5522a"; ctx.lineWidth = 9; ctx.beginPath();
+    let y = 16, dir = 1; ctx.moveTo(14, y); while (y < 116) { ctx.lineTo(dir > 0 ? 114 : 14, y); y += 14; ctx.lineTo(dir > 0 ? 114 : 14, y); dir = -dir; } ctx.stroke();
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();
+  const disc = mesh(new THREE.CylinderGeometry(2.6, 2.6, 1.8, 32), [M.whitePlastic, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.3 }), M.whitePlastic]);
+  disc.rotation.x = Math.PI / 2; disc.position.set(cx, y0 + 2.6, 0); disc.userData.kind = "ldr"; g.add(disc);
+  const shade = mesh(new THREE.CylinderGeometry(3.4, 3.4, 0.6, 32), new THREE.MeshStandardMaterial({ color: 0x3a2a20, transparent: true, opacity: 0.85 }));
+  shade.rotation.x = Math.PI / 2; shade.position.set(cx, y0 + 2.6, 1.6); shade.visible = false; g.add(shade);
+  for (const x of [0, 2 * PITCH]) g.add(lead([[x, BB_TOP - 1.2, 0], [x, y0, 0], [cx + (x ? 0.9 : -0.9), y0 + 1.2, 0]], 0.25));
+  g.userData.setCovered = (on) => { shade.visible = on; };
+  return g;
+}
+
+// A force-sensitive resistor: a round pad on a flat tail ending in two pins.
+// Hold the pad to press it.
+function makeFSR() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-fsr"], cx = PITCH;
+  const tail = mesh(new THREE.BoxGeometry(6, 0.4, 22), M.blackPlastic); tail.position.set(cx, y0 + 4, -11); g.add(tail);
+  const padMat = new THREE.MeshStandardMaterial({ color: 0x2b2b30, roughness: 0.5 });
+  const pad = mesh(new THREE.CylinderGeometry(9, 9, 0.6, 40), padMat); pad.position.set(cx, y0 + 4, -28); pad.userData.kind = "buttonCap"; g.add(pad);
+  const ring = mesh(new THREE.TorusGeometry(7.5, 0.25, 8, 40), M.metal); ring.rotation.x = Math.PI / 2; ring.position.set(cx, y0 + 4.35, -28); g.add(ring);
+  for (const x of [0, 2 * PITCH]) g.add(lead([[x, BB_TOP - 1.2, 0], [x, y0 + 4, 0], [x, y0 + 4, -2]], 0.3, M.metal));
+  g.userData.setPressed = (on) => { pad.position.y = y0 + (on ? 3.5 : 4); padMat.color.setHex(on ? 0x3a3a44 : 0x2b2b30); };
+  return g;
+}
+
 export function makePart(wokwiType, attrs = {}) {
-  const build = { "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
+  const build = { "cq-photoresistor": makeLDR, "cq-fsr": makeFSR, "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
                   "wokwi-pushbutton-6mm": makePushbutton, "wokwi-potentiometer": makePotentiometer }[wokwiType]
                 || (() => makeGeneric(wokwiType));
   const g = build(attrs);
@@ -735,7 +767,7 @@ export function thumbnail(wokwiType, attrs = {}, size = 160) {
     let obj = null;
     if (/arduino-uno/.test(wokwiType || "")) obj = await makeBoard(wokwiType);
     else if (wokwiType && wokwiType.startsWith("wokwi-breadboard")) obj = makeBreadboard("mini");
-    else if (wokwiType && customElements.get(wokwiType)) obj = makePart(wokwiType, attrs);
+    else if (wokwiType && (customElements.get(wokwiType) || PART_PINS[wokwiType])) obj = makePart(wokwiType, attrs);
     return obj ? renderThumb(obj, size) : null;
   })());
   return thumbCache.get(key);

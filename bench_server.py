@@ -67,7 +67,8 @@ _RELOAD_ORDER = [core.checker, core.library, core.lesson, core.physics, core.eng
 # Wokwi part type → the bench page's leg template.
 _TEMPLATES = {"wokwi-resistor": "resistor", "wokwi-led": "led", "wokwi-potentiometer": "pot",
               "wokwi-slide-potentiometer": "pot", "wokwi-pushbutton": "button", "wokwi-pushbutton-6mm": "button",
-              "wokwi-slide-switch": "switch", "wokwi-buzzer": "buzzer", "wokwi-pir-motion-sensor": "pir"}
+              "wokwi-slide-switch": "switch", "wokwi-buzzer": "buzzer", "wokwi-pir-motion-sensor": "pir",
+              "cq-photoresistor": "ldr", "cq-fsr": "fsr"}
 
 sessions = {}  # session id -> {"lesson", "library", "state", "log"}
 

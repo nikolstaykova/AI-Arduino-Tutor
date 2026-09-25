@@ -59,7 +59,8 @@
           "lesson": "state-change-detection"
         },
         {
-          "title": "Tone Keyboard"
+          "title": "Tone Keyboard",
+          "lesson": "tone-keyboard"
         },
         {
           "title": "Tone Melody",
@@ -70,7 +71,8 @@
           "lesson": "tone-multiple"
         },
         {
-          "title": "Pitch Follower"
+          "title": "Pitch Follower",
+          "lesson": "pitch-follower"
         }
       ]
     },
@@ -93,7 +95,8 @@
           "title": "Analog Write (Mega)"
         },
         {
-          "title": "Calibration"
+          "title": "Calibration",
+          "lesson": "calibration"
         },
         {
           "title": "Fading",
@@ -160,14 +163,16 @@
           "lesson": "for-loop"
         },
         {
-          "title": "Switch Case (sensor)"
+          "title": "Switch Case (sensor)",
+          "lesson": "switch-case-sensor"
         },
         {
           "title": "Switch Case (serial)",
           "lesson": "switch-case-serial"
         },
         {
-          "title": "While Loop"
+          "title": "While Loop",
+          "lesson": "while-loop"
         },
         {
           "title": "If Statement",

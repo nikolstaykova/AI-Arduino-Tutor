@@ -1,0 +1,144 @@
+{
+  "id": "switch-case-sensor",
+  "title": "Switch Case (sensor)",
+  "description": "Sort a light reading into dark, dim, medium or bright — with switch/case.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/control-structures/SwitchCase/",
+    "title": "Arduino docs: Switch Case"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "if-statement"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "photoresistor",
+    "resistor-10k"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × light sensor (photoresistor), 1 × 10 kΩ resistor, and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "photoresistor",
+        "resistor-10k"
+      ]
+    },
+    {
+      "id": "ldr1-place",
+      "phase": "build",
+      "clip": "Push the light sensor in, its two legs in two different columns.",
+      "expected_landing": [
+        "ldr1:1",
+        "ldr1:2"
+      ],
+      "strict": false,
+      "hints": [
+        "It works either way round."
+      ],
+      "goal": "Put the light sensor on the breadboard."
+    },
+    {
+      "id": "ldr1-5v",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The light sensor's first leg → that same row.",
+      "expected_nets": [
+        [
+          "ldr1:1",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either leg works."
+      ],
+      "goal": "Connect one leg of the light sensor to 5V."
+    },
+    {
+      "id": "ldr1-pin",
+      "phase": "build",
+      "clip": "Run a wire from the light sensor's <b>other</b> leg to pin <b>A0</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "ldr1:2",
+          "uno:A0"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A0 is on the ANALOG IN side of the Arduino."
+      ],
+      "goal": "Connect the light sensor's other leg to A0."
+    },
+    {
+      "id": "ldr1-resistor",
+      "phase": "build",
+      "clip": "Push a 10 kΩ resistor in: one leg in that same column (the light sensor's other leg), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "ldr1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The light sensor and this resistor share the 5 V between them — so the pin's voltage changes as the light sensor does."
+      ],
+      "goal": "Put a 10 kΩ resistor on the light sensor's pin side."
+    },
+    {
+      "id": "ldr1-gnd",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The 10 kΩ resistor's other leg → that same row.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the reading goes up when the light gets brighter."
+      ],
+      "goal": "Connect the resistor to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Open the Serial Monitor and cover the light sensor bit by bit: it goes from bright to medium, dim and dark.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "ldr1:1",
+        "uno:5V"
+      ],
+      [
+        "ldr1:2",
+        "uno:A0"
+      ],
+      [
+        "r1:1",
+        "ldr1:2"
+      ],
+      [
+        "r1:2",
+        "uno:GND.1"
+      ]
+    ]
+  }
+}

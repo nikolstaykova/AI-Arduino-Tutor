@@ -1,0 +1,35 @@
+{
+  "id": "fsr",
+  "type": "part",
+  "subtype": "sensor",
+  "wokwi_type": "cq-fsr",
+  "display_name": "Force-Sensitive Resistor (FSR)",
+  "aliases": [
+    "force sensor",
+    "force sensitive resistor",
+    "pressure sensor",
+    "fsr sensor"
+  ],
+  "description": "A flat pad whose resistance drops as you press it: open (megaohms) untouched, about 1 kΩ pressed firmly.",
+  "how_to_use": "Two legs, no polarity. Like a photoresistor, use it in a voltage divider: one leg to 5V, the other to an analog pin and through a 10 kΩ resistor to GND. analogRead() goes up the harder you press.",
+  "pins": {
+    "1": "one leg",
+    "2": "the other leg (either way round)"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "leads": "pin",
+  "image": "fsr.png",
+  "plain": {
+    "what": "A thin pad that senses how hard you press it.",
+    "how": "One leg to 5V, the other leg to an analog pin and through a 10 kΩ resistor to GND. Press it and the number the Arduino reads goes up.",
+    "pins": {
+      "1": "a leg (either way round)",
+      "2": "the other leg"
+    }
+  }
+}
