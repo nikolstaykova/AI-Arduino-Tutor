@@ -22,7 +22,8 @@ SINGULAR = {"resistor-220": "220 Ω resistor", "resistor-10k": "10 kΩ resistor"
             "pushbutton": "pushbutton", "potentiometer-10k": "knob (10 kΩ potentiometer)", "buzzer": "piezo buzzer",
             "photoresistor": "light sensor (photoresistor)", "fsr": "force sensor (FSR)", "resistor-1m": "1 MΩ resistor",
             "ping-sensor": "Ping))) ultrasonic sensor", "adxl335": "ADXL335 accelerometer", "memsic2125": "Memsic 2125 accelerometer", "rgb-led": "RGB LED (common anode)",
-            "led-bar-graph": "10-segment LED bar graph", "led-matrix-8x8": "8×8 LED matrix", "midi-jack": "MIDI socket (5-pin DIN)", "analog-joystick": "analog joystick module"}
+            "led-bar-graph": "10-segment LED bar graph", "led-matrix-8x8": "8×8 LED matrix", "midi-jack": "MIDI socket (5-pin DIN)", "analog-joystick": "analog joystick module",
+            "atmega328p": "ATmega328P chip", "crystal-16mhz": "16 MHz crystal", "capacitor-22pf": "22 pF capacitor", "capacitor-10uf": "10 µF capacitor"}
 NAME = {"resistor-220": "220 Ω resistors", "resistor-10k": "10 kΩ resistors", "resistor-4k7": "a 4.7 kΩ resistor", "led": "LEDs",
         "pushbutton": "a pushbutton", "potentiometer-10k": "a knob (10 kΩ potentiometer)", "buzzer": "a piezo buzzer",
         "photoresistor": "a light sensor (photoresistor)", "fsr": "force sensors (FSR)"}
@@ -34,6 +35,11 @@ PIN_LAYOUT = {
     "cq-ping": [("GND", 0, 0), ("5V", 1, 0), ("SIG", 2, 0)],
     "cq-adxl335": [("ST", 0, 0), ("Z", 1, 0), ("Y", 2, 0), ("X", 3, 0), ("GND", 4, 0), ("VCC", 5, 0)],
     "cq-memsic2125": [("TOUT", 0, 0), ("YOUT", 1, 0), ("GND.1", 2, 0), ("VDD", 0, 3), ("XOUT", 1, 3), ("GND.2", 2, 3)],
+    # DIP-28: pins 1–14 left to right along the bottom row, 15–28 right to left along the top
+    "cq-atmega328p": [(str(k + 1), k, 3) for k in range(14)] + [(str(k + 15), 13 - k, 0) for k in range(14)],
+    "cq-crystal": [("1", 0, 0), ("2", 1, 0)],
+    "cq-capacitor-ceramic": [("1", 0, 0), ("2", 2, 0)],
+    "cq-capacitor-electrolytic": [("POS", 0, 0), ("NEG", 1, 0)],
 }
 
 
@@ -462,14 +468,150 @@ class Lesson:
         return d
 
     # ---- writing ---------------------------------------------------------------------------
-    def upload(self, note):
+    # ---- a bare ATmega328P on the breadboard (Arduino as ISP / chip on a breadboard) -------------
+    def _seat(self, pid, wtype, col, row="h", straddle=False):
+        """Wire a part's legs into the breadboard as PIN_LAYOUT lays them out
+        from column `col`. Returns {pin: strip}."""
+        hole = {}
+        for name, dx, dz in PIN_LAYOUT[wtype]:
+            strip, r = ((f"{col + dx}t", "e") if dz == 0 else (f"{col + dx}b", "f")) if straddle else (f"{col + dx}b", row)
+            self._wire(f"{pid}:{name}", f"bb1:{strip}.{r}")
+            hole[name] = strip
+        return hole
+
+    def _free(self, strip):
+        """A hole in `strip` nothing is in yet — rows nearest the edge first."""
+        used = {p.split(".", 1)[1] for c in self.conns for p in c[:2] if p.startswith(f"bb1:{strip}.")}
+        return next(r for r in ("abcd" if strip.endswith("t") else "jihg") if r not in used)
+
+    def _rail_wire(self, strip, which):
+        """A wire from `strip` to the nearest free hole of the − (gnd) or + (5v) row."""
+        rail = "bn" if which == "gnd" else "bp"
+        used = {p for c in self.conns for p in c[:2] if p.startswith(f"bb1:{rail}.")}
+        count = ((63 if self.bb == "wokwi-breadboard" else 30) - 1) * 5 // 6
+        col = int(strip[:-1])
+        n = min((k for k in range(1, count + 1) if f"bb1:{rail}.{k}" not in used), key=lambda k: abs(1 + (k - 1) + (k - 1) // 5 - col))
+        self._wire(f"bb1:{strip}.{self._free(strip)}", f"bb1:{rail}.{n}", "black" if which == "gnd" else "red")
+
+    def _rail_step(self, sid, strip, which, what, goal, hints, net):
+        """A step wiring `strip` to a power row (the first time, with the row's own wire to the Arduino)."""
+        clip = self._to_rail(which, what)
+        self._rail_wire(strip, which)
+        self._step(sid, clip, goal, hints, nets=self._net(*net))
+
+    def _net(self, a, b):
+        self.nets.append([a, b])
+        return [[a, b]]
+
+    def bare_chip(self):
+        """An ATmega328P across the gap, its four power pins, and its clock: the
+        16 MHz crystal on pins 9 and 10 with a 22 pF capacitor from each leg to GND."""
+        self.power_rails()
+        gnd, v5 = f"{self.board}:GND.1", f"{self.board}:5V"
+        c = self.col; self.col += 15
+        u = self._id("chip"); self._part("cq-atmega328p", u); self._need("atmega328p")
+        hole = self._seat(u, "cq-atmega328p", c, straddle=True)
+        self.chip, self.chip_hole = u, hole
+        self._step(f"{u}-place", "Push the ATmega328P chip in across the middle gap, the notch (the little half-moon dent) on the <b>left</b>.",
+                   "Put the chip on the breadboard.",
+                   ["With the notch on the left, pin 1 is bottom-left. Pins 1–14 run left to right along the bottom, 15–28 come back along the top.",
+                    "Press gently on both ends so all 28 legs go in straight."], landing=[f"{u}:{k}" for k in range(1, 29)])
+        for pin, which, label, why in [("7", "5v", "VCC", "VCC is the chip's power in."), ("8", "gnd", "GND", "The chip's ground."),
+                                       ("20", "5v", "AVCC", "AVCC powers the chip's analog side — it needs 5V too."),
+                                       ("22", "gnd", "GND", "The chip's second ground pin — connect both.")]:
+            self._rail_step(f"{u}-p{pin}", hole[pin], which, f"chip pin <b>{pin}</b> ({label})", f"Connect chip pin {pin} ({label}) to {'5V' if which == '5v' else 'GND'}.",
+                            [why, "Count from pin 1 (bottom-left): along the bottom to 14, then back along the top from 15 on the right."],
+                            (f"{u}:{pin}", v5 if which == "5v" else gnd))
+        x = self.col; self.col += 8
+        y, k1, k2 = self._id("xtal"), self._id("cap"), self._id("cap")
+        self._part("cq-crystal", y); self._part("cq-capacitor-ceramic", k1, {"value": "22p"}); self._part("cq-capacitor-ceramic", k2, {"value": "22p"})
+        self._need("crystal-16mhz"); self._need("capacitor-22pf")
+        self._seat(y, "cq-crystal", x + 2, row="g"); self._seat(k1, "cq-capacitor-ceramic", x, row="h"); self._seat(k2, "cq-capacitor-ceramic", x + 3, row="h")
+        self._step(f"{y}-place", "Push the 16 MHz crystal (the small silver can) in to the right of the chip, its two legs in two columns next to each other.",
+                   "Put the crystal on the breadboard.", ["The crystal is the chip's clock. It works either way round."], landing=[f"{y}:1", f"{y}:2"])
+        for pin, leg, side in [("9", "1", "left"), ("10", "2", "right")]:
+            leg_strip = f"{x + 1 + int(leg)}b"
+            self._wire(f"bb1:{hole[pin]}.{self._free(hole[pin])}", f"bb1:{leg_strip}.{self._free(leg_strip)}", "yellow")
+            self._step(f"{y}-p{pin}", f"Run a wire from chip pin <b>{pin}</b> to the crystal's {side} leg.", f"Connect chip pin {pin} to the crystal.",
+                       [f"Pin {pin} is on the bottom row, {pin} holes from the left.", "Either crystal leg is fine — it has no + or −."],
+                       nets=self._net(f"{u}:{pin}", f"{y}:{leg}"))
+        for cap, leg, cap_leg, side, far in [(k1, "1", "2", "left", "left"), (k2, "2", "1", "right", "right")]:
+            self._step(f"{cap}-place", f"Push a 22 pF capacitor (marked “22”) in: one leg in the same column as the crystal's {side} leg, the other leg two columns to the {far}.",
+                       f"Put a 22 pF capacitor on the crystal's {side} leg.", ["It helps the crystal start and keep a steady beat.", "It works either way round."],
+                       landing=[f"{cap}:1", f"{cap}:2"], nets=self._net(f"{cap}:{cap_leg}", f"{y}:{leg}"))
+            other = "1" if cap_leg == "2" else "2"
+            self._rail_step(f"{cap}-gnd", f"{x if cap == k1 else x + 5}b", "gnd", "the capacitor's other leg", "Connect the capacitor's other leg to GND.",
+                            ["Each crystal leg gets its own 22 pF capacitor to GND."], (f"{cap}:{other}", gnd))
+        return u
+
+    def isp_wires(self):
+        """The Arduino programs the chip: 13→19 (SCK), 12→18 (MISO), 11→17 (MOSI), 10→1 (RESET)."""
+        u, hole = self.chip, self.chip_hole
+        for pin, chip_pin, name, why in [("13", "19", "SCK", "SCK is the clock: the Arduino ticks it for every bit it sends."),
+                                         ("12", "18", "MISO", "MISO carries bits from the chip back to the Arduino."),
+                                         ("11", "17", "MOSI", "MOSI carries bits from the Arduino to the chip."),
+                                         ("10", "1", "RESET", "Pin 10 holds the chip in reset while it is being programmed.")]:
+            self._wire(f"{self.board}:{pin}", f"bb1:{hole[chip_pin]}.{self._free(hole[chip_pin])}", "orange")
+            self._step(f"{u}-{name.lower()}", f"Run a wire from pin <b>{pin}</b> on the Arduino to chip pin <b>{chip_pin}</b> ({name}).",
+                       f"Connect pin {pin} to chip pin {chip_pin}.", [why + " Use exactly this pin.", f"Chip pin {chip_pin} is on the {'bottom' if int(chip_pin) <= 14 else 'top'} row."],
+                       nets=self._net(f"{self.board}:{pin}", f"{u}:{chip_pin}"))
+
+    def reset_cap(self):
+        """10 µF from the Arduino's RESET to GND: it stops the Arduino resetting when the computer talks to it."""
+        e = self.col; self.col += 4
+        k = self._id("cap"); self._part("cq-capacitor-electrolytic", k, {"value": "10u"}); self._need("capacitor-10uf")
+        hole = self._seat(k, "cq-capacitor-electrolytic", e, row="h")
+        self._step(f"{k}-place", "Push the 10 µF capacitor (the small can) in, its legs in two columns next to each other — the <b>short</b> leg, by the pale stripe, on the right.",
+                   "Put the 10 µF capacitor on the breadboard.", ["It only works one way round: the stripe marks the − leg."], landing=[f"{k}:POS", f"{k}:NEG"])
+        self._wire(f"bb1:{hole['POS']}.{self._free(hole['POS'])}", f"{self.board}:RESET", "white")
+        self._step(f"{k}-reset", "Run a wire from the capacitor's <b>long</b> leg to <b>RESET</b> on the Arduino.", "Connect the long leg to RESET.",
+                   ["RESET is on the Arduino's power header, next to 3.3V.", "It stops the Arduino restarting itself when the computer starts talking to it."],
+                   nets=self._net(f"{k}:POS", f"{self.board}:RESET"))
+        self._rail_step(f"{k}-gnd", hole["NEG"], "gnd", "the capacitor's short leg", "Connect the short leg to GND.", ["The short leg is −."],
+                        (f"{k}:NEG", f"{self.board}:GND.1"))
+
+    def reset_pullup(self):
+        """A 10 kΩ from chip pin 1 (RESET) to 5V: keeps the chip running instead of stuck in reset."""
+        u, hole = self.chip, self.chip_hole
+        r = self._id("r"); self._part("wokwi-resistor", r, {"value": "10000"}); self._need("resistor-10k")
+        c1 = int(hole["1"][:-1])
+        self._wire(f"{r}:2", f"bb1:{hole['1']}.{self._free(hole['1'])}"); self._wire(f"{r}:1", f"bb1:{c1 - 4}b.h")
+        self._step(f"{r}-place", "Push a 10 kΩ resistor in: one leg in the same column as chip pin 1 (bottom-left), the other leg four columns to the left.",
+                   "Put a 10 kΩ resistor on chip pin 1 (RESET).", ["Pin 1 is bottom-left, by the notch.", "A resistor works either way round."],
+                   nets=self._net(f"{r}:2", f"{u}:1"))
+        self._rail_step(f"{r}-5v", f"{c1 - 4}b", "5v", "the resistor's other leg", "Connect the resistor to 5V.",
+                        ["RESET held at 5V lets the chip run. At GND it would restart."], (f"{r}:1", f"{self.board}:5V"))
+
+    def chip_led(self, chip_pin):
+        """An LED on a chip pin (not an Arduino pin) through 220 Ω to GND."""
+        u, hole = self.chip, self.chip_hole
+        c = self.col; self.col += 6
+        r, d = self._id("r"), self._id("led")
+        self._part("wokwi-resistor", r, {"value": "220"}); self._part("wokwi-led", d, {"color": "red"})
+        self._need("resistor-220"); self._need("led")
+        self._wire(f"{r}:1", f"bb1:{c}b.h"); self._wire(f"{r}:2", f"bb1:{c + 4}b.h")
+        self._wire(f"bb1:{hole[chip_pin]}.{self._free(hole[chip_pin])}", f"bb1:{c}b.g", "orange")
+        self._wire(f"{d}:A", f"bb1:{c + 4}b.i"); self._wire(f"{d}:C", f"bb1:{c + 3}b.i")
+        self._step(f"{d}-resistor", "Push a 220 Ω resistor into an empty part of the breadboard, its legs in two different columns.",
+                   "Put the LED's resistor on the breadboard.", ["A resistor works either way round."], landing=f"{r}:1")
+        self._step(f"{d}-pin", f"Run a wire from chip pin <b>{chip_pin}</b> to one leg of the resistor.", f"Connect chip pin {chip_pin} to the resistor.",
+                   [f"Chip pin {chip_pin} is the chip's digital pin 13 — the Blink pin.", f"It is on the {'bottom' if int(chip_pin) <= 14 else 'top'} row."],
+                   nets=self._net(f"{r}:1", f"{u}:{chip_pin}"))
+        self._step(f"{d}-legs", "Put the LED in: the <b>long</b> leg in the same column as the resistor's other leg, the <b>short</b> leg in the next column.",
+                   "Connect the LED's long leg (+) to the resistor.", ["The long leg is +. Backwards, the LED stays dark."], nets=self._net(f"{d}:A", f"{r}:2"))
+        self._rail_step(f"{d}-gnd", f"{c + 3}b", "gnd", "the LED's short leg", "Connect the LED's short leg (−) to GND.", ["The short leg is −."],
+                        (f"{d}:C", f"{self.board}:GND.1"))
+
+    def upload(self, note, clip=None):
         self.upload_note = note
+        self.upload_clip = clip
 
     def write(self):
         # how many of each part, from the diagram ("6 LEDs", "1 knob")
         card_of = {"wokwi-led": "led", "wokwi-pushbutton": "pushbutton", "wokwi-potentiometer": "potentiometer-10k", "wokwi-buzzer": "buzzer",
                    "cq-photoresistor": "photoresistor", "cq-fsr": "fsr", "cq-ping": "ping-sensor", "cq-adxl335": "adxl335",
-                   "cq-memsic2125": "memsic2125", "wokwi-rgb-led": "rgb-led", "wokwi-led-bar-graph": "led-bar-graph", "cq-led-matrix-8x8": "led-matrix-8x8", "cq-midi-jack": "midi-jack", "wokwi-analog-joystick": "analog-joystick"}
+                   "cq-memsic2125": "memsic2125", "wokwi-rgb-led": "rgb-led", "wokwi-led-bar-graph": "led-bar-graph", "cq-led-matrix-8x8": "led-matrix-8x8", "cq-midi-jack": "midi-jack", "wokwi-analog-joystick": "analog-joystick",
+                   "cq-atmega328p": "atmega328p", "cq-crystal": "crystal-16mhz", "cq-capacitor-ceramic": "capacitor-22pf", "cq-capacitor-electrolytic": "capacitor-10uf"}
         count = {}
         for part in self.parts:
             cid = card_of.get(part["type"]) or ({"220": "resistor-220", "10000": "resistor-10k", "4700": "resistor-4k7", "1000000": "resistor-1m"}.get(part["attrs"].get("value"))
@@ -481,13 +623,15 @@ class Lesson:
                   "clip": f"You need: an {self.board_name} and its USB cable, a breadboard, {names}, and some jumper wires.",
                   "items": self.items + (["jumper-wire"] if "jumper-wire" not in self.items else [])}
         steps = [gather] + self.steps + [{"id": "upload-code", "phase": "upload",
-                                          "clip": "Copy the code into the Arduino IDE and click Upload. " + self.upload_note, "code": "code.ino"}]
+                                          "clip": getattr(self, "upload_clip", None) or "Copy the code into the Arduino IDE and click Upload. " + self.upload_note, "code": "code.ino"}]
         lesson = {"id": self.id, "title": self.title, "description": self.description, "source": self.source,
                   "difficulty": self.difficulty, "board": self.board_card, "requires": self.requires,
                   "code": "code.ino", "wokwi_diagram": "diagram.json", "tools_used": [],
                   "parts_used": gather["items"], "steps": steps, "final_check": {"expected_nets": self.nets}}
         if self.fixed_pins:
             lesson["fixed_pins"] = True
+        if getattr(self, "runs_on", None):
+            lesson["sketch_runs_on"] = self.runs_on
         diagram = {"version": 1, "author": "CircuitQuest (from the Arduino built-in examples)", "editor": "wokwi",
                    "parts": self.parts, "connections": self.conns, "dependencies": {}}
         folder = ROOT / "lessons" / self.id

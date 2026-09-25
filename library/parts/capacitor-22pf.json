@@ -1,0 +1,31 @@
+{
+  "id": "capacitor-22pf",
+  "type": "part",
+  "subtype": "capacitor",
+  "legs_placed_together": true,
+  "wokwi_type": "cq-capacitor-ceramic",
+  "display_name": "22 pF capacitor",
+  "aliases": [
+    "22pf capacitor",
+    "22 pf",
+    "ceramic capacitor",
+    "22p cap"
+  ],
+  "leads": "wire-lead",
+  "pins": {
+    "1": "either leg",
+    "2": "either leg"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "description": "A small ceramic capacitor (marked \"22\"). Two of them, one from each crystal leg to GND, help the crystal start and keep a steady beat.",
+  "how_to_use": "Not polarized. One leg on a crystal leg's column, the other to GND.",
+  "plain": {
+    "what": "A tiny capacitor that helps the crystal tick steadily. It has \"22\" printed on it.",
+    "how": "It works either way round. One leg next to the crystal, the other to GND."
+  }
+}

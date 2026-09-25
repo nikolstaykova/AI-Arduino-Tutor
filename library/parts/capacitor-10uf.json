@@ -1,0 +1,30 @@
+{
+  "id": "capacitor-10uf",
+  "type": "part",
+  "subtype": "capacitor",
+  "legs_placed_together": true,
+  "wokwi_type": "cq-capacitor-electrolytic",
+  "display_name": "10 µF capacitor",
+  "aliases": [
+    "10uf capacitor",
+    "10 uf",
+    "electrolytic capacitor",
+    "10u cap"
+  ],
+  "polarized": true,
+  "leads": "wire-lead",
+  "pins": {
+    "POS": "+ leg (the longer one)",
+    "NEG": "− leg (the shorter one, by the stripe)"
+  },
+  "description": "An electrolytic capacitor: stores a little charge. From the Arduino's RESET pin to GND it stops the board resetting itself when the computer opens the port — needed when the Arduino acts as a programmer.",
+  "how_to_use": "Polarized: the − leg (short, by the pale stripe) to GND, the + leg to the other side. Backwards it can fail.",
+  "plain": {
+    "what": "A small can that stores a little electricity for a moment — like a tiny rechargeable battery.",
+    "how": "It only goes one way: the leg by the pale stripe is −, and goes to GND.",
+    "pins": {
+      "POS": "the long leg (+)",
+      "NEG": "the short leg (−), by the stripe"
+    }
+  }
+}

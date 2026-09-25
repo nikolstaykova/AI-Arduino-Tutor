@@ -76,6 +76,8 @@ BUZZER_ON_VOLTS = 1.5
 # Unpowered (or powered backwards), OUT floats. "Motion" is a scenario, like
 # a button being pressed.
 _PIR_TYPES = {"wokwi-pir-motion-sensor"}
+# capacitors and a crystal pass no steady (DC) current: open circuits here
+_OPEN_TYPES = {"cq-crystal", "cq-capacitor-ceramic", "cq-capacitor-electrolytic"}
 PIR_SUPPLY_RESISTANCE = 50_000.0      # ~0.1 mA quiescent draw
 PIR_OUTPUT_RESISTANCE = 1_000.0
 PIR_HIGH_VOLTS = 3.3
@@ -248,7 +250,7 @@ class _Circuit:
         self.unmodeled = []
         for part in diagram_parts:
             pid, wtype, attrs = part["id"], part.get("type", ""), part.get("attrs", {})
-            if pid in self.board_ids or "breadboard" in wtype:
+            if pid in self.board_ids or "breadboard" in wtype or wtype in _OPEN_TYPES:
                 continue
             if wtype in _RESISTOR_TYPES:
                 self.resistors.append((pid, self.node(f"{pid}:1"), self.node(f"{pid}:2"), parse_resistance(attrs.get("value"))))
@@ -298,6 +300,9 @@ class _Circuit:
                 self.pots.append((pid, self.node(f"{pid}:GND"), self.node(f"{pid}:SIG"), self.node(f"{pid}:VCC"), ohms))
             else:
                 self.unmodeled.append(pid)
+        # nets touching a part we don't simulate (a bare chip): it may drive them, so they're never "floating"
+        self.unmodeled_nodes = {self.uf.find(x) for x in list(self.uf.parent)
+                                if x.split(":", 1)[0] in self.unmodeled}
 
         # Board pins: which nets are driven, and how.
         self.ground = None
@@ -651,7 +656,7 @@ def analyze(pairs, diagram_parts, code, library=None):
 
         for label_pin, node, mode in circuit.inputs:
             v = volts[node]
-            floating = not circuit.reaches_fixed(node, pressed, led_on)
+            floating = not circuit.reaches_fixed(node, pressed, led_on) and node not in circuit.unmodeled_nodes
             entry = {"mode": mode, "voltage": None if floating else round(v, 2)}
             if mode == "ANALOG_IN":
                 entry["reading"] = None if floating else round(max(0.0, min(VCC, v)) / VCC * 1023)

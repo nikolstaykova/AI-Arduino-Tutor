@@ -107,7 +107,7 @@ async function openItem(id) {
     <button class="lib-close" data-close aria-label="Close">✕</button>
     <div class="lib-view" id="libView"><span class="lib-drag">drag to turn · scroll to zoom in</span></div>
     <div class="lib-body">
-      <div class="pop-level">${esc(it.kind === "tool" ? "Tool" : it.category)}${it.polarized ? " · has a + and − side" : ""}</div>
+      <div class="pop-level">${esc(it.kind === "tool" ? "Tool" : it.category)}${it.polarized ? (it.category === "Chips" ? " · only fits one way round" : " · has a + and − side") : ""}</div>
       <h2>${esc(it.name)}</h2>
       <p>${esc(it.description)}</p>
       ${it.how_to_use ? `<div class="seg-label">How to use it</div><p class="lib-how">${esc(it.how_to_use)}</p>` : ""}

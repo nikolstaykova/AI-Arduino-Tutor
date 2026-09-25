@@ -1,7 +1,7 @@
 // Detailed discrete parts: LEDs, resistors, buttons, knobs, switches, the
 // buzzer and the through-hole chips.
 import { THREE, M, P, box, rbox, cyl, sphere, torus, at, group, lathe, extrude, tube, bentWire, decal, sideDecal, text,
-  dip, resistorBody, to92, knurledShaft } from "./kit.js";
+  dip, resistorBody, to92, knurledShaft, crystalHC49, ceramicDisc, elCap } from "./kit.js";
 
 // a 5 mm LED: tinted epoxy dome with its flat (cathode) side, the anvil and
 // post inside, and the two legs (anode longer, with the classic bend)
@@ -255,6 +255,11 @@ export const BASIC = {
   "neopixel": neopixel,
   "dpdt-relay": relayKS2E,
   "attiny85": () => dip(8, ["ATTINY85", "20PU"]),
+  "atmega328p": () => dip(28, ["ATMEGA328P-PU", "1452  MICROCHIP"]),
+  "crystal-16mhz": () => { const g = crystalHC49("16.000"); for (const x of [-2.44, 2.44]) g.add(at(cyl(0.22, 0.22, 13, M.tin(), 8), x, -6.5, 0)); return g; },
+  "capacitor-22pf": () => ceramicDisc(2.4, 0xc98a3a, "22"),
+  "capacitor-10uf": () => { const g = elCap(2.5, 11, { text: "10µF 25V" }); g.children.forEach((c) => { c.position.y += 2; });
+    g.add(at(cyl(0.22, 0.22, 16, M.tin(), 8), -1, -6, 0)); g.add(at(cyl(0.22, 0.22, 13.5, M.tin(), 8), 1, -4.75, 0)); return g; },
   "74hc165": () => dip(16, ["SN74HC165N", "TEXAS INSTR."]),
   "74hc595": () => dip(16, ["SN74HC595N", "TEXAS INSTR."]),
   "nlsf595": () => dip(16, ["NLSF595", "ON SEMI"]),

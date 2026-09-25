@@ -1,0 +1,31 @@
+{
+  "id": "crystal-16mhz",
+  "type": "part",
+  "subtype": "crystal",
+  "legs_placed_together": true,
+  "wokwi_type": "cq-crystal",
+  "display_name": "16 MHz crystal",
+  "aliases": [
+    "crystal",
+    "16mhz crystal",
+    "quartz crystal",
+    "oscillator crystal"
+  ],
+  "leads": "wire-lead",
+  "pins": {
+    "1": "either leg",
+    "2": "either leg"
+  },
+  "symmetric_pins": [
+    [
+      "1",
+      "2"
+    ]
+  ],
+  "description": "A quartz crystal that vibrates 16 million times a second. Wired to a microcontroller's XTAL1/XTAL2 pins (each leg also through a 22 pF capacitor to GND) it gives the chip an exact clock.",
+  "how_to_use": "Legs to chip pins 9 and 10 (either way round); a 22 pF capacitor from each leg to GND.",
+  "plain": {
+    "what": "The chip's clock — a tiny quartz crystal that ticks 16 million times a second.",
+    "how": "It works either way round. Its two legs go to the chip's crystal pins (9 and 10)."
+  }
+}

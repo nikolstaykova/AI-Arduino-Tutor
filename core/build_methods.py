@@ -295,9 +295,10 @@ def derive_lesson(lesson, library, method="no-breadboard", join="clips"):
             step["items"] = p["parts"] + p["tools"]
             step["clip"] = (f"No breadboard this time — we'll use {style}. Gather: {_name_list(p['parts'], library, p['counts'])}"
                             + (f". Tools: {_name_list(p['tools'], library)}." if p["tools"] else "."))
-        elif step.get("phase") == "build" and "expected_landing" in step:
+        elif step.get("phase") == "build" and "expected_landing" in step and not step.get("expected_nets"):
             continue            # "place it on the breadboard" has no meaning here
         elif step.get("phase") == "build" and step["id"] in how:
+            step.pop("expected_landing", None)   # placing it also made a connection: keep that as a joining step
             conns = how[step["id"]]
             step["clip"] = " ".join(c["how"] for c in conns)
             step["hints"] = [f"This step connects {describe(c['pair'][0], _components(lesson, library), p['board'])} "

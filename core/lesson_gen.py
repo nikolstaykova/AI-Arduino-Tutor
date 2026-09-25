@@ -53,7 +53,8 @@ MAX_ATTEMPTS = 3
 # facts (pins, internal connections, interchangeable legs, polarity, how
 # they're placed) are read from the library cards — see part_facts().
 MODELLED_TYPES = ["wokwi-led", "wokwi-resistor", "wokwi-potentiometer", "wokwi-pushbutton", "wokwi-slide-switch", "wokwi-buzzer", "wokwi-pir-motion-sensor",
-                   "cq-photoresistor", "cq-fsr", "cq-ping", "cq-adxl335", "cq-memsic2125", "wokwi-rgb-led", "wokwi-led-bar-graph", "cq-led-matrix-8x8", "cq-midi-jack", "wokwi-analog-joystick"]
+                   "cq-photoresistor", "cq-fsr", "cq-ping", "cq-adxl335", "cq-memsic2125", "wokwi-rgb-led", "wokwi-led-bar-graph", "cq-led-matrix-8x8", "cq-midi-jack", "wokwi-analog-joystick",
+                   "cq-atmega328p", "cq-crystal", "cq-capacitor-ceramic", "cq-capacitor-electrolytic"]
 UNO_PINS = ({str(n) for n in range(14)} | {f"A{n}" for n in range(6)}
             | {"5V", "3.3V", "VIN", "GND.1", "GND.2", "GND.3", "AREF", "IOREF", "RESET"})
 BREADBOARD_TYPES = {"wokwi-breadboard", "wokwi-breadboard-half", "wokwi-breadboard-mini"}
@@ -521,12 +522,18 @@ def _check_code_followable(code, errors):
                           "who uses a different pin.")
 
 
-def _check_code(diagram, code, errors, fixed_pins=False):
+def _check_code(diagram, code, errors, fixed_pins=False, runs_on=None):
+    """runs_on: the id of a breadboard chip the sketch runs on (not the
+    Arduino board) — its pins are chip legs, so the board-pin check is skipped."""
     boards = [p["id"] for p in diagram.get("parts", []) if re.match(r"(wokwi|cq)-arduino", p.get("type", ""))] or ["uno"]
     board = boards[0]
     used = set(physics.pin_modes_from_code(code))
     used |= set(re.findall(r"digital(?:Read|Write)\s*\(\s*(A?\d+)", code))
     wired = {pin.split(":", 1)[1] for c in diagram.get("connections", []) for pin in c[:2] if pin.startswith(f"{board}:")}
+    if runs_on:
+        if runs_on not in {p["id"] for p in diagram.get("parts", [])}:
+            errors.append(f"sketch_runs_on names '{runs_on}', which isn't a part in diagram_json.")
+        used = set()
     for pin in sorted(used - wired):
         errors.append(f"The sketch uses pin {pin}, but nothing in diagram_json is wired to {board}:{pin}.")
     if "void setup" not in code or "void loop" not in code:
@@ -644,7 +651,7 @@ def _validate(data, diagram, code, library=None):
     _check_consistency(data, diagram, library, errors)
     _check_physical_steps(data, diagram, library, errors)
     _check_diagram_placement(diagram, library, errors)
-    _check_code(diagram, code, errors, fixed_pins=bool(data.get("fixed_pins")))
+    _check_code(diagram, code, errors, fixed_pins=bool(data.get("fixed_pins")), runs_on=data.get("sketch_runs_on"))
     _check_physics(diagram, code, library, errors)
     if errors:
         return errors

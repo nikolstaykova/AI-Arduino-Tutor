@@ -1,0 +1,694 @@
+{
+  "id": "arduino-isp",
+  "title": "Arduino as ISP",
+  "description": "Turn your Arduino into a programmer and use it to put a bootloader on a bare ATmega328P chip.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/arduino-isp/ArduinoISP/",
+    "title": "Arduino docs: Arduino as ISP"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "blink"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "atmega328p",
+    "crystal-16mhz",
+    "capacitor-22pf",
+    "capacitor-10uf",
+    "resistor-220",
+    "led"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × ATmega328P chip, 1 × 16 MHz crystal, 2 × 22 pF capacitor, 1 × 10 µF capacitor, 3 × 220 Ω resistor, 3 × LED, and some jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "atmega328p",
+        "crystal-16mhz",
+        "capacitor-22pf",
+        "capacitor-10uf",
+        "resistor-220",
+        "led"
+      ]
+    },
+    {
+      "id": "chip1-place",
+      "phase": "build",
+      "clip": "Push the ATmega328P chip in across the middle gap, the notch (the little half-moon dent) on the <b>left</b>.",
+      "expected_landing": [
+        "chip1:1",
+        "chip1:2",
+        "chip1:3",
+        "chip1:4",
+        "chip1:5",
+        "chip1:6",
+        "chip1:7",
+        "chip1:8",
+        "chip1:9",
+        "chip1:10",
+        "chip1:11",
+        "chip1:12",
+        "chip1:13",
+        "chip1:14",
+        "chip1:15",
+        "chip1:16",
+        "chip1:17",
+        "chip1:18",
+        "chip1:19",
+        "chip1:20",
+        "chip1:21",
+        "chip1:22",
+        "chip1:23",
+        "chip1:24",
+        "chip1:25",
+        "chip1:26",
+        "chip1:27",
+        "chip1:28"
+      ],
+      "strict": false,
+      "hints": [
+        "With the notch on the left, pin 1 is bottom-left. Pins 1–14 run left to right along the bottom, 15–28 come back along the top.",
+        "Press gently on both ends so all 28 legs go in straight."
+      ],
+      "goal": "Put the chip on the breadboard."
+    },
+    {
+      "id": "chip1-p7",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. Chip pin <b>7</b> (VCC) → that same row.",
+      "expected_nets": [
+        [
+          "chip1:7",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "VCC is the chip's power in.",
+        "Count from pin 1 (bottom-left): along the bottom to 14, then back along the top from 15 on the right."
+      ],
+      "goal": "Connect chip pin 7 (VCC) to 5V."
+    },
+    {
+      "id": "chip1-p8",
+      "phase": "build",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. Chip pin <b>8</b> (GND) → that same row.",
+      "expected_nets": [
+        [
+          "chip1:8",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The chip's ground.",
+        "Count from pin 1 (bottom-left): along the bottom to 14, then back along the top from 15 on the right."
+      ],
+      "goal": "Connect chip pin 8 (GND) to GND."
+    },
+    {
+      "id": "chip1-p20",
+      "phase": "build",
+      "clip": "Run a wire from chip pin <b>20</b> (AVCC) to the red + row.",
+      "expected_nets": [
+        [
+          "chip1:20",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "AVCC powers the chip's analog side — it needs 5V too.",
+        "Count from pin 1 (bottom-left): along the bottom to 14, then back along the top from 15 on the right."
+      ],
+      "goal": "Connect chip pin 20 (AVCC) to 5V."
+    },
+    {
+      "id": "chip1-p22",
+      "phase": "build",
+      "clip": "Run a wire from chip pin <b>22</b> (GND) to the blue − row.",
+      "expected_nets": [
+        [
+          "chip1:22",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The chip's second ground pin — connect both.",
+        "Count from pin 1 (bottom-left): along the bottom to 14, then back along the top from 15 on the right."
+      ],
+      "goal": "Connect chip pin 22 (GND) to GND."
+    },
+    {
+      "id": "xtal1-place",
+      "phase": "build",
+      "clip": "Push the 16 MHz crystal (the small silver can) in to the right of the chip, its two legs in two columns next to each other.",
+      "expected_landing": [
+        "xtal1:1",
+        "xtal1:2"
+      ],
+      "strict": false,
+      "hints": [
+        "The crystal is the chip's clock. It works either way round."
+      ],
+      "goal": "Put the crystal on the breadboard."
+    },
+    {
+      "id": "xtal1-p9",
+      "phase": "build",
+      "clip": "Run a wire from chip pin <b>9</b> to the crystal's left leg.",
+      "expected_nets": [
+        [
+          "chip1:9",
+          "xtal1:1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 9 is on the bottom row, 9 holes from the left.",
+        "Either crystal leg is fine — it has no + or −."
+      ],
+      "goal": "Connect chip pin 9 to the crystal."
+    },
+    {
+      "id": "xtal1-p10",
+      "phase": "build",
+      "clip": "Run a wire from chip pin <b>10</b> to the crystal's right leg.",
+      "expected_nets": [
+        [
+          "chip1:10",
+          "xtal1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 10 is on the bottom row, 10 holes from the left.",
+        "Either crystal leg is fine — it has no + or −."
+      ],
+      "goal": "Connect chip pin 10 to the crystal."
+    },
+    {
+      "id": "cap1-place",
+      "phase": "build",
+      "clip": "Push a 22 pF capacitor (marked “22”) in: one leg in the same column as the crystal's left leg, the other leg two columns to the left.",
+      "expected_landing": [
+        "cap1:1",
+        "cap1:2"
+      ],
+      "expected_nets": [
+        [
+          "cap1:2",
+          "xtal1:1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "It helps the crystal start and keep a steady beat.",
+        "It works either way round."
+      ],
+      "goal": "Put a 22 pF capacitor on the crystal's left leg."
+    },
+    {
+      "id": "cap1-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the capacitor's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "cap1:1",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each crystal leg gets its own 22 pF capacitor to GND."
+      ],
+      "goal": "Connect the capacitor's other leg to GND."
+    },
+    {
+      "id": "cap2-place",
+      "phase": "build",
+      "clip": "Push a 22 pF capacitor (marked “22”) in: one leg in the same column as the crystal's right leg, the other leg two columns to the right.",
+      "expected_landing": [
+        "cap2:1",
+        "cap2:2"
+      ],
+      "expected_nets": [
+        [
+          "cap2:1",
+          "xtal1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "It helps the crystal start and keep a steady beat.",
+        "It works either way round."
+      ],
+      "goal": "Put a 22 pF capacitor on the crystal's right leg."
+    },
+    {
+      "id": "cap2-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the capacitor's other leg to the blue − row.",
+      "expected_nets": [
+        [
+          "cap2:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Each crystal leg gets its own 22 pF capacitor to GND."
+      ],
+      "goal": "Connect the capacitor's other leg to GND."
+    },
+    {
+      "id": "chip1-sck",
+      "phase": "build",
+      "clip": "Run a wire from pin <b>13</b> on the Arduino to chip pin <b>19</b> (SCK).",
+      "expected_nets": [
+        [
+          "uno:13",
+          "chip1:19"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "SCK is the clock: the Arduino ticks it for every bit it sends. Use exactly this pin.",
+        "Chip pin 19 is on the top row."
+      ],
+      "goal": "Connect pin 13 to chip pin 19."
+    },
+    {
+      "id": "chip1-miso",
+      "phase": "build",
+      "clip": "Run a wire from pin <b>12</b> on the Arduino to chip pin <b>18</b> (MISO).",
+      "expected_nets": [
+        [
+          "uno:12",
+          "chip1:18"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "MISO carries bits from the chip back to the Arduino. Use exactly this pin.",
+        "Chip pin 18 is on the top row."
+      ],
+      "goal": "Connect pin 12 to chip pin 18."
+    },
+    {
+      "id": "chip1-mosi",
+      "phase": "build",
+      "clip": "Run a wire from pin <b>11</b> on the Arduino to chip pin <b>17</b> (MOSI).",
+      "expected_nets": [
+        [
+          "uno:11",
+          "chip1:17"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "MOSI carries bits from the Arduino to the chip. Use exactly this pin.",
+        "Chip pin 17 is on the top row."
+      ],
+      "goal": "Connect pin 11 to chip pin 17."
+    },
+    {
+      "id": "chip1-reset",
+      "phase": "build",
+      "clip": "Run a wire from pin <b>10</b> on the Arduino to chip pin <b>1</b> (RESET).",
+      "expected_nets": [
+        [
+          "uno:10",
+          "chip1:1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 10 holds the chip in reset while it is being programmed. Use exactly this pin.",
+        "Chip pin 1 is on the bottom row."
+      ],
+      "goal": "Connect pin 10 to chip pin 1."
+    },
+    {
+      "id": "cap3-place",
+      "phase": "build",
+      "clip": "Push the 10 µF capacitor (the small can) in, its legs in two columns next to each other — the <b>short</b> leg, by the pale stripe, on the right.",
+      "expected_landing": [
+        "cap3:POS",
+        "cap3:NEG"
+      ],
+      "strict": false,
+      "hints": [
+        "It only works one way round: the stripe marks the − leg."
+      ],
+      "goal": "Put the 10 µF capacitor on the breadboard."
+    },
+    {
+      "id": "cap3-reset",
+      "phase": "build",
+      "clip": "Run a wire from the capacitor's <b>long</b> leg to <b>RESET</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "cap3:POS",
+          "uno:RESET"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "RESET is on the Arduino's power header, next to 3.3V.",
+        "It stops the Arduino restarting itself when the computer starts talking to it."
+      ],
+      "goal": "Connect the long leg to RESET."
+    },
+    {
+      "id": "cap3-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the capacitor's short leg to the blue − row.",
+      "expected_nets": [
+        [
+          "cap3:NEG",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The short leg is −."
+      ],
+      "goal": "Connect the short leg to GND."
+    },
+    {
+      "id": "led1-resistor",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
+      "expected_landing": "r1:1",
+      "strict": false,
+      "hints": [
+        "A resistor works either way round.",
+        "It protects the LED — without it the LED can burn out."
+      ],
+      "goal": "Put the resistor for the green LED on the breadboard."
+    },
+    {
+      "id": "led1-pin",
+      "phase": "build",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>9</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "uno:9"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Put the wire in any hole in the same column as the leg. Use exactly this pin — the code counts through the pins in order.",
+        "Pin 9 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect the resistor to pin 9."
+    },
+    {
+      "id": "led1-legs",
+      "phase": "build",
+      "clip": "Put the green LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "expected_nets": [
+        [
+          "led1:A",
+          "r1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
+      ],
+      "goal": "Connect the green LED's long leg (+) to the resistor."
+    },
+    {
+      "id": "led1-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the green LED's short leg to the blue − row.",
+      "expected_nets": [
+        [
+          "led1:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The short leg is − (the cathode).",
+        "GND is the minus side of the circuit."
+      ],
+      "goal": "Connect the green LED's short leg (−) to GND."
+    },
+    {
+      "id": "led2-resistor",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
+      "expected_landing": "r2:1",
+      "strict": false,
+      "hints": [
+        "A resistor works either way round.",
+        "It protects the LED — without it the LED can burn out."
+      ],
+      "goal": "Put the resistor for the red LED on the breadboard."
+    },
+    {
+      "id": "led2-pin",
+      "phase": "build",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>8</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r2:1",
+          "uno:8"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Put the wire in any hole in the same column as the leg. Use exactly this pin — the code counts through the pins in order.",
+        "Pin 8 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect the resistor to pin 8."
+    },
+    {
+      "id": "led2-legs",
+      "phase": "build",
+      "clip": "Put the red LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "expected_nets": [
+        [
+          "led2:A",
+          "r2:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
+      ],
+      "goal": "Connect the red LED's long leg (+) to the resistor."
+    },
+    {
+      "id": "led2-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the red LED's short leg to the blue − row.",
+      "expected_nets": [
+        [
+          "led2:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The short leg is − (the cathode).",
+        "GND is the minus side of the circuit."
+      ],
+      "goal": "Connect the red LED's short leg (−) to GND."
+    },
+    {
+      "id": "led3-resistor",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
+      "expected_landing": "r3:1",
+      "strict": false,
+      "hints": [
+        "A resistor works either way round.",
+        "It protects the LED — without it the LED can burn out."
+      ],
+      "goal": "Put the resistor for the yellow LED on the breadboard."
+    },
+    {
+      "id": "led3-pin",
+      "phase": "build",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>7</b> on the Arduino.",
+      "expected_nets": [
+        [
+          "r3:1",
+          "uno:7"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Put the wire in any hole in the same column as the leg. Use exactly this pin — the code counts through the pins in order.",
+        "Pin 7 is on the Arduino's row of numbered sockets."
+      ],
+      "goal": "Connect the resistor to pin 7."
+    },
+    {
+      "id": "led3-legs",
+      "phase": "build",
+      "clip": "Put the yellow LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
+      "expected_nets": [
+        [
+          "led3:A",
+          "r3:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
+      ],
+      "goal": "Connect the yellow LED's long leg (+) to the resistor."
+    },
+    {
+      "id": "led3-gnd",
+      "phase": "build",
+      "clip": "Run a wire from the yellow LED's short leg to the blue − row.",
+      "expected_nets": [
+        [
+          "led3:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The short leg is − (the cathode).",
+        "GND is the minus side of the circuit."
+      ],
+      "goal": "Connect the yellow LED's short leg (−) to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Program the chip in four steps:<br>1. Pull the 10 µF capacitor out for a moment. Open <b>File › Examples › 11.ArduinoISP › ArduinoISP</b> (the same code as here) and click Upload. Put the capacitor back.<br>2. <b>Tools › Board</b>: Arduino Uno. <b>Tools › Programmer</b>: Arduino as ISP.<br>3. <b>Tools › Burn Bootloader</b>. The green LED breathes slowly while the programmer runs, the yellow one flickers while it writes, and the red one lights if something goes wrong.<br>4. Open <b>File › Examples › 01.Basics › Blink</b> and choose <b>Sketch › Upload Using Programmer</b>: the chip now has Blink. Keep it for the next level.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "chip1:7",
+        "uno:5V"
+      ],
+      [
+        "chip1:8",
+        "uno:GND.1"
+      ],
+      [
+        "chip1:20",
+        "uno:5V"
+      ],
+      [
+        "chip1:22",
+        "uno:GND.1"
+      ],
+      [
+        "chip1:9",
+        "xtal1:1"
+      ],
+      [
+        "chip1:10",
+        "xtal1:2"
+      ],
+      [
+        "cap1:2",
+        "xtal1:1"
+      ],
+      [
+        "cap1:1",
+        "uno:GND.1"
+      ],
+      [
+        "cap2:1",
+        "xtal1:2"
+      ],
+      [
+        "cap2:2",
+        "uno:GND.1"
+      ],
+      [
+        "uno:13",
+        "chip1:19"
+      ],
+      [
+        "uno:12",
+        "chip1:18"
+      ],
+      [
+        "uno:11",
+        "chip1:17"
+      ],
+      [
+        "uno:10",
+        "chip1:1"
+      ],
+      [
+        "cap3:POS",
+        "uno:RESET"
+      ],
+      [
+        "cap3:NEG",
+        "uno:GND.1"
+      ],
+      [
+        "r1:1",
+        "uno:9"
+      ],
+      [
+        "led1:A",
+        "r1:2"
+      ],
+      [
+        "led1:C",
+        "uno:GND.1"
+      ],
+      [
+        "r2:1",
+        "uno:8"
+      ],
+      [
+        "led2:A",
+        "r2:2"
+      ],
+      [
+        "led2:C",
+        "uno:GND.1"
+      ],
+      [
+        "r3:1",
+        "uno:7"
+      ],
+      [
+        "led3:A",
+        "r3:2"
+      ],
+      [
+        "led3:C",
+        "uno:GND.1"
+      ]
+    ]
+  },
+  "fixed_pins": true
+}

@@ -69,7 +69,8 @@ _TEMPLATES = {"wokwi-resistor": "resistor", "wokwi-led": "led", "wokwi-potentiom
               "wokwi-slide-potentiometer": "pot", "wokwi-pushbutton": "button", "wokwi-pushbutton-6mm": "button",
               "wokwi-slide-switch": "switch", "wokwi-buzzer": "buzzer", "wokwi-pir-motion-sensor": "pir",
               "cq-photoresistor": "ldr", "cq-fsr": "fsr",
-              "cq-ping": "module", "cq-adxl335": "module", "cq-memsic2125": "module", "wokwi-rgb-led": "rgb", "wokwi-led-bar-graph": "bargraph", "cq-led-matrix-8x8": "matrix", "cq-midi-jack": "module", "wokwi-analog-joystick": "module"}
+              "cq-ping": "module", "cq-adxl335": "module", "cq-memsic2125": "module", "wokwi-rgb-led": "rgb", "wokwi-led-bar-graph": "bargraph", "cq-led-matrix-8x8": "matrix", "cq-midi-jack": "module", "wokwi-analog-joystick": "module",
+              "cq-atmega328p": "module", "cq-crystal": "module", "cq-capacitor-ceramic": "module", "cq-capacitor-electrolytic": "module"}
 
 sessions = {}  # session id -> {"lesson", "library", "state", "log"}
 
@@ -583,9 +584,9 @@ def api_parts_catalog(_body):
 
 MEDIA_DIRS = [ROOT / "library" / "tools" / "media", ROOT / "library" / "parts" / "media"]
 LIB_CATEGORY = {"board": "Boards", "breadboard": "Wiring", "wire": "Wiring", "cable": "Wiring", "utility": "Wiring",
-                "led": "Lights", "rgb-led": "Lights", "display": "Displays", "resistor": "Resistors", "potentiometer": "Inputs",
+                "led": "Lights", "rgb-led": "Lights", "display": "Displays", "resistor": "Resistors & capacitors", "potentiometer": "Inputs",
                 "pushbutton": "Inputs", "switch": "Inputs", "input": "Inputs", "sensor": "Sensors", "buzzer": "Sound",
-                "motor": "Motors", "driver": "Motors", "logic": "Chips", "storage": "Chips", "consumable": "Soldering"}
+                "motor": "Motors", "driver": "Motors", "logic": "Chips", "storage": "Chips", "chip": "Chips", "crystal": "Chips", "capacitor": "Resistors & capacitors", "consumable": "Soldering"}
 
 TOOL_CATEGORY = {"soldering-iron": "Soldering", "solder": "Soldering", "heat-shrink": "Soldering", "solder-wick": "Soldering",
                  "desoldering-pump": "Soldering", "flux-pen": "Soldering", "tip-cleaner": "Soldering",

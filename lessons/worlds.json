@@ -266,10 +266,12 @@
       "blurb": "Program bare chips and burn bootloaders.",
       "levels": [
         {
-          "title": "Arduino as ISP"
+          "title": "Arduino as ISP",
+          "lesson": "arduino-isp"
         },
         {
-          "title": "Microcontroller on a Breadboard"
+          "title": "Chip on a Breadboard",
+          "lesson": "arduino-to-breadboard"
         }
       ]
     }

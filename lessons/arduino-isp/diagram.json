@@ -1,0 +1,679 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "cq-atmega328p",
+      "id": "chip1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    },
+    {
+      "type": "cq-crystal",
+      "id": "xtal1",
+      "top": 0,
+      "left": 180,
+      "attrs": {}
+    },
+    {
+      "type": "cq-capacitor-ceramic",
+      "id": "cap1",
+      "top": 0,
+      "left": 240,
+      "attrs": {
+        "value": "22p"
+      }
+    },
+    {
+      "type": "cq-capacitor-ceramic",
+      "id": "cap2",
+      "top": 0,
+      "left": 300,
+      "attrs": {
+        "value": "22p"
+      }
+    },
+    {
+      "type": "cq-capacitor-electrolytic",
+      "id": "cap3",
+      "top": 0,
+      "left": 360,
+      "attrs": {
+        "value": "10u"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 0,
+      "left": 420,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 0,
+      "left": 480,
+      "attrs": {
+        "color": "green"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 0,
+      "left": 540,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": 0,
+      "left": 600,
+      "attrs": {
+        "color": "red"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": 0,
+      "left": 660,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": 0,
+      "left": 720,
+      "attrs": {
+        "color": "yellow"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "chip1:1",
+      "bb1:1b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:2",
+      "bb1:2b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:3",
+      "bb1:3b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:4",
+      "bb1:4b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:5",
+      "bb1:5b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:6",
+      "bb1:6b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:7",
+      "bb1:7b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:8",
+      "bb1:8b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:9",
+      "bb1:9b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:10",
+      "bb1:10b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:11",
+      "bb1:11b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:12",
+      "bb1:12b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:13",
+      "bb1:13b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:14",
+      "bb1:14b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:15",
+      "bb1:14t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:16",
+      "bb1:13t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:17",
+      "bb1:12t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:18",
+      "bb1:11t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:19",
+      "bb1:10t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:20",
+      "bb1:9t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:21",
+      "bb1:8t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:22",
+      "bb1:7t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:23",
+      "bb1:6t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:24",
+      "bb1:5t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:25",
+      "bb1:4t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:26",
+      "bb1:3t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:27",
+      "bb1:2t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "chip1:28",
+      "bb1:1t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:5V",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:7b.j",
+      "bb1:bp.6",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:8b.j",
+      "bb1:bn.7",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:9t.a",
+      "bb1:bp.8",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:7t.a",
+      "bb1:bn.6",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "xtal1:1",
+      "bb1:18b.g",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "xtal1:2",
+      "bb1:19b.g",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "cap1:1",
+      "bb1:16b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "cap1:2",
+      "bb1:18b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "cap2:1",
+      "bb1:19b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "cap2:2",
+      "bb1:21b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:9b.j",
+      "bb1:18b.j",
+      "yellow",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:10b.j",
+      "bb1:19b.j",
+      "yellow",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:16b.j",
+      "bb1:bn.14",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:21b.j",
+      "bb1:bn.18",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:13",
+      "bb1:10t.a",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:12",
+      "bb1:11t.a",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:11",
+      "bb1:12t.a",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:10",
+      "bb1:1b.j",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "cap3:POS",
+      "bb1:24b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "cap3:NEG",
+      "bb1:25b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:24b.j",
+      "uno:RESET",
+      "white",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:25b.j",
+      "bb1:bn.21",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:1",
+      "bb1:28b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:2",
+      "bb1:32b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:28b.g",
+      "uno:9",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led1:A",
+      "bb1:32b.i",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led1:C",
+      "bb1:31b.i",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:31b.j",
+      "bb1:bn.26",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r2:1",
+      "bb1:34b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r2:2",
+      "bb1:38b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:34b.g",
+      "uno:8",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led2:A",
+      "bb1:38b.i",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led2:C",
+      "bb1:37b.i",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:37b.j",
+      "bb1:bn.31",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r3:1",
+      "bb1:40b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r3:2",
+      "bb1:44b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:40b.g",
+      "uno:7",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led3:A",
+      "bb1:44b.i",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led3:C",
+      "bb1:43b.i",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:43b.j",
+      "bb1:bn.36",
+      "black",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

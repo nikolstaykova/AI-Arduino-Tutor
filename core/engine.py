@@ -2006,7 +2006,18 @@ def _run_check(lesson, library, state, step, expected_pairs, event, actions, on_
     on_pass()
 
 
-def _check_multi_leg_landing(pins, detected, connector_component_ids, alias_map):
+def _final_groups(lesson, alias_map):
+    """{canonical pin: group id}: which pins the lesson's finished circuit
+    puts on the same net (its final_check expected_nets, merged)."""
+    uf = checker.UnionFind()
+    for pair in lesson.data.get("final_check", {}).get("expected_nets", []):
+        canon = [checker._canonicalize_pin(p, alias_map) for p in pair]
+        for p in canon[1:]:
+            uf.union(canon[0], p)
+    return {p: uf.find(p) for p in list(uf.parent)}
+
+
+def _check_multi_leg_landing(pins, detected, connector_component_ids, alias_map, joined=None):
     """The list-valued analogue of checker.check_landed, for a part whose
     physical placement seats several legs at once (PARTS.md's
     `legs_placed_together` — a potentiometer's three legs, a pushbutton's
@@ -2036,10 +2047,14 @@ def _check_multi_leg_landing(pins, detected, connector_component_ids, alias_map)
     # Legs that fold to the SAME canonical pin (a pushbutton's 1.l and 1.r)
     # are one internal node by construction — sharing a net is not a short,
     # so a landing may list all four button legs, not just one per group.
+    # Legs the lesson's finished circuit joins anyway (a chip's two GND pins
+    # both wired to the − row) aren't a short either — a learner who wired
+    # ahead has simply connected them already.
+    joined = joined or {}
     shorted = [
         [pin for pin in pins if canon[pin] in net]
         for net in nets
-        if len({canon[pin] for pin in pins if canon[pin] in net}) > 1
+        if len({joined.get(canon[pin], canon[pin]) for pin in pins if canon[pin] in net}) > 1
     ]
     if shorted:
         conflicts["shorted_together"] = shorted
@@ -2133,7 +2148,7 @@ def _run_landing_check(lesson, library, state, step, event, actions, on_pass):
         )
         if error:
             actions.append({"type": "error", "message": error})
-        result = _check_multi_leg_landing(pins, detected, connector_component_ids, alias_map)
+        result = _check_multi_leg_landing(pins, detected, connector_component_ids, alias_map, _final_groups(lesson, alias_map))
 
         # A leg wired DIRECTLY to its own final Arduino pin, skipping the
         # breadboard entirely, is electrically fine regardless of whether

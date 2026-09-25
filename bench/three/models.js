@@ -435,8 +435,13 @@ export const PART_PINS = {
   "cq-midi-jack": [["1", 0, 0], ["2", 1, 0], ["3", 2, 0], ["4", 3, 0], ["5", 4, 0]],
   "cq-led-matrix-8x8": [...Array.from({ length: 8 }, (_, k) => [`R${k + 1}`, k, 0]), ...Array.from({ length: 8 }, (_, k) => [`C${k + 1}`, k, 11])],
   "wokwi-led-bar-graph": [...Array.from({ length: 10 }, (_, k) => [`A${k + 1}`, k, 0]), ...Array.from({ length: 10 }, (_, k) => [`C${k + 1}`, k, 3])],
+  // DIP-28: pins 1–14 left to right along the bottom row, 15–28 right to left along the top
+  "cq-atmega328p": [...Array.from({ length: 14 }, (_, k) => [`${k + 1}`, k, 3]), ...Array.from({ length: 14 }, (_, k) => [`${k + 15}`, 13 - k, 0])],
+  "cq-crystal": [["1", 0, 0], ["2", 1, 0]],
+  "cq-capacitor-ceramic": [["1", 0, 0], ["2", 2, 0]],
+  "cq-capacitor-electrolytic": [["POS", 0, 0], ["NEG", 1, 0]],
 };
-export const LIFT = { "wokwi-analog-joystick": 8.5, "cq-midi-jack": 0.5, "cq-led-matrix-8x8": 1, "wokwi-led-bar-graph": 0.6, "cq-ping": 2.5, "cq-adxl335": 8.5, "cq-memsic2125": 0.6, "wokwi-rgb-led": 2.2, "cq-photoresistor": 5, "cq-fsr": 4, "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
+export const LIFT = { "cq-atmega328p": 0.8, "cq-crystal": 1.2, "cq-capacitor-ceramic": 1.5, "cq-capacitor-electrolytic": 0.6, "wokwi-analog-joystick": 8.5, "cq-midi-jack": 0.5, "cq-led-matrix-8x8": 1, "wokwi-led-bar-graph": 0.6, "cq-ping": 2.5, "cq-adxl335": 8.5, "cq-memsic2125": 0.6, "wokwi-rgb-led": 2.2, "cq-photoresistor": 5, "cq-fsr": 4, "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
 
 function resistorBands(value) {
   const ohms = Math.round(Number(String(value || "1000").replace(/k/i, "e3").replace(/M/, "e6")) || 1000);
@@ -646,6 +651,65 @@ function makeFSR() {
   return g;
 }
 
+// ATmega328P in a DIP-28 package straddling the middle gap: pin 1 bottom-left
+// (next to the notch), 1–14 along the bottom row, 15–28 back along the top.
+function makeDIP28() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-atmega328p"], cx = 6.5 * PITCH, cz = 1.5 * PITCH;
+  const body = mesh(new RoundedBoxGeometry(14 * PITCH - 0.6, 3.4, 6.4, 2, 0.35), M.chip); body.position.set(cx, y0 + 1.7, cz); g.add(body);
+  const notch = mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.3, 20, 1, false, Math.PI / 2, Math.PI), M.blackPlastic);
+  notch.position.set(cx - 7 * PITCH + 0.3, y0 + 3.3, cz); g.add(notch);
+  const dot = mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.1, 16), M.blackPlastic); dot.position.set(1.2, y0 + 3.43, cz + 1.8); g.add(dot);
+  const top = mesh(new THREE.PlaneGeometry(26, 4), new THREE.MeshStandardMaterial({ transparent: true, roughness: 0.8, map: textTexture((ctx, W, H) => {
+    ctx.fillStyle = "#d8d8d8"; ctx.font = "bold 64px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("ATMEGA328P-PU", W / 2, H / 2);
+  }, 832, 128) }));
+  top.rotation.x = -Math.PI / 2; top.position.set(cx, y0 + 3.42, cz); g.add(top);
+  for (let i = 0; i < 14; i++) for (const [z, side] of [[0, 1], [3 * PITCH, -1]]) {
+    const x = i * PITCH, zb = cz - side * 3.2;
+    g.add(lead([[x, BB_TOP - 1.2, z], [x, y0 + 0.6, z], [x, y0 + 1.6, zb - side * 0.6], [x, y0 + 1.6, zb]], 0.28));
+  }
+  return g;
+}
+
+// A 16 MHz crystal (HC-49 can): a flat oval metal case on two legs.
+function makeCrystal() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-crystal"], cx = PITCH / 2;
+  const can = mesh(new RoundedBoxGeometry(10.5, 9, 4, 3, 1.9), M.metal); can.position.set(cx, y0 + 5, 0); g.add(can);
+  const base = mesh(new THREE.BoxGeometry(11, 0.8, 4.6), M.tin); base.position.set(cx, y0 + 0.5, 0); g.add(base);
+  const face = mesh(new THREE.PlaneGeometry(8, 3), new THREE.MeshStandardMaterial({ transparent: true, map: textTexture((ctx, W, H) => {
+    ctx.fillStyle = "#3a3d44"; ctx.font = "bold 56px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("16.000", W / 2, H / 2);
+  }, 320, 120) }));
+  face.position.set(cx, y0 + 5.5, 2.02); g.add(face);
+  for (const x of [0, PITCH]) g.add(lead([[x, BB_TOP - 1.2, 0], [x, y0 + 0.6, 0], [cx + (x ? 1.2 : -1.2), y0 + 0.9, 0]], 0.25));
+  return g;
+}
+
+// A ceramic capacitor (22 pF): a small orange-brown blob on two legs, "22" printed on it.
+function makeCeramicCap() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-capacitor-ceramic"], cx = PITCH;
+  const blob = mesh(new THREE.SphereGeometry(2.4, 24, 16), new THREE.MeshStandardMaterial({ color: 0xc98a3a, roughness: 0.45 }));
+  blob.scale.set(1.15, 1.1, 0.55); blob.position.set(cx, y0 + 3.2, 0); g.add(blob);
+  const face = mesh(new THREE.PlaneGeometry(2.6, 1.4), new THREE.MeshStandardMaterial({ transparent: true, map: textTexture((ctx, W, H) => {
+    ctx.fillStyle = "#3b2410"; ctx.font = "bold 60px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("22", W / 2, H / 2);
+  }, 128, 70) }));
+  face.position.set(cx, y0 + 3.3, 1.34); g.add(face);
+  for (const x of [0, 2 * PITCH]) g.add(lead([[x, BB_TOP - 1.2, 0], [x, y0 + 0.4, 0], [cx + (x ? 0.8 : -0.8), y0 + 2, 0]], 0.22));
+  return g;
+}
+
+// An electrolytic capacitor (10 µF): a blue can with a pale stripe down the − side, legs one hole apart.
+function makeElectrolytic() {
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["cq-capacitor-electrolytic"], cx = PITCH / 2;
+  const sleeve = mesh(new THREE.CylinderGeometry(2.5, 2.5, 7, 32), new THREE.MeshStandardMaterial({ color: 0x1f3f8f, roughness: 0.4 }));
+  sleeve.position.set(cx, y0 + 3.9, 0); g.add(sleeve);
+  const stripe = mesh(new THREE.CylinderGeometry(2.52, 2.52, 6.6, 32, 1, true, Math.PI * 0.3, Math.PI * 0.4), new THREE.MeshStandardMaterial({ color: 0xcfd6e6, roughness: 0.5, side: THREE.DoubleSide }));
+  stripe.position.set(cx, y0 + 3.9, 0); g.add(stripe);          // the − stripe faces leg 2 (+x)
+  const lid = mesh(new THREE.CylinderGeometry(2.3, 2.3, 0.2, 32), M.metal); lid.position.set(cx, y0 + 7.45, 0); g.add(lid);
+  const vent = mesh(new THREE.BoxGeometry(3, 0.1, 0.25), M.tin); vent.position.set(cx, y0 + 7.56, 0); g.add(vent);
+  const vent2 = vent.clone(); vent2.rotation.y = Math.PI / 2; g.add(vent2);
+  for (const x of [0, PITCH]) g.add(lead([[x, BB_TOP - 1.2, 0], [x, y0 + 0.5, 0]], 0.24));
+  return g;
+}
+
 // Parallax PING))): a small blue board standing upright on its 3 pins, the two
 // transducers (the "eyes") facing you.
 function makePing() {
@@ -752,7 +816,7 @@ function makeJoystick() {
 }
 
 export function makePart(wokwiType, attrs = {}) {
-  const build = { "wokwi-analog-joystick": makeJoystick, "cq-midi-jack": makeMidiJack, "cq-led-matrix-8x8": makeMatrix, "wokwi-led-bar-graph": makeBarGraph, "cq-ping": makePing, "cq-adxl335": makeADXL, "cq-memsic2125": makeMemsic, "wokwi-rgb-led": makeRGB, "cq-photoresistor": makeLDR, "cq-fsr": makeFSR, "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
+  const build = { "cq-atmega328p": makeDIP28, "cq-crystal": makeCrystal, "cq-capacitor-ceramic": makeCeramicCap, "cq-capacitor-electrolytic": makeElectrolytic, "wokwi-analog-joystick": makeJoystick, "cq-midi-jack": makeMidiJack, "cq-led-matrix-8x8": makeMatrix, "wokwi-led-bar-graph": makeBarGraph, "cq-ping": makePing, "cq-adxl335": makeADXL, "cq-memsic2125": makeMemsic, "wokwi-rgb-led": makeRGB, "cq-photoresistor": makeLDR, "cq-fsr": makeFSR, "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
                   "wokwi-pushbutton-6mm": makePushbutton, "wokwi-potentiometer": makePotentiometer }[wokwiType]
                 || (() => makeGeneric(wokwiType));
   const g = build(attrs);
