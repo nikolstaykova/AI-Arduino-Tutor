@@ -5,12 +5,28 @@
   "legs_placed_together": true,
   "wokwi_type": "wokwi-pir-motion-sensor",
   "display_name": "PIR Motion Sensor",
-  "aliases": ["pir", "pir sensor", "motion sensor"],
+  "aliases": [
+    "pir",
+    "pir sensor",
+    "motion sensor"
+  ],
   "description": "A passive infrared motion sensor with a digital output.",
-  "how_to_use": "VCC/GND power, OUT is a digital output that goes high when motion is detected and returns low after a delay.",
+  "how_to_use": "Three header pins in a row, left to right with the dome up: VCC, OUT, GND. Power it from 5V and GND (it needs about 4.5 V or more). While powered, OUT is actively driven: about 3.3 V (reads HIGH on a 5 V Arduino) while it sees motion, 0 V while all is still — so the Arduino pin reading it needs no pull-up or pull-down resistor; read it with digitalRead() on a pin set to INPUT. OUT can also drive an LED directly through a resistor. The real module holds OUT high for a few seconds after the motion stops (set by its orange trimpot).",
   "image": "pir-motion-sensor.png",
+  "polarized": true,
+  "pins": {
+    "VCC": "power in, + (5V)",
+    "OUT": "the output: HIGH while motion is sensed, LOW when still",
+    "GND": "ground, − (GND)"
+  },
+  "leads": "pin",
   "plain": {
     "what": "Notices when a person or animal moves in front of it (it senses body heat).",
-    "how": "VCC to 5V, GND to GND, OUT to an Arduino pin. OUT turns on when it sees movement."
+    "how": "VCC to 5V, GND to GND, OUT to an Arduino pin. OUT turns on (HIGH) while it sees movement — no extra resistor needed.",
+    "pins": {
+      "VCC": "power + (to 5V)",
+      "OUT": "turns on when it sees movement (to an Arduino pin)",
+      "GND": "power − (to GND)"
+    }
   }
 }

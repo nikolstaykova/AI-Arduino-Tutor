@@ -406,8 +406,9 @@ export const PART_PINS = {
   "wokwi-potentiometer": [["GND", 0, 0], ["SIG", 1, 0], ["VCC", 2, 0]],
   "wokwi-slide-switch": [["1", 0, 0], ["2", 1, 0], ["3", 2, 0]],
   "wokwi-buzzer": [["1", 0, 0], ["2", 3, 0]],
+  "wokwi-pir-motion-sensor": [["VCC", 0, 0], ["OUT", 1, 0], ["GND", 2, 0]],
 };
-export const LIFT = { "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
+export const LIFT = { "wokwi-pir-motion-sensor": 8.5, "wokwi-buzzer": 0.5, "wokwi-slide-switch": 0.6, "wokwi-led": 2.2, "wokwi-resistor": 3.2, "wokwi-pushbutton": 0.4, "wokwi-pushbutton-6mm": 0.4, "wokwi-potentiometer": 1.2 };
 
 function resistorBands(value) {
   const ohms = Math.round(Number(String(value || "1000").replace(/k/i, "e3").replace(/M/, "e6")) || 1000);
@@ -567,8 +568,28 @@ function makeBuzzer() {
   return g;
 }
 
+// An HC-SR501 PIR module standing on its three header pins (VCC, OUT, GND):
+// green board, white Fresnel dome you click to "wave at" it; while it sees
+// motion the dome glows faintly and the board's little LED lights.
+function makePIR() {
+  // the board overhangs towards the breadboard's outer edge (row a), leaving rows d–e free for wires
+  const g = new THREE.Group(), y0 = BB_TOP + LIFT["wokwi-pir-motion-sensor"], cx = PITCH, cz = -13;
+  const board = mesh(new RoundedBoxGeometry(32.3, 1.6, 24.3, 2, 0.4), new THREE.MeshPhysicalMaterial({ color: 0x1d6b3c, roughness: 0.45, clearcoat: 0.4 }));
+  board.position.set(cx, y0 + 0.8, cz); board.userData.passThrough = true; g.add(board);    // clicks reach the holes below
+  const skirt = mesh(new THREE.BoxGeometry(23.5, 3, 23.5), M.whitePlastic); skirt.position.set(cx, y0 + 3.1, cz); skirt.userData.kind = "pir"; g.add(skirt);
+  const domeMat = new THREE.MeshPhysicalMaterial({ color: 0xf6f5ef, roughness: 0.55, flatShading: true, emissive: 0xff5040, emissiveIntensity: 0 });
+  const dome = mesh(new THREE.SphereGeometry(11.5, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), domeMat);
+  dome.position.set(cx, y0 + 4.6, cz); dome.userData.kind = "pir"; g.add(dome);
+  const spacer = mesh(new THREE.BoxGeometry(3 * PITCH, 2.5, PITCH), M.blackPlastic); spacer.position.set(PITCH, y0 - 1.25, 0); g.add(spacer);
+  for (let i = 0; i < 3; i++) g.add(lead([[i * PITCH, BB_TOP - 1.2, 0], [i * PITCH, y0 + 1.8, 0]], 0.32, M.gold || M.tin));
+  const led = mesh(new THREE.BoxGeometry(1.6, 0.6, 0.8), new THREE.MeshStandardMaterial({ color: 0x220000, emissive: 0xff2a1a, emissiveIntensity: 0 }));
+  led.position.set(cx + 13, y0 + 1.9, cz + 9); g.add(led);
+  g.userData.setMotion = (on) => { domeMat.emissiveIntensity = on ? 0.18 : 0; led.material.emissiveIntensity = on ? 2 : 0; };
+  return g;
+}
+
 export function makePart(wokwiType, attrs = {}) {
-  const build = { "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
+  const build = { "wokwi-pir-motion-sensor": makePIR, "wokwi-buzzer": makeBuzzer, "wokwi-slide-switch": makeSlideSwitch, "wokwi-led": makeLED, "wokwi-resistor": makeResistor, "wokwi-pushbutton": makePushbutton,
                   "wokwi-pushbutton-6mm": makePushbutton, "wokwi-potentiometer": makePotentiometer }[wokwiType]
                 || (() => makeGeneric(wokwiType));
   const g = build(attrs);

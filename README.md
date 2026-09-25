@@ -88,7 +88,7 @@ Principles (full list in [`PLAN.md`](./PLAN.md)):
 
 ```bash
 CQ_PROFILE=/tmp/test_profile.json CQ_AI_BACKEND=none python3 bench_server.py 8799 &
-node bench/ui_3d_smoke.js /tmp/shots        # also ui_flow_smoke, ui_nobb_smoke, ui_reveal_smoke, ui_library_smoke
+node bench/ui_3d_smoke.js /tmp/shots        # also ui_flow_smoke, ui_nobb_smoke, ui_reveal_smoke, ui_library_smoke, ui_pir_smoke
 ```
 
 `CQ_PROFILE` keeps tests away from your real progress; `CQ_AI_BACKEND=none` keeps them from calling Claude.

@@ -1,0 +1,202 @@
+{
+  "id": "motion-alarm",
+  "title": "Motion Alarm",
+  "description": "A PIR motion sensor switches an LED on when something moves in front of it.",
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "digital-read-serial"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "pir-motion-sensor",
+    "led",
+    "resistor-220",
+    "jumper-wire"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, a PIR motion sensor, one LED, one 220 Ω resistor and a few jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "pir-motion-sensor",
+        "led",
+        "resistor-220",
+        "jumper-wire"
+      ]
+    },
+    {
+      "id": "step-1a",
+      "phase": "build",
+      "clip": "Push the motion sensor's three pins into the breadboard, each in its own numbered column. With the white dome facing up, the pins are VCC, OUT and GND from left to right.",
+      "expected_landing": [
+        "pir1:VCC",
+        "pir1:OUT",
+        "pir1:GND"
+      ],
+      "strict": false,
+      "hints": [
+        "The names are printed next to the pins on the sensor's board.",
+        "Three pins, three different columns — so each pin gets its own connection."
+      ],
+      "goal": "Put the motion sensor on the breadboard."
+    },
+    {
+      "id": "step-1b",
+      "phase": "build",
+      "clip": "Take a jumper wire. Put one end in a free hole in the VCC pin's column, and the other end into the 5V pin on the Arduino.",
+      "expected_nets": [
+        [
+          "pir1:VCC",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "VCC is the sensor's power input (+).",
+        "5V is on the Arduino's power header, next to the GND pins."
+      ],
+      "goal": "Give the sensor power: VCC to 5V."
+    },
+    {
+      "id": "step-1c",
+      "phase": "build",
+      "clip": "Another jumper wire: from the GND pin's column to a GND pin on the Arduino.",
+      "expected_nets": [
+        [
+          "pir1:GND",
+          "uno:GND.2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "GND is the minus (−) side. Any GND pin on the Arduino works.",
+        "If VCC and GND are swapped the sensor stays off — check the labels."
+      ],
+      "goal": "Connect the sensor's GND to the Arduino's GND."
+    },
+    {
+      "id": "step-1d",
+      "phase": "build",
+      "clip": "Now the signal: a jumper wire from the OUT pin's column to pin 2 on the Arduino. OUT turns HIGH when the sensor sees movement.",
+      "expected_nets": [
+        [
+          "pir1:OUT",
+          "uno:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "OUT is the middle pin.",
+        "No resistor needed — the sensor drives OUT itself, both HIGH and LOW."
+      ],
+      "goal": "Connect the sensor's OUT to pin 2."
+    },
+    {
+      "id": "step-2a",
+      "phase": "build",
+      "clip": "Push the resistor into the breadboard, with its two legs in two different numbered columns.",
+      "expected_landing": "r1:1",
+      "strict": false,
+      "hints": [
+        "A resistor works either way round.",
+        "Each numbered column is one connection, so the two legs need two different columns."
+      ],
+      "goal": "Put the resistor on the breadboard."
+    },
+    {
+      "id": "step-2b",
+      "phase": "build",
+      "clip": "A jumper wire from one of the resistor's columns to pin 13 on the Arduino.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "uno:13"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 13 is on the Arduino's top row of sockets, next to GND.",
+        "Any free hole in that column works."
+      ],
+      "goal": "Connect one end of the resistor to pin 13."
+    },
+    {
+      "id": "step-3",
+      "phase": "build",
+      "clip": "Now the LED: its long leg in the same column as the resistor's other leg, its short leg in an empty column next to it.",
+      "expected_nets": [
+        [
+          "led1:A",
+          "r1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The long leg is the + side (the anode).",
+        "Two legs in the same column are already connected — no wire needed."
+      ],
+      "goal": "Connect the LED's long leg (+) to the free end of the resistor."
+    },
+    {
+      "id": "step-4",
+      "phase": "build",
+      "clip": "Last wire: from the LED's short-leg column to a GND pin on the Arduino.",
+      "expected_nets": [
+        [
+          "led1:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The short leg is the − side (the cathode).",
+        "Any GND pin works — they're all connected inside the board."
+      ],
+      "goal": "Connect the LED's short leg (−) to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Wave your hand in front of the sensor — the LED lights up while it sees you move.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "pir1:VCC",
+        "uno:5V"
+      ],
+      [
+        "pir1:GND",
+        "uno:GND.2"
+      ],
+      [
+        "pir1:OUT",
+        "uno:2"
+      ],
+      [
+        "r1:1",
+        "uno:13"
+      ],
+      [
+        "led1:A",
+        "r1:2"
+      ],
+      [
+        "led1:C",
+        "uno:GND.1"
+      ]
+    ]
+  }
+}

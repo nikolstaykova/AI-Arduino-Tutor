@@ -395,7 +395,7 @@ export class Bench3D {
     this.ray.setFromCamera(this.ndc, this.camera);
     const targets = [this.bb, this.board, ...Object.values(this.parts), this.wires].filter(Boolean);
     // invisible leg grab-spheres count as hits; other invisible helpers don't
-    const hits = this.ray.intersectObjects(targets, true).filter((h) => h.object.visible || h.object.userData.leg);
+    const hits = this.ray.intersectObjects(targets, true).filter((h) => (h.object.visible || h.object.userData.leg) && !h.object.userData.passThrough);
     // a leg tip's grab-sphere wins over the part's own body/lead around it
     const hit = hits.find((h) => h.object.userData.leg) || hits[0];
     const point = hit ? hit.point : this._tablePoint();
@@ -407,7 +407,7 @@ export class Bench3D {
       const id = o.userData.partId;
       let k = o; while (k && !k.userData.kind && k.userData.partId) k = k.parent;
       const kind = o.userData.kind === "knob" || (k && k.userData.kind === "knob") ? "knob"
-        : o.userData.kind === "buttonCap" ? "buttonCap" : o.userData.kind === "slider" ? "slider" : "part";
+        : o.userData.kind === "buttonCap" ? "buttonCap" : o.userData.kind === "slider" ? "slider" : o.userData.kind === "pir" ? "pir" : "part";
       return { kind, id, point };
     }
     if (this.bb && this._within(o, this.bb)) {

@@ -31,6 +31,20 @@ async function api(path, body) {
 function safeHtml(text) {
   return esc(text).replace(/&lt;(\/?)(b|i|em|strong|code)&gt;/gi, "<$1$2>").replace(/&lt;br\s*\/?&gt;/gi, "<br>");
 }
+// "Wave" at a PIR sensor: it sees motion, holds OUT high a few seconds (like the
+// real module's delay), then goes quiet again.
+const pirTimers = {};
+function waveAt(id) {
+  S.pressed[id] = true;
+  B.parts[id] && B.parts[id].userData.setMotion && B.parts[id].userData.setMotion(true);
+  applyPhysics(); toast("👋 You waved at the sensor — it sees motion.");
+  clearTimeout(pirTimers[id]);
+  pirTimers[id] = setTimeout(() => {
+    S.pressed[id] = false;
+    B.parts[id] && B.parts[id].userData.setMotion && B.parts[id].userData.setMotion(false);
+    applyPhysics();
+  }, 5000);
+}
 function guarded(fn) {
   return async (...args) => { try { await fn(...args); } catch (e) { console.error(e); toast("⚠️ " + e.message); } };
 }
@@ -343,6 +357,9 @@ function wireStage() {
       S.pressed[p.id] = !S.pressed[p.id]; B.parts[p.id].userData.setPosition(S.pressed[p.id]); applyPhysics();
       toast(`Switch slid toward pin ${S.pressed[p.id] ? 3 : 1}.`); return true;
     }
+    if (p.kind === "pir") {                          // PIR: a click is a wave in front of it — motion for a few seconds
+      waveAt(p.id); return true;
+    }
     if (p.kind === "part") { partDown = { id: p.id, x: e.clientX, y: e.clientY }; return true; }
     if (p.kind === "wire") { selectWire(p.index); return true; }
     select(null);
@@ -383,7 +400,7 @@ function wireStage() {
   });
   B.on("hover", (p, e) => { if (!drag && !knob) hover(p, e); });
   B.on("dbl", (p) => {
-    if (["part", "knob", "buttonCap", "slider", "leg"].includes(p.kind)) openInspector(partTarget(p.id));
+    if (["part", "knob", "buttonCap", "slider", "pir", "leg"].includes(p.kind)) openInspector(partTarget(p.id));
     else if (p.kind === "board" || p.kind === "boardPin") openInspector({ kind: "board", wokwiType: G.boardType, label: G.boardType.replace("wokwi-", "").replace(/-/g, " "), instance: G.boardId, focus: p.component, pin: p.pin });
     else if (p.kind === "hole" || p.kind === "breadboard") openInspector({ kind: "breadboard", wokwiType: G.bbType, label: "Breadboard", cardId: "breadboard" });
   });
@@ -455,9 +472,9 @@ async function hover(p, e) {
     const data = await cardFor(part.def.wokwi_type, part.def.attrs, part.def.card_id);
     const meaning = data && data.card.pins && data.card.pins[p.pin];
     html = `<b>${esc(part.def.label)} · ${esc(p.pin)}</b>${meaning ? " — " + esc(meaning) : ""}<br>${leads.length ? "connected to " + esc(leads.join(", ")) : "bare leg — drag from here to connect it"}`;
-  } else if (p.kind === "part" || p.kind === "knob" || p.kind === "buttonCap" || p.kind === "slider") {
+  } else if (p.kind === "part" || p.kind === "knob" || p.kind === "buttonCap" || p.kind === "slider" || p.kind === "pir") {
     const part = S.placed[p.id];
-    const extra = p.kind === "knob" ? "drag the knob sideways to turn it" : p.kind === "buttonCap" ? "hold to press" : p.kind === "slider" ? `click to slide it (now toward pin ${S.pressed[p.id] ? 3 : 1})` : "drag to move · double-click to inspect";
+    const extra = p.kind === "knob" ? "drag the knob sideways to turn it" : p.kind === "buttonCap" ? "hold to press" : p.kind === "slider" ? `click to slide it (now toward pin ${S.pressed[p.id] ? 3 : 1})` : p.kind === "pir" ? "click to wave your hand in front of it" : "drag to move · double-click to inspect";
     html = `<b>${esc(part.def.label)}</b> — ${extra}${part.at ? "" : `<br>${Object.entries(part.legs).map(([k, v]) => `${esc(k)}→${esc(v || "air")}`).join(" · ")}`}`;
   } else if (p.kind === "board" && UNO_COMPONENTS[p.component] && G.boardType === "wokwi-arduino-uno") {
     const c = UNO_COMPONENTS[p.component];
@@ -778,6 +795,7 @@ function renderPhysics(result, scenario) {
   if (sc) {
     out.push(`<div class="panel-title" style="margin-top:6px;">${esc(sc.label)}</div>`);
     Object.entries(sc.leds).forEach(([id, l]) => out.push(`<div class="phys-item">${esc(id)}: <b>${esc(l.state)}</b>${l.current_ma ? ` · ${l.current_ma} mA` : ""}</div>`));
+    Object.entries(sc.pirs || {}).forEach(([id, pr]) => out.push(`<div class="phys-item">${esc(id)}: <b>${!pr.powered ? "no power" : pr.motion ? "sees motion — OUT is HIGH" : "no motion — OUT is LOW"}</b></div>`));
     Object.entries(sc.buzzers || {}).forEach(([id, bz]) => out.push(`<div class="phys-item">${esc(id)}: <b>${bz.state === "sounding" ? "sounding" : bz.state === "reversed" ? "wired backwards (+ and − swapped)" : "silent"}</b></div>`));
     Object.entries(sc.pins).forEach(([pin, info]) => {
       if (info.reading !== undefined) {

@@ -70,6 +70,16 @@ _SLIDE_TYPES = {"wokwi-slide-switch"}
 _BUZZER_TYPES = {"wokwi-buzzer"}
 BUZZER_RESISTANCE = 1000.0
 BUZZER_ON_VOLTS = 1.5
+# A PIR motion sensor module (HC-SR501): VCC/GND power it (a light load), and
+# while powered its OUT pin is actively driven — about 3.3 V when it sees
+# motion, 0 V when all is still — through the module's output resistance.
+# Unpowered (or powered backwards), OUT floats. "Motion" is a scenario, like
+# a button being pressed.
+_PIR_TYPES = {"wokwi-pir-motion-sensor"}
+PIR_SUPPLY_RESISTANCE = 50_000.0      # ~0.1 mA quiescent draw
+PIR_OUTPUT_RESISTANCE = 1_000.0
+PIR_HIGH_VOLTS = 3.3
+PIR_MIN_SUPPLY = 4.0                  # the module's regulator needs about 4.5–20 V
 _POT_TYPES = {"wokwi-potentiometer", "wokwi-slide-potentiometer"}
 _SUPPLY_PINS = {"5V": 5.0, "3.3V": 3.3, "3V3": 3.3}
 _BOARD_PINS_NOT_MODELLED = {"VIN", "AREF", "IOREF", "RESET"}
@@ -180,6 +190,8 @@ class _Circuit:
         self.slides = []      # (id, node_1, node_common, node_3)
         self.buzzers = []     # (id, node_plus, node_minus)
         self.pots = []        # (id, gnd_end, wiper, vcc_end, ohms)
+        self.pirs = []        # (id, vcc, out, gnd)
+        self.pir_powered = {}
         self.unmodeled = []
         for part in diagram_parts:
             pid, wtype, attrs = part["id"], part.get("type", ""), part.get("attrs", {})
@@ -198,6 +210,11 @@ class _Circuit:
                 self.resistors.append((pid, plus, minus, BUZZER_RESISTANCE))
             elif wtype in _SLIDE_TYPES:
                 self.slides.append((pid, self.node(f"{pid}:1"), self.node(f"{pid}:2"), self.node(f"{pid}:3")))
+            elif wtype in _PIR_TYPES:
+                vcc, out, gnd = self.node(f"{pid}:VCC"), self.node(f"{pid}:OUT"), self.node(f"{pid}:GND")
+                self.pirs.append((pid, vcc, out, gnd))
+                self.resistors.append((f"{pid} (supply)", vcc, gnd, PIR_SUPPLY_RESISTANCE))
+                self.pir_powered[pid] = True
             elif wtype in _POT_TYPES:
                 ohms = parse_resistance(attrs.get("value"), POT_RESISTANCE)
                 self.pots.append((pid, self.node(f"{pid}:GND"), self.node(f"{pid}:SIG"), self.node(f"{pid}:VCC"), ohms))
@@ -298,6 +315,16 @@ class _Circuit:
                     b[ic] -= gs * vf
             else:
                 conductance(anode, cathode, GMIN)
+        for pid, vcc, out, gnd in self.pirs:
+            if self.pir_powered.get(pid) and out not in (gnd, vcc):
+                # Norton source between OUT and the module's own GND
+                volts_out, go = (PIR_HIGH_VOLTS if pressed.get(pid) else 0.0), 1.0 / PIR_OUTPUT_RESISTANCE
+                conductance(out, gnd, go)
+                io, ig = self.index.get(out), self.index.get(gnd)
+                if io is not None:
+                    b[io] += volts_out * go
+                if ig is not None:
+                    b[ig] -= volts_out * go
         for _, node, volts in self.supplies:
             source_to_ground(node, volts, SUPPLY_RESISTANCE)
         for _, node in self.outputs:
@@ -309,6 +336,19 @@ class _Circuit:
         return {node: x[i] for node, i in self.index.items()} | {self.ground: 0.0}
 
     def solve(self, pressed):
+        """Solve, then check which PIR modules really got enough supply; if
+        that changes anything, solve again (a sensor only drives OUT when
+        it's powered)."""
+        self.pir_powered = {pid: True for pid, *_ in self.pirs}
+        for _ in range(3):
+            volts, led_on = self._solve_leds(pressed)
+            powered = {pid: volts[vcc] - volts[gnd] >= PIR_MIN_SUPPLY for pid, vcc, _, gnd in self.pirs}
+            if powered == self.pir_powered:
+                break
+            self.pir_powered = powered
+        return volts, led_on
+
+    def _solve_leds(self, pressed):
         """Piecewise-linear LED iteration: start all off, switch on any LED
         forward-biased past Vf, switch off any conducting LED whose current
         went negative, repeat until stable."""
@@ -348,6 +388,9 @@ class _Circuit:
         for pid, anode, cathode, _ in self.leds:
             if led_on.get(pid):
                 link(anode, cathode)
+        for pid, _, out, gnd in self.pirs:
+            if self.pir_powered.get(pid):
+                link(out, gnd)                  # OUT is actively driven
         fixed, seen, todo = self.fixed_nodes(), {start}, [start]
         while todo:
             node = todo.pop()
@@ -380,8 +423,16 @@ def analyze(pairs, diagram_parts, code, library=None):
     }"""
     library = library or load_library()
     circuit = _Circuit(pairs, diagram_parts, code, library)
-    button_ids = [pid for pid, *_ in circuit.buttons] + [pid for pid, *_ in circuit.slides]
+    button_ids = [pid for pid, *_ in circuit.buttons] + [pid for pid, *_ in circuit.slides] + [pid for pid, *_ in circuit.pirs]
     slide_ids = {pid for pid, *_ in circuit.slides}
+    pir_ids = {pid for pid, *_ in circuit.pirs}
+
+    def state_word(pid, on):
+        if pid in slide_ids:
+            return "at pin 3" if on else "at pin 1"
+        if pid in pir_ids:
+            return "sees motion" if on else "sees no motion"
+        return "pressed" if on else "released"
     scenarios, findings = [], []
     seen_findings = set()
 
@@ -395,10 +446,20 @@ def analyze(pairs, diagram_parts, code, library=None):
 
     for combo in itertools.product([False, True], repeat=len(button_ids)):
         pressed = dict(zip(button_ids, combo))
-        label = ", ".join(f"{pid} {('at pin 3' if p else 'at pin 1') if pid in slide_ids else ('pressed' if p else 'released')}"
-                          for pid, p in pressed.items()) or "steady state"
+        label = ", ".join(f"{pid} {state_word(pid, p)}" for pid, p in pressed.items()) or "steady state"
         volts, led_on = circuit.solve(pressed)
-        scenario = {"label": label, "pressed": pressed, "leds": {}, "pins": {}, "buzzers": {}}
+        scenario = {"label": label, "pressed": pressed, "leds": {}, "pins": {}, "buzzers": {}, "pirs": {}}
+        for pid, vcc, out, gnd in circuit.pirs:
+            supply = volts[vcc] - volts[gnd]
+            powered = circuit.pir_powered.get(pid, False)
+            scenario["pirs"][pid] = {"powered": powered, "motion": bool(pressed.get(pid)), "supply_v": round(supply, 2),
+                                     "out_v": round(volts[out] - volts[gnd], 2) if powered else None}
+            if supply < -1.0:
+                add("warning", "pir_reversed", pid, f"{pid}'s power is the wrong way round: VCC should go to 5V and GND to GND. "
+                    "Swapped, the sensor stays off (and can be damaged).", label)
+            elif not powered:
+                add("warning", "pir_unpowered", pid, f"{pid} has no power, so it can't sense anything: connect its VCC leg to 5V "
+                    "and its GND leg to GND.", label)
         for pid, plus, minus in circuit.buzzers:
             vd = volts[plus] - volts[minus]
             scenario["buzzers"][pid] = {"state": "sounding" if vd > BUZZER_ON_VOLTS else "reversed" if vd < -BUZZER_ON_VOLTS else "silent",

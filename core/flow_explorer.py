@@ -80,7 +80,9 @@ def enumerate_flows(lesson, library=None, exhaustive_mistakes=False, mode="full"
         return
 
     if len(choices) <= 2:
-        pin_sets = [dict(zip(choices, combo)) for combo in itertools.product(*choices.values())]
+        # every combination — except two signals landing on the same pin, which no one can wire
+        pin_sets = [dict(zip(choices, combo)) for combo in itertools.product(*choices.values())
+                    if len(set(combo)) == len(combo)]
     else:
         pin_sets = [{k: k for k in choices}]
         for pin, options in choices.items():

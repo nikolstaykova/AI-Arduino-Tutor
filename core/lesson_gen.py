@@ -52,7 +52,7 @@ MAX_ATTEMPTS = 3
 # Part types the engine AND the physics solver fully model. Their physical
 # facts (pins, internal connections, interchangeable legs, polarity, how
 # they're placed) are read from the library cards — see part_facts().
-MODELLED_TYPES = ["wokwi-led", "wokwi-resistor", "wokwi-potentiometer", "wokwi-pushbutton", "wokwi-slide-switch", "wokwi-buzzer"]
+MODELLED_TYPES = ["wokwi-led", "wokwi-resistor", "wokwi-potentiometer", "wokwi-pushbutton", "wokwi-slide-switch", "wokwi-buzzer", "wokwi-pir-motion-sensor"]
 UNO_PINS = ({str(n) for n in range(14)} | {f"A{n}" for n in range(6)}
             | {"5V", "3.3V", "VIN", "GND.1", "GND.2", "GND.3", "AREF", "IOREF", "RESET"})
 BREADBOARD_TYPES = {"wokwi-breadboard", "wokwi-breadboard-half", "wokwi-breadboard-mini"}
