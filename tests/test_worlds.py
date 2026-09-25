@@ -14,7 +14,7 @@ def test_every_lesson_lands_in_exactly_one_world_with_a_level_number():
     real = [lv for w in worlds for lv in w["levels"] if not lv.get("soon")]
     assert sorted(lv["id"] for lv in real) == sorted(l["id"] for l in LESSONS)
     numbers = {lv["id"]: lv["level"] for lv in real}
-    assert numbers["blink"] == "1-2"                       # Basics: Bare Minimum is 1-1
+    assert numbers["blink"] == "1-1"                       # code-only examples (Bare Minimum) aren't levels
     assert worlds[-1]["id"] == "ai-lab" and [lv["id"] for lv in worlds[-1]["levels"]] == ["gen-1"]
     assert any(w["id"] == "workshop" and w["levels"][0]["id"] == "my-extra" for w in worlds)
 
@@ -22,14 +22,14 @@ def test_every_lesson_lands_in_exactly_one_world_with_a_level_number():
 def test_worlds_follow_the_official_arduino_example_groups():
     config = load_worlds()
     assert [w["group"] for w in config["worlds"]] == ["Basics", "Digital", "Analog", "Communication", "Control Structures",
-                                                      "Sensors", "Display", "Strings", "USB", "Arduino ISP"]
-    assert sum(len(w["levels"]) for w in config["worlds"]) == 68
+                                                      "Sensors", "Display", "USB", "Arduino ISP"]
+    assert sum(len(w["levels"]) for w in config["worlds"]) == 48       # every example that has a circuit
 
 
 def test_examples_without_a_lesson_stay_as_named_coming_soon_levels():
     worlds = build_map([{"id": "blink"}])
     basics = worlds[0]
-    assert [lv.get("title") for lv in basics["levels"] if lv.get("soon")][:1] == ["Bare Minimum"]
+    assert [lv.get("title") for lv in basics["levels"] if lv.get("soon")][:1] == ["Digital Read Serial"]
     assert not basics["coming_soon"] and worlds[1]["coming_soon"]
     assert worlds[1]["levels"][2] == {"soon": True, "title": "Debounce", "level": "2-3"}
     assert worlds[-1]["id"] == "ai-lab" and worlds[-1]["levels"] == []
@@ -68,3 +68,8 @@ def test_any_level_can_be_played_first_and_is_marked_completed(tmp_path, monkeyp
     started = bench_server.api_start({"lesson_id": "analog-read-serial", "difficulty": "beginner"})
     assert isinstance(started, dict) and "session" in started
     assert "worlds" in listing and listing["worlds"][0]["levels"][1]["level"] == "1-2"
+
+
+def test_code_only_examples_are_not_on_the_map():
+    titles = {lv["title"] for w in load_worlds()["worlds"] for lv in w["levels"]}
+    assert not titles & {"Bare Minimum", "ASCII Table", "SerialEvent", "Serial Passthrough", "Keyboard Serial", "String Length"}

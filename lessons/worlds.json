@@ -1,5 +1,5 @@
 {
-  "_comment": "The Learn map. One world per group of the official Arduino built-in examples (docs.arduino.cc/built-in-examples), every example a level in order. `lesson` names the lesson folder once it exists; levels without one show as 'coming soon' so numbering never changes. Lessons in no world land in the Workshop; AI-generated lessons land in the AI Lab.",
+  "_comment": "The Learn map. One world per group of the official Arduino built-in examples (docs.arduino.cc/built-in-examples), every example with a circuit is a level, in order (code-only examples — the Strings group, Bare Minimum, ASCII Table, Serial Passthrough … — aren't on the map). `lesson` names the lesson folder once it exists; levels without one show as 'coming soon' so numbering never changes. Lessons in no world land in the Workshop; AI-generated lessons land in the AI Lab.",
   "source": "https://docs.arduino.cc/built-in-examples/",
   "worlds": [
     {
@@ -9,9 +9,6 @@
       "theme": "basics",
       "blurb": "Your first circuits: blink, read a button, read a knob.",
       "levels": [
-        {
-          "title": "Bare Minimum"
-        },
         {
           "title": "Blink",
           "lesson": "blink"
@@ -116,9 +113,6 @@
       "blurb": "Talk to the computer over serial — send, receive, reply.",
       "levels": [
         {
-          "title": "ASCII Table"
-        },
-        {
           "title": "Dimmer",
           "lesson": "dimmer"
         },
@@ -128,9 +122,6 @@
         },
         {
           "title": "MIDI Note Player"
-        },
-        {
-          "title": "Multi Serial (Mega)"
         },
         {
           "title": "Physical Pixel",
@@ -146,12 +137,6 @@
         {
           "title": "Serial Call and Response ASCII",
           "lesson": "serial-call-response-ascii"
-        },
-        {
-          "title": "SerialEvent"
-        },
-        {
-          "title": "Serial Passthrough"
         },
         {
           "title": "Virtual Color Mixer",
@@ -227,57 +212,6 @@
       ]
     },
     {
-      "id": "strings",
-      "group": "Strings",
-      "name": "Letter Library",
-      "theme": "library",
-      "blurb": "Work with text: join it, search it, change it.",
-      "levels": [
-        {
-          "title": "Character Analysis"
-        },
-        {
-          "title": "String Addition Operator"
-        },
-        {
-          "title": "String Appending Operators"
-        },
-        {
-          "title": "String Case Changes"
-        },
-        {
-          "title": "String Characters"
-        },
-        {
-          "title": "String Comparison Operators"
-        },
-        {
-          "title": "String Constructors"
-        },
-        {
-          "title": "String indexOf"
-        },
-        {
-          "title": "String Length"
-        },
-        {
-          "title": "String Length and Trim"
-        },
-        {
-          "title": "String Replace"
-        },
-        {
-          "title": "String startsWith / endsWith"
-        },
-        {
-          "title": "String Substring"
-        },
-        {
-          "title": "String to Int"
-        }
-      ]
-    },
-    {
       "id": "usb",
       "group": "USB",
       "name": "Keyboard Cove",
@@ -301,9 +235,6 @@
         },
         {
           "title": "Keyboard Reprogram"
-        },
-        {
-          "title": "Keyboard Serial"
         }
       ]
     },
