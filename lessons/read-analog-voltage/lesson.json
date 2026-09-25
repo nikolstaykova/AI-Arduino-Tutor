@@ -25,7 +25,7 @@
     {
       "id": "gather",
       "phase": "gather",
-      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, 10 kΩ potentiometer (knob) and a few jumper wires.",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × knob (10 kΩ potentiometer), and some jumper wires.",
       "items": [
         "arduino-uno",
         "usb-cable",
@@ -37,7 +37,7 @@
     {
       "id": "pot1-place",
       "phase": "build",
-      "clip": "Push the knob into the breadboard so each of its three legs is in a different numbered column.",
+      "clip": "Push the knob into the breadboard, each of its three legs in its own column.",
       "expected_landing": [
         "pot1:GND",
         "pot1:SIG",
@@ -45,15 +45,14 @@
       ],
       "strict": false,
       "hints": [
-        "The two outer legs are for power; the middle leg gives the reading.",
-        "Two legs in the same column would be joined, so use three different columns."
+        "The two outer legs are for power; the middle leg gives the reading."
       ],
       "goal": "Put the knob on the breadboard."
     },
     {
       "id": "pot1-gnd",
       "phase": "build",
-      "clip": "A jumper wire from one outer leg's column to the − (blue) row along the bottom edge — and, since this is the first thing using it, one more wire from that − row to a GND pin on the Arduino (now the whole row is GND).",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. One outer leg of the knob → that same row.",
       "expected_nets": [
         [
           "pot1:GND",
@@ -62,14 +61,14 @@
       ],
       "strict": false,
       "hints": [
-        "Either outer leg works — swapping them only reverses which way is 'more'."
+        "Either outer leg works."
       ],
       "goal": "Connect one outer leg to GND."
     },
     {
       "id": "pot1-5v",
       "phase": "build",
-      "clip": "A jumper wire from the other outer leg's column to the + (red) row along the bottom edge — and, since this is the first thing using it, one more wire from that + row to the 5V pin on the Arduino (now the whole row is 5V).",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The knob's other outer leg → that same row.",
       "expected_nets": [
         [
           "pot1:VCC",
@@ -85,7 +84,7 @@
     {
       "id": "pot1-pin",
       "phase": "build",
-      "clip": "A jumper wire from the middle leg's column to pin A0 on the Arduino.",
+      "clip": "Run a wire from the knob's <b>middle</b> leg to pin <b>A0</b> on the Arduino.",
       "expected_nets": [
         [
           "pot1:SIG",
@@ -94,7 +93,7 @@
       ],
       "strict": false,
       "hints": [
-        "A0 is on the Arduino's ANALOG IN header.",
+        "A0 is on the ANALOG IN side of the Arduino.",
         "The middle leg's voltage follows the knob: 0 V to 5 V."
       ],
       "goal": "Connect the knob's middle leg to A0."

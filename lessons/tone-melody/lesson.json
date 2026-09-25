@@ -25,7 +25,7 @@
     {
       "id": "gather",
       "phase": "gather",
-      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, piezo buzzer and a few jumper wires.",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × piezo buzzer, and some jumper wires.",
       "items": [
         "arduino-uno",
         "usb-cable",
@@ -37,14 +37,14 @@
     {
       "id": "bz1-place",
       "phase": "build",
-      "clip": "Push the buzzer into the breadboard, its two legs in two different columns.",
+      "clip": "Push the buzzer in, its two legs in two different columns.",
       "expected_landing": [
         "bz1:1",
         "bz1:2"
       ],
       "strict": false,
       "hints": [
-        "The + leg is marked on the top (and is usually longer).",
+        "The + leg is marked on top (and is usually longer).",
         "It only works one way round."
       ],
       "goal": "Put the buzzer on the breadboard."
@@ -52,7 +52,7 @@
     {
       "id": "bz1-pin",
       "phase": "build",
-      "clip": "A jumper wire from the + leg's column to pin 8 on the Arduino.",
+      "clip": "Run a wire from the buzzer's <b>+</b> leg to pin <b>8</b> on the Arduino.",
       "expected_nets": [
         [
           "bz1:2",
@@ -68,7 +68,7 @@
     {
       "id": "bz1-gnd",
       "phase": "build",
-      "clip": "A jumper wire from the other leg's column to the − (blue) row along the bottom edge — and, since this is the first thing using it, one more wire from that − row to a GND pin on the Arduino (now the whole row is GND).",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The buzzer's other leg → that same row.",
       "expected_nets": [
         [
           "bz1:1",
@@ -77,7 +77,7 @@
       ],
       "strict": false,
       "hints": [
-        "The − row is GND."
+        "GND is the minus side of the circuit."
       ],
       "goal": "Connect the buzzer's − leg to GND."
     },

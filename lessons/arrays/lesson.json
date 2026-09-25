@@ -26,7 +26,7 @@
     {
       "id": "gather",
       "phase": "gather",
-      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, 220 Ω resistor, LED and a few jumper wires.",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 6 × 220 Ω resistor, 6 × LED, and some jumper wires.",
       "items": [
         "arduino-uno",
         "usb-cable",
@@ -39,19 +39,19 @@
     {
       "id": "led1-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor into the breadboard, its two legs in two different numbered columns.",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
       "expected_landing": "r1:1",
       "strict": false,
       "hints": [
         "A resistor works either way round.",
-        "It protects the LED: without it too much current flows and the LED burns out."
+        "It protects the LED — without it the LED can burn out."
       ],
       "goal": "Put the resistor for the LED on the breadboard."
     },
     {
       "id": "led1-pin",
       "phase": "build",
-      "clip": "A jumper wire from one of the resistor's columns to pin 2 on the Arduino.",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>2</b> on the Arduino.",
       "expected_nets": [
         [
           "r1:1",
@@ -60,15 +60,15 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 2 is on the Arduino's row of numbered sockets.",
-        "Any free hole in that column works."
+        "Put the wire in any hole in the same column as the leg.",
+        "Pin 2 is on the Arduino's row of numbered sockets."
       ],
       "goal": "Connect the resistor to pin 2."
     },
     {
       "id": "led1-legs",
       "phase": "build",
-      "clip": "Now the LED: its long leg in the same column as the resistor's other leg, its short leg in an empty column right next to it.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led1:A",
@@ -77,15 +77,15 @@
       ],
       "strict": false,
       "hints": [
-        "The long leg is + (the anode) — it must face the resistor or the LED stays dark.",
-        "Legs in the same column are already connected."
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
       ],
       "goal": "Connect the LED's long leg (+) to the resistor."
     },
     {
       "id": "led1-gnd",
       "phase": "build",
-      "clip": "A jumper wire from the short leg's column to the − (blue) row along the bottom edge — and, since this is the first thing using it, one more wire from that − row to a GND pin on the Arduino (now the whole row is GND).",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. The LED's short leg → that same row.",
       "expected_nets": [
         [
           "led1:C",
@@ -95,26 +95,26 @@
       "strict": false,
       "hints": [
         "The short leg is − (the cathode).",
-        "The − row is already joined to GND."
+        "GND is the minus side of the circuit."
       ],
       "goal": "Connect the LED's short leg (−) to GND."
     },
     {
       "id": "led2-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor into the breadboard, its two legs in two different numbered columns (leave some space from the last part).",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
       "expected_landing": "r2:1",
       "strict": false,
       "hints": [
         "A resistor works either way round.",
-        "It protects the LED: without it too much current flows and the LED burns out."
+        "It protects the LED — without it the LED can burn out."
       ],
       "goal": "Put the resistor for the LED on the breadboard."
     },
     {
       "id": "led2-pin",
       "phase": "build",
-      "clip": "A jumper wire from one of the resistor's columns to pin 3 on the Arduino.",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>3</b> on the Arduino.",
       "expected_nets": [
         [
           "r2:1",
@@ -123,15 +123,15 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 3 is on the Arduino's row of numbered sockets.",
-        "Any free hole in that column works."
+        "Put the wire in any hole in the same column as the leg.",
+        "Pin 3 is on the Arduino's row of numbered sockets."
       ],
       "goal": "Connect the resistor to pin 3."
     },
     {
       "id": "led2-legs",
       "phase": "build",
-      "clip": "Now the LED: its long leg in the same column as the resistor's other leg, its short leg in an empty column right next to it.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led2:A",
@@ -140,15 +140,15 @@
       ],
       "strict": false,
       "hints": [
-        "The long leg is + (the anode) — it must face the resistor or the LED stays dark.",
-        "Legs in the same column are already connected."
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
       ],
       "goal": "Connect the LED's long leg (+) to the resistor."
     },
     {
       "id": "led2-gnd",
       "phase": "build",
-      "clip": "A jumper wire from the short leg's column to the − (blue) row.",
+      "clip": "Run a wire from the LED's short leg to the blue − row.",
       "expected_nets": [
         [
           "led2:C",
@@ -158,26 +158,26 @@
       "strict": false,
       "hints": [
         "The short leg is − (the cathode).",
-        "The − row is already joined to GND."
+        "GND is the minus side of the circuit."
       ],
       "goal": "Connect the LED's short leg (−) to GND."
     },
     {
       "id": "led3-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor into the breadboard, its two legs in two different numbered columns (leave some space from the last part).",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
       "expected_landing": "r3:1",
       "strict": false,
       "hints": [
         "A resistor works either way round.",
-        "It protects the LED: without it too much current flows and the LED burns out."
+        "It protects the LED — without it the LED can burn out."
       ],
       "goal": "Put the resistor for the LED on the breadboard."
     },
     {
       "id": "led3-pin",
       "phase": "build",
-      "clip": "A jumper wire from one of the resistor's columns to pin 4 on the Arduino.",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>4</b> on the Arduino.",
       "expected_nets": [
         [
           "r3:1",
@@ -186,15 +186,15 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 4 is on the Arduino's row of numbered sockets.",
-        "Any free hole in that column works."
+        "Put the wire in any hole in the same column as the leg.",
+        "Pin 4 is on the Arduino's row of numbered sockets."
       ],
       "goal": "Connect the resistor to pin 4."
     },
     {
       "id": "led3-legs",
       "phase": "build",
-      "clip": "Now the LED: its long leg in the same column as the resistor's other leg, its short leg in an empty column right next to it.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led3:A",
@@ -203,15 +203,15 @@
       ],
       "strict": false,
       "hints": [
-        "The long leg is + (the anode) — it must face the resistor or the LED stays dark.",
-        "Legs in the same column are already connected."
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
       ],
       "goal": "Connect the LED's long leg (+) to the resistor."
     },
     {
       "id": "led3-gnd",
       "phase": "build",
-      "clip": "A jumper wire from the short leg's column to the − (blue) row.",
+      "clip": "Run a wire from the LED's short leg to the blue − row.",
       "expected_nets": [
         [
           "led3:C",
@@ -221,26 +221,26 @@
       "strict": false,
       "hints": [
         "The short leg is − (the cathode).",
-        "The − row is already joined to GND."
+        "GND is the minus side of the circuit."
       ],
       "goal": "Connect the LED's short leg (−) to GND."
     },
     {
       "id": "led4-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor into the breadboard, its two legs in two different numbered columns (leave some space from the last part).",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
       "expected_landing": "r4:1",
       "strict": false,
       "hints": [
         "A resistor works either way round.",
-        "It protects the LED: without it too much current flows and the LED burns out."
+        "It protects the LED — without it the LED can burn out."
       ],
       "goal": "Put the resistor for the LED on the breadboard."
     },
     {
       "id": "led4-pin",
       "phase": "build",
-      "clip": "A jumper wire from one of the resistor's columns to pin 5 on the Arduino.",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>5</b> on the Arduino.",
       "expected_nets": [
         [
           "r4:1",
@@ -249,15 +249,15 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 5 is on the Arduino's row of numbered sockets.",
-        "Any free hole in that column works."
+        "Put the wire in any hole in the same column as the leg.",
+        "Pin 5 is on the Arduino's row of numbered sockets."
       ],
       "goal": "Connect the resistor to pin 5."
     },
     {
       "id": "led4-legs",
       "phase": "build",
-      "clip": "Now the LED: its long leg in the same column as the resistor's other leg, its short leg in an empty column right next to it.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led4:A",
@@ -266,15 +266,15 @@
       ],
       "strict": false,
       "hints": [
-        "The long leg is + (the anode) — it must face the resistor or the LED stays dark.",
-        "Legs in the same column are already connected."
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
       ],
       "goal": "Connect the LED's long leg (+) to the resistor."
     },
     {
       "id": "led4-gnd",
       "phase": "build",
-      "clip": "A jumper wire from the short leg's column to the − (blue) row.",
+      "clip": "Run a wire from the LED's short leg to the blue − row.",
       "expected_nets": [
         [
           "led4:C",
@@ -284,26 +284,26 @@
       "strict": false,
       "hints": [
         "The short leg is − (the cathode).",
-        "The − row is already joined to GND."
+        "GND is the minus side of the circuit."
       ],
       "goal": "Connect the LED's short leg (−) to GND."
     },
     {
       "id": "led5-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor into the breadboard, its two legs in two different numbered columns (leave some space from the last part).",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
       "expected_landing": "r5:1",
       "strict": false,
       "hints": [
         "A resistor works either way round.",
-        "It protects the LED: without it too much current flows and the LED burns out."
+        "It protects the LED — without it the LED can burn out."
       ],
       "goal": "Put the resistor for the LED on the breadboard."
     },
     {
       "id": "led5-pin",
       "phase": "build",
-      "clip": "A jumper wire from one of the resistor's columns to pin 6 on the Arduino.",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>6</b> on the Arduino.",
       "expected_nets": [
         [
           "r5:1",
@@ -312,15 +312,15 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 6 is on the Arduino's row of numbered sockets.",
-        "Any free hole in that column works."
+        "Put the wire in any hole in the same column as the leg.",
+        "Pin 6 is on the Arduino's row of numbered sockets."
       ],
       "goal": "Connect the resistor to pin 6."
     },
     {
       "id": "led5-legs",
       "phase": "build",
-      "clip": "Now the LED: its long leg in the same column as the resistor's other leg, its short leg in an empty column right next to it.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led5:A",
@@ -329,15 +329,15 @@
       ],
       "strict": false,
       "hints": [
-        "The long leg is + (the anode) — it must face the resistor or the LED stays dark.",
-        "Legs in the same column are already connected."
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
       ],
       "goal": "Connect the LED's long leg (+) to the resistor."
     },
     {
       "id": "led5-gnd",
       "phase": "build",
-      "clip": "A jumper wire from the short leg's column to the − (blue) row.",
+      "clip": "Run a wire from the LED's short leg to the blue − row.",
       "expected_nets": [
         [
           "led5:C",
@@ -347,26 +347,26 @@
       "strict": false,
       "hints": [
         "The short leg is − (the cathode).",
-        "The − row is already joined to GND."
+        "GND is the minus side of the circuit."
       ],
       "goal": "Connect the LED's short leg (−) to GND."
     },
     {
       "id": "led6-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor into the breadboard, its two legs in two different numbered columns (leave some space from the last part).",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
       "expected_landing": "r6:1",
       "strict": false,
       "hints": [
         "A resistor works either way round.",
-        "It protects the LED: without it too much current flows and the LED burns out."
+        "It protects the LED — without it the LED can burn out."
       ],
       "goal": "Put the resistor for the LED on the breadboard."
     },
     {
       "id": "led6-pin",
       "phase": "build",
-      "clip": "A jumper wire from one of the resistor's columns to pin 7 on the Arduino.",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>7</b> on the Arduino.",
       "expected_nets": [
         [
           "r6:1",
@@ -375,15 +375,15 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 7 is on the Arduino's row of numbered sockets.",
-        "Any free hole in that column works."
+        "Put the wire in any hole in the same column as the leg.",
+        "Pin 7 is on the Arduino's row of numbered sockets."
       ],
       "goal": "Connect the resistor to pin 7."
     },
     {
       "id": "led6-legs",
       "phase": "build",
-      "clip": "Now the LED: its long leg in the same column as the resistor's other leg, its short leg in an empty column right next to it.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led6:A",
@@ -392,15 +392,15 @@
       ],
       "strict": false,
       "hints": [
-        "The long leg is + (the anode) — it must face the resistor or the LED stays dark.",
-        "Legs in the same column are already connected."
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
       ],
       "goal": "Connect the LED's long leg (+) to the resistor."
     },
     {
       "id": "led6-gnd",
       "phase": "build",
-      "clip": "A jumper wire from the short leg's column to the − (blue) row.",
+      "clip": "Run a wire from the LED's short leg to the blue − row.",
       "expected_nets": [
         [
           "led6:C",
@@ -410,7 +410,7 @@
       "strict": false,
       "hints": [
         "The short leg is − (the cathode).",
-        "The − row is already joined to GND."
+        "GND is the minus side of the circuit."
       ],
       "goal": "Connect the LED's short leg (−) to GND."
     },

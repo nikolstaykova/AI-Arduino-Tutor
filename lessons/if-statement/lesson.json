@@ -27,7 +27,7 @@
     {
       "id": "gather",
       "phase": "gather",
-      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, 10 kΩ potentiometer (knob), 220 Ω resistor, LED and a few jumper wires.",
+      "clip": "You need: an Arduino Uno and its USB cable, a breadboard, 1 × knob (10 kΩ potentiometer), 1 × 220 Ω resistor, 1 × LED, and some jumper wires.",
       "items": [
         "arduino-uno",
         "usb-cable",
@@ -41,7 +41,7 @@
     {
       "id": "pot1-place",
       "phase": "build",
-      "clip": "Push the knob into the breadboard so each of its three legs is in a different numbered column.",
+      "clip": "Push the knob into the breadboard, each of its three legs in its own column.",
       "expected_landing": [
         "pot1:GND",
         "pot1:SIG",
@@ -49,15 +49,14 @@
       ],
       "strict": false,
       "hints": [
-        "The two outer legs are for power; the middle leg gives the reading.",
-        "Two legs in the same column would be joined, so use three different columns."
+        "The two outer legs are for power; the middle leg gives the reading."
       ],
       "goal": "Put the knob on the breadboard."
     },
     {
       "id": "pot1-gnd",
       "phase": "build",
-      "clip": "A jumper wire from one outer leg's column to the − (blue) row along the bottom edge — and, since this is the first thing using it, one more wire from that − row to a GND pin on the Arduino (now the whole row is GND).",
+      "clip": "Two wires:<br>1. The Arduino's <b>GND</b> pin → the blue − row at the bottom of the breadboard.<br>2. One outer leg of the knob → that same row.",
       "expected_nets": [
         [
           "pot1:GND",
@@ -66,14 +65,14 @@
       ],
       "strict": false,
       "hints": [
-        "Either outer leg works — swapping them only reverses which way is 'more'."
+        "Either outer leg works."
       ],
       "goal": "Connect one outer leg to GND."
     },
     {
       "id": "pot1-5v",
       "phase": "build",
-      "clip": "A jumper wire from the other outer leg's column to the + (red) row along the bottom edge — and, since this is the first thing using it, one more wire from that + row to the 5V pin on the Arduino (now the whole row is 5V).",
+      "clip": "Two wires:<br>1. The Arduino's <b>5V</b> pin → the red + row at the bottom of the breadboard.<br>2. The knob's other outer leg → that same row.",
       "expected_nets": [
         [
           "pot1:VCC",
@@ -89,7 +88,7 @@
     {
       "id": "pot1-pin",
       "phase": "build",
-      "clip": "A jumper wire from the middle leg's column to pin A0 on the Arduino.",
+      "clip": "Run a wire from the knob's <b>middle</b> leg to pin <b>A0</b> on the Arduino.",
       "expected_nets": [
         [
           "pot1:SIG",
@@ -98,7 +97,7 @@
       ],
       "strict": false,
       "hints": [
-        "A0 is on the Arduino's ANALOG IN header.",
+        "A0 is on the ANALOG IN side of the Arduino.",
         "The middle leg's voltage follows the knob: 0 V to 5 V."
       ],
       "goal": "Connect the knob's middle leg to A0."
@@ -106,19 +105,19 @@
     {
       "id": "led1-resistor",
       "phase": "build",
-      "clip": "Push a 220 Ω resistor into the breadboard, its two legs in two different numbered columns (leave some space from the last part).",
+      "clip": "Push a 220 Ω resistor into the breadboard. Put its two legs in two different columns.",
       "expected_landing": "r1:1",
       "strict": false,
       "hints": [
         "A resistor works either way round.",
-        "It protects the LED: without it too much current flows and the LED burns out."
+        "It protects the LED — without it the LED can burn out."
       ],
       "goal": "Put the resistor for the LED on the breadboard."
     },
     {
       "id": "led1-pin",
       "phase": "build",
-      "clip": "A jumper wire from one of the resistor's columns to pin 13 on the Arduino.",
+      "clip": "Run a wire from one leg of the 220 Ω resistor to pin <b>13</b> on the Arduino.",
       "expected_nets": [
         [
           "r1:1",
@@ -127,15 +126,15 @@
       ],
       "strict": false,
       "hints": [
-        "Pin 13 is on the Arduino's row of numbered sockets.",
-        "Any free hole in that column works."
+        "Put the wire in any hole in the same column as the leg.",
+        "Pin 13 is on the Arduino's row of numbered sockets."
       ],
       "goal": "Connect the resistor to pin 13."
     },
     {
       "id": "led1-legs",
       "phase": "build",
-      "clip": "Now the LED: its long leg in the same column as the resistor's other leg, its short leg in an empty column right next to it.",
+      "clip": "Put the LED in: the <b>long</b> leg in the same column as the 220 Ω resistor's other leg, the <b>short</b> leg in the next column.",
       "expected_nets": [
         [
           "led1:A",
@@ -144,15 +143,15 @@
       ],
       "strict": false,
       "hints": [
-        "The long leg is + (the anode) — it must face the resistor or the LED stays dark.",
-        "Legs in the same column are already connected."
+        "The long leg is + (the anode). Backwards, the LED stays dark.",
+        "Legs in the same column are connected — no wire needed."
       ],
       "goal": "Connect the LED's long leg (+) to the resistor."
     },
     {
       "id": "led1-gnd",
       "phase": "build",
-      "clip": "A jumper wire from the short leg's column to the − (blue) row.",
+      "clip": "Run a wire from the LED's short leg to the blue − row.",
       "expected_nets": [
         [
           "led1:C",
@@ -162,7 +161,7 @@
       "strict": false,
       "hints": [
         "The short leg is − (the cathode).",
-        "The − row is already joined to GND."
+        "GND is the minus side of the circuit."
       ],
       "goal": "Connect the LED's short leg (−) to GND."
     },
