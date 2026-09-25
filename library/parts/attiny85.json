@@ -14,5 +14,9 @@
     "analog": ["PB2", "PB3", "PB4", "PB5"],
     "digital": ["PB0", "PB1", "PB2", "PB3", "PB4"]
   },
-  "pin_aliases": { "mode": "prefix", "prefixes": ["GND"] }
+  "pin_aliases": { "mode": "prefix", "prefixes": ["GND"] },
+  "plain": {
+    "what": "A tiny 8-legged chip that is a whole microcontroller — for when an Arduino board is too big for a finished project.",
+    "how": "You program it using an Arduino as a helper, then it can run on its own with just a battery. Only 5 of its legs are free for your parts."
+  }
 }

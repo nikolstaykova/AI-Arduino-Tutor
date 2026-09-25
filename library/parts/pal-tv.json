@@ -7,5 +7,9 @@
   "aliases": ["pal tv", "tv", "composite video"],
   "description": "A black-and-white analog PAL composite-video display.",
   "how_to_use": "IN carries the bit-banged pixel/data signal, SYNC carries the field/line timing pulses, GND is ground — both IN and SYNC are driven directly by the sketch (software composite-video generation), not a standard bus.",
-  "image": "pal-tv.png"
+  "image": "pal-tv.png",
+  "plain": {
+    "what": "An old-style TV — an Arduino can draw simple black-and-white pictures on it.",
+    "how": "Connect the video input to the Arduino through a couple of resistors, and use the TVout library."
+  }
 }

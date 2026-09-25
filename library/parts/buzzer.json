@@ -17,5 +17,13 @@
     "2": "positive (+) — to the Arduino pin that drives it"
   },
   "polarized": true,
-  "leads": "wire-lead"
+  "leads": "wire-lead",
+  "plain": {
+    "what": "A little speaker that beeps or plays simple tunes.",
+    "how": "The + leg (longer, marked +) to an Arduino pin, the other leg to GND. Your program makes it beep with the tone() command.",
+    "pins": {
+      "1": "− (to GND)",
+      "2": "+ (to a pin)"
+    }
+  }
 }

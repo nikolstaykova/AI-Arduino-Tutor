@@ -9,5 +9,9 @@
   "description": "A battery-backed real-time clock module with an I2C interface.",
   "how_to_use": "Wire SDA/SCL to the board's real I2C pins; multiple I2C devices can share the same SDA/SCL lines.",
   "image": "ds1307-rtc.png",
-  "protocol_legs": ["SDA", "SCL"]
+  "protocol_legs": ["SDA", "SCL"],
+  "plain": {
+    "what": "A clock that keeps the time and date, even when the Arduino is off (thanks to its coin battery).",
+    "how": "VCC and GND for power, SDA and SCL to the Arduino's matching pins. Set the time once, then read it any time."
+  }
 }

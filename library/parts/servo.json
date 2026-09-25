@@ -7,5 +7,9 @@
   "aliases": ["servo", "servo motor", "micro servo"],
   "description": "A standard micro servo motor that moves to an angular position based on a PWM control signal.",
   "how_to_use": "PWM is the control signal (a bit-banged digital pulse, not a shared bus). V+ needs real 5V, not a toggling GPIO pin — wiring V+ to a digital pin instead of 5V is a common diagram-authoring mistake this checker won't catch, since it only judges connectivity, not electrical sanity.",
-  "image": "servo.png"
+  "image": "servo.png",
+  "plain": {
+    "what": "A small motor that turns to an exact angle (0–180°) and holds it there — for arms, flaps and pointers.",
+    "how": "Brown to GND, red to 5V, orange to an Arduino pin. The Servo library turns it to any angle."
+  }
 }

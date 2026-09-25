@@ -68,5 +68,15 @@
       "A4",
       "A5"
     ]
+  },
+  "plain": {
+    "what": "The little computer at the heart of most projects. You write a program on your laptop, send it over USB, and the Uno runs it — switching lights, reading buttons and sensors.",
+    "how": "Plug it into your computer with the USB cable. Wires go into the black sockets along its edges: numbered pins (0–13, A0–A5) for things you control or read, and 5V / GND for power.",
+    "pins": {
+      "5V": "power out for your parts (+)",
+      "GND": "ground — the minus (−) side, every circuit needs it",
+      "13": "a normal on/off pin (also wired to the little built-in light)",
+      "A0": "reads 'how much' — like a knob's position or a light level"
+    }
   }
 }

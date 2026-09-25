@@ -18,5 +18,14 @@
     "2": "the middle (common) pin — always joined to pin 1 or pin 3",
     "3": "the other end — joined to the middle pin when the handle is slid toward pin 3"
   },
-  "leads": "short-leg"
+  "leads": "short-leg",
+  "plain": {
+    "what": "An on/off switch you slide. The middle leg connects to one side or the other.",
+    "how": "Wire the middle leg to what you want to switch, and one outside leg to power. Slide it that way for on, the other way for off.",
+    "pins": {
+      "1": "one end",
+      "2": "middle — connects to whichever end the handle is slid towards",
+      "3": "the other end"
+    }
+  }
 }

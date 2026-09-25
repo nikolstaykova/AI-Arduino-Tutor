@@ -9,5 +9,9 @@
   "aliases": ["74hc165", "piso shift register", "input shift register"],
   "description": "An 8-bit parallel-in, serial-out shift register — reads 8 digital inputs (D0-D7) and shifts them out one bit at a time.",
   "how_to_use": "PL (parallel load, active low), CP (serial clock), CE (clock enable, active low) are the control pins the microcontroller drives — a bit-banged protocol, not a real I2C/SPI bus. D0-D7 are the 8 parallel inputs (not interchangeable — each reads a specific external signal). Q7 is the serial output read by the microcontroller (or chained to the next unit's DS pin); Q7_N is the inverted output, usually unused. To daisy-chain: wire each unit's Q7 to the next unit's DS, share PL/CP across all units, and only the final unit's Q7 goes to the microcontroller.",
-  "image": "74hc165.png"
+  "image": "74hc165.png",
+  "plain": {
+    "what": "A chip that lets the Arduino read 8 buttons or switches using only 3 pins.",
+    "how": "It reads all 8 inputs at once, then hands them to the Arduino one by one."
+  }
 }

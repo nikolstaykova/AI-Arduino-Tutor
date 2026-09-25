@@ -10,5 +10,9 @@
   ],
   "description": "A spring-loaded plunger that sucks molten solder off a joint so you can undo a mistake.",
   "how_to_use": "Push the plunger down until it clicks, melt the joint with the iron, put the nozzle right on the molten solder and press the button — the spring snaps back and pulls the solder in.",
-  "image": "desoldering-pump.png"
+  "image": "desoldering-pump.png",
+  "plain": {
+    "what": "A spring-loaded sucker that pulls melted solder off a joint, to undo a mistake.",
+    "how": "Press it down until it clicks, melt the joint, hold the tip on it and press the button — whoosh."
+  }
 }

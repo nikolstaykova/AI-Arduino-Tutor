@@ -9,5 +9,9 @@
   "description": "A microSD card reader/writer with an SPI interface.",
   "how_to_use": "Shares its SCK/DO/DI lines with any other SPI device on the same bus; give it its own, unique CS pin.",
   "image": "microsd-card.png",
-  "protocol_legs": ["SCK", "DO", "DI"]
+  "protocol_legs": ["SCK", "DO", "DI"],
+  "plain": {
+    "what": "A memory card reader, so your project can save data or read files.",
+    "how": "VCC, GND and four data wires (MISO, MOSI, SCK, CS) to the Arduino. The SD library reads and writes files."
+  }
 }

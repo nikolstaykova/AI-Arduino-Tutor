@@ -59,5 +59,9 @@
       "GND",
       "3V3"
     ]
+  },
+  "plain": {
+    "what": "A powerful Wi-Fi + Bluetooth board — enough to run small screens and even simple AI.",
+    "how": "It has two USB sockets: use either to program it. 3.3 V pins."
   }
 }

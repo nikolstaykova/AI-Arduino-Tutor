@@ -8,5 +8,9 @@
   "aliases": ["dht22", "temperature sensor", "humidity sensor"],
   "description": "A digital temperature and humidity sensor using a proprietary one-wire protocol.",
   "how_to_use": "Wire the SDA pin to any digital pin — despite the name, this is NOT I2C, just a one-wire data line, and works on any ordinary digital pin.",
-  "image": "dht22.png"
+  "image": "dht22.png",
+  "plain": {
+    "what": "Measures temperature and how humid (damp) the air is.",
+    "how": "VCC to 5V, GND to GND, the data pin to an Arduino pin (with a 10 kΩ resistor to 5V). The DHT library gives you the numbers."
+  }
 }

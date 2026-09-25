@@ -8,5 +8,9 @@
   "aliases": ["ds18b20", "one-wire temperature sensor"],
   "description": "A digital temperature sensor using the 1-Wire protocol — multiple units can share a single data line, each identified by its own `deviceID` attribute.",
   "how_to_use": "VCC/GND power, DQ is the 1-Wire data line — a genuine shared bus when multiple sensors are chained onto the same DQ pin. NOTE: this project's protocol-bus protection only recognizes I2C (SDA/SCL) and SPI (SCK/MOSI/MISO/DO/DI) leg names — a shared 1-Wire DQ line is currently NOT protected the way I2C/SPI buses are, so a deviation on one sensor's DQ in a multi-sensor 1-Wire chain could silently desync it from the others. Known, unfixed gap — flag before trusting a multi-DS18B20 lesson's substitution behavior.",
-  "image": "ds18b20.png"
+  "image": "ds18b20.png",
+  "plain": {
+    "what": "A small, accurate thermometer chip.",
+    "how": "Three legs: GND, data and power. Add a 4.7 kΩ resistor between data and power, then read it with the DallasTemperature library."
+  }
 }

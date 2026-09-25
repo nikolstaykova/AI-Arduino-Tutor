@@ -69,5 +69,9 @@
     "prefixes": [
       "GND"
     ]
+  },
+  "plain": {
+    "what": "A tiny Arduino — the same brain as the Uno in a board the size of a thumb, made to push straight into a breadboard.",
+    "how": "Push it across the middle gap of a breadboard, plug in a USB cable, and wire your parts to the pins next to it. The pin names are printed on the board."
   }
 }

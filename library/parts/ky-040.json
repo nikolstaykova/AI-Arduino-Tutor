@@ -8,5 +8,9 @@
   "aliases": ["rotary encoder", "ky-040", "encoder"],
   "description": "A rotary encoder module (20 steps/revolution) with an integrated push button.",
   "how_to_use": "VCC/GND power, CLK/DT are the two quadrature outputs (bit-banged, not a shared bus — which one pulses low first indicates rotation direction), SW is the button — normally open, shorts to GND when pressed.",
-  "image": "ky-040.png"
+  "image": "ky-040.png",
+  "plain": {
+    "what": "A knob that clicks round forever in steps — the Arduino counts the clicks and the direction.",
+    "how": "+ and GND for power, CLK and DT to two Arduino pins, SW for pushing the knob in."
+  }
 }

@@ -8,5 +8,9 @@
   "aliases": ["mq2", "gas sensor", "smoke sensor"],
   "description": "An analog gas sensor for combustible gases (LPG, propane, methane, etc.), with both a digital threshold output and an analog output.",
   "how_to_use": "VCC/GND power, DO is a digital threshold output (goes low above a configured gas-concentration threshold), AO is an analog output proportional to concentration (ppm).",
-  "image": "gas-sensor.png"
+  "image": "gas-sensor.png",
+  "plain": {
+    "what": "Smells gas and smoke in the air.",
+    "how": "VCC, GND, and AO to an analog pin — the number rises when there's gas. Let it warm up for a minute first."
+  }
 }

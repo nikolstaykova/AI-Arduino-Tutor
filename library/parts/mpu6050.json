@@ -9,5 +9,9 @@
   "description": "A 3-axis accelerometer + 3-axis gyroscope + temperature sensor with an I2C interface (default address 0x68, or 0x69 with AD0 tied to VCC).",
   "how_to_use": "VCC/GND power, SDA/SCL are real I2C — wire to the board's real I2C pins. XDA/XCL (auxiliary I2C bus) aren't implemented in Wokwi's simulation, and AD0/INT are usually left unconnected unless changing the I2C address or using the interrupt pin.",
   "image": "mpu6050.png",
-  "protocol_legs": ["SDA", "SCL"]
+  "protocol_legs": ["SDA", "SCL"],
+  "plain": {
+    "what": "Senses movement and tilt — which way it's turning and how fast it's moving.",
+    "how": "VCC and GND for power, SDA and SCL to the Arduino's matching pins (A4/A5 on an Uno). A library gives you the tilt numbers."
+  }
 }

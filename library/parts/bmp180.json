@@ -9,5 +9,9 @@
   "description": "A barometric pressure and temperature sensor with an I2C interface (address 0x77).",
   "how_to_use": "VCC and 3.3V are two separate power-pin options (use whichever matches your supply), GND ground, SCL/SCA are real I2C — wire to the board's real I2C pins.",
   "image": "bmp180.png",
-  "protocol_legs": ["SDA", "SCL"]
+  "protocol_legs": ["SDA", "SCL"],
+  "plain": {
+    "what": "Measures air pressure and temperature — it can even tell your height above sea level.",
+    "how": "VIN and GND for power, SDA and SCL to the Arduino's matching pins (A4/A5 on an Uno)."
+  }
 }

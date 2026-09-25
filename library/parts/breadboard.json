@@ -18,5 +18,9 @@
   "connector_only": true,
   "pin_aliases": {
     "mode": "strip"
+  },
+  "plain": {
+    "what": "A board full of holes for building circuits without soldering. Metal strips under the holes connect them, so parts pushed into the same group are joined.",
+    "how": "Every little column of 5 holes is connected together. The long rows along the edges (+ red, − blue) carry power. Parts that straddle the middle gap are NOT joined across it."
   }
 }

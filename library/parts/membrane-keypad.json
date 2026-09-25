@@ -8,5 +8,9 @@
   "aliases": ["keypad", "membrane keypad", "4x4 keypad"],
   "description": "A 4x4 matrix keypad: 4 row pins and 4 column pins, scanned in software to detect which key is pressed.",
   "how_to_use": "R1-R4 (rows) and C1-C4 (columns) are all ordinary digital I/O pins, matrix-scanned by the sketch — not interchangeable with each other (which row/column a pin is wired to determines which key maps where), and not a shared bus.",
-  "image": "membrane-keypad.png"
+  "image": "membrane-keypad.png",
+  "plain": {
+    "what": "A flat keypad with 16 buttons (0–9, A–D, * and #) — for passwords and menus.",
+    "how": "Its 8 wires go to 8 Arduino pins. The Keypad library tells you which key is pressed."
+  }
 }

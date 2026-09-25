@@ -9,5 +9,9 @@
   "description": "A small monochrome OLED display with an I2C interface. TWO different Wokwi part variants exist with DIFFERENT leg names for the same real product, confirmed via real official examples: `board-ssd1306` uses GND/VCC/SDA/SCL, `wokwi-ssd1306` (an older/simpler simulation model) uses GND/VIN/DATA/CLK.",
   "how_to_use": "Wire SDA/SCL (or DATA/CLK on the `wokwi-ssd1306` variant) to the board's real I2C pins; multiple I2C devices can share the same lines.",
   "image": "oled-ssd1306.png",
-  "protocol_legs": ["SDA", "SCL", "DATA", "CLK"]
+  "protocol_legs": ["SDA", "SCL", "DATA", "CLK"],
+  "plain": {
+    "what": "A tiny, sharp screen that can show text, shapes and simple pictures.",
+    "how": "Four wires: GND, VCC, SCL and SDA (A4/A5 on an Uno). Use the Adafruit SSD1306 library to draw."
+  }
 }

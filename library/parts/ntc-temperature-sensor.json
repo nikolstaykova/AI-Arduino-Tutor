@@ -7,5 +7,9 @@
   "aliases": ["ntc", "ntc sensor", "analog temperature sensor", "thermistor"],
   "description": "An analog temperature sensor module using an NTC thermistor.",
   "how_to_use": "VCC/GND power, OUT is an analog output read with analogRead() — the three pins are not interchangeable.",
-  "image": "ntc-temperature-sensor.png"
+  "image": "ntc-temperature-sensor.png",
+  "plain": {
+    "what": "A temperature sensor whose resistance changes when it warms up.",
+    "how": "Connect it to 5V, GND and an analog pin; the number the Arduino reads changes with the temperature."
+  }
 }

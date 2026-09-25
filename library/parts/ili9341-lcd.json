@@ -9,5 +9,9 @@
   "description": "A color TFT LCD display with an SPI interface. MISO can be left disconnected unless reading data back from the display.",
   "how_to_use": "Shares its SCK/MISO/MOSI lines with any other SPI device on the same bus; give it its own, unique CS pin.",
   "image": "ili9341-lcd.png",
-  "protocol_legs": ["SCK", "MOSI", "MISO"]
+  "protocol_legs": ["SCK", "MOSI", "MISO"],
+  "plain": {
+    "what": "A colour screen for pictures, graphs and buttons.",
+    "how": "It needs several wires (power plus a fast 'SPI' connection). Use the Adafruit ILI9341 library."
+  }
 }

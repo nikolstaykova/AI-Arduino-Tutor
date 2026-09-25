@@ -10,5 +10,9 @@
   "how_to_use": "VCC/GND power, SCL/SDA are real I2C — wire to the board's real I2C pins; multiple I2C devices can share the same SDA/SCL lines. CONFIRMED VIA A REAL DIAGRAM: this module exposes its legs as `GND.1`/`SCL.1` (at least — a real 'SH1107_OLED_Clock' example used exactly these), so it has the same 'N physical legs, one net' shape as a board's own GND pins, aliased accordingly. KNOWN GAP: `protocol_legs` matching (`engine._leg_is_protocol_bus`) checks the raw leg string, not the alias-canonicalized one — so a connection made on `SCL.1` specifically is NOT currently recognized as the real I2C bus leg the way plain `SCL` is, even after this alias fix. Not corrected here (an engine-level change, out of this pass's scope) — flag before trusting I2C-bus protection on this exact part.",
   "image": "sh1107-oled.png",
   "pin_aliases": { "mode": "prefix", "prefixes": ["GND", "SCL"] },
-  "protocol_legs": ["SDA", "SCL"]
+  "protocol_legs": ["SDA", "SCL"],
+  "plain": {
+    "what": "A small square screen for text and simple pictures.",
+    "how": "Four wires: GND, VCC, SCL and SDA. Use the U8g2 library to draw."
+  }
 }

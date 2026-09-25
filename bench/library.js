@@ -111,7 +111,7 @@ async function openItem(id) {
       <h2>${esc(it.name)}</h2>
       <p>${esc(it.description)}</p>
       ${it.how_to_use ? `<div class="seg-label">How to use it</div><p class="lib-how">${esc(it.how_to_use)}</p>` : ""}
-      ${pins.length ? `<div class="seg-label">Pins</div><dl class="lib-pins">${pins.map(([p, what]) => `<dt>${esc(p)}</dt><dd>${esc(what)}</dd>`).join("")}</dl>` : ""}
+      ${pins.length ? `<div class="seg-label">Its legs</div><dl class="lib-pins">${pins.map(([p, what]) => `<dt>${esc(p)}</dt><dd>${esc(what)}</dd>`).join("")}</dl>` : ""}
       <div class="seg-label">Video</div>${videoBlock(it)}
       ${it.used_in.length ? `<div class="seg-label">Used in</div><div class="lib-used">${it.used_in.map((l) => `<button class="lib-chip" data-lesson="${esc(l.id)}">${esc(l.title)}</button>`).join("")}</div>` : ""}
     </div>`;

@@ -8,5 +8,9 @@
   "aliases": ["dpdt relay", "ks2e-m-dc5"],
   "description": "A double-pole double-throw relay: one coil switches two independent circuits (poles 1 and 2) simultaneously.",
   "how_to_use": "COIL1/COIL2 are the coil (power) pins — not polarized as VCC/GND specifically, just the two coil terminals. P1/NC1/NO1 and P2/NC2/NO2 are the two independent switched circuits: each pole's common (P) connects to NC when the coil is unpowered, or to NO when powered — the two poles switch together but are electrically separate circuits from each other and from the coil.",
-  "image": "dpdt-relay.png"
+  "image": "dpdt-relay.png",
+  "plain": {
+    "what": "An electric switch: a small signal flips a bigger, separate circuit on or off (you can hear it click).",
+    "how": "Power its coil to flip the switch. Always use a transistor or a relay module between it and the Arduino."
+  }
 }

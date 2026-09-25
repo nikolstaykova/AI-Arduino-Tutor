@@ -14,5 +14,9 @@
     "analog": ["GP26", "GP27", "GP28"],
     "digital": ["GP0", "GP1", "GP2", "GP3", "GP4", "GP5", "GP6", "GP7", "GP8", "GP9", "GP10", "GP11", "GP12", "GP13", "GP14", "GP15", "GP16", "GP17", "GP18", "GP19", "GP20", "GP21", "GP22", "GP25", "GP26", "GP27", "GP28"]
   },
-  "pin_aliases": { "mode": "prefix", "prefixes": ["GND"] }
+  "pin_aliases": { "mode": "prefix", "prefixes": ["GND"] },
+  "plain": {
+    "what": "A small, cheap and fast microcontroller board from Raspberry Pi — a different little computer you can program like an Arduino.",
+    "how": "Hold the BOOTSEL button while plugging in USB to load a program. Its pins are called GP0, GP1 … and it works at 3.3 V, not 5 V."
+  }
 }

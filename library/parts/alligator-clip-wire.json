@@ -6,5 +6,9 @@
   "aliases": ["alligator clip", "alligator clip wire", "croc clip", "test lead", "crocodile clip"],
   "description": "A wire with a spring-jaw clip on one or both ends, for gripping a bare wire or component leg directly.",
   "how_to_use": "Clip one end onto the bare leg or wire end you need to reach, plug or clip the other end onto the target (an Arduino pin, another lead, or a second bare leg) — the one solderless way to connect two points that aren't both sitting in breadboard holes, since a plain jumper wire's pin end has nothing to grip a bare leg with.",
-  "image": "alligator-clip-wire.png"
+  "image": "alligator-clip-wire.png",
+  "plain": {
+    "what": "A wire with a spring clip on each end that bites onto legs or wires.",
+    "how": "Squeeze the clip open, let it grip a bare leg or wire. Great for quick tests without a breadboard — no soldering needed."
+  }
 }

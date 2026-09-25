@@ -10,5 +10,9 @@
   ],
   "description": "A heavy base with adjustable arms and crocodile clips (often a magnifier) that holds parts still while you solder.",
   "how_to_use": "Clip each part or wire in its own arm, bend the arms so the joint sits in front of you at a comfortable height, then you have both hands free for the iron and the solder.",
-  "image": "helping-hands.png"
+  "image": "helping-hands.png",
+  "plain": {
+    "what": "A stand with clips (and often a magnifier) that holds parts still while you solder.",
+    "how": "Clip the parts in the arms and bend them into place, so both your hands are free."
+  }
 }

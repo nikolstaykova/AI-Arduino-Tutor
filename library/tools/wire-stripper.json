@@ -7,5 +7,9 @@
   "description": "Removes insulation from a wire's end without cutting the copper inside.",
   "how_to_use": "Open the jaws, seat the wire in the notch matching its gauge, squeeze, and pull to strip the insulation.",
   "tutorial_clip": "wire_stripper.mp4",
-  "image": "wire-stripper.png"
+  "image": "wire-stripper.png",
+  "plain": {
+    "what": "Pliers with notches that take the plastic coat off a wire without cutting the metal inside.",
+    "how": "Put the wire in the notch that matches its size, squeeze and pull."
+  }
 }

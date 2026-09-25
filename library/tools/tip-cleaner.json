@@ -11,5 +11,9 @@
   ],
   "description": "A pot of brass wool that wipes old solder and burnt flux off a hot soldering iron tip.",
   "how_to_use": "Stab the hot tip in and out of the brass wool a few times between joints, then add a little fresh solder to the tip (tinning) so it stays shiny.",
-  "image": "tip-cleaner.png"
+  "image": "tip-cleaner.png",
+  "plain": {
+    "what": "A pot of metal wool for cleaning the soldering iron's tip.",
+    "how": "Poke the hot tip in and out a few times between joints to keep it shiny."
+  }
 }

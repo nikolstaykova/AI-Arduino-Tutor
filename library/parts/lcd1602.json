@@ -9,5 +9,9 @@
   "description": "A character LCD (16x2 or 20x4, same pins and attributes per Wokwi's own docs), wired either as a 2-pin I2C backpack (`pins: \"i2c\"`) or the full parallel HD44780 interface (`pins: \"full\"`, the default).",
   "how_to_use": "I2C mode: GND/VCC power, SDA/SCL to the board's real I2C pins (default I2C address 0x27, configurable). Parallel mode: VSS/VDD power, V0 contrast (not simulated), RS command/data select, RW read/write (tie to ground), E enable, D4-D7 parallel data (D0-D3 unused in 4-bit mode), A/K optional backlight anode/cathode.",
   "image": "lcd1602.png",
-  "protocol_legs": ["SDA", "SCL"]
+  "protocol_legs": ["SDA", "SCL"],
+  "plain": {
+    "what": "A screen that shows two lines of 16 letters or numbers — great for messages and readings.",
+    "how": "Easiest with the little I2C board on the back: just 4 wires — GND, VCC, SDA and SCL (A4/A5 on an Uno). Then use the LiquidCrystal I2C library to write text."
+  }
 }

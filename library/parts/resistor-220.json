@@ -21,5 +21,9 @@
   "description": "Limits the amount of current allowed to flow through a circuit.",
   "how_to_use": "Placed in series between the Arduino's output pin and the LED's anode, protecting the LED from drawing too much current.",
   "image": "resistor-220.png",
-  "leads": "wire-lead"
+  "leads": "wire-lead",
+  "plain": {
+    "what": "A 220 Ω resistor — it limits how much electricity flows. The usual one for an LED.",
+    "how": "It works either way round. The coloured stripes tell you its value. Put it in line with the part it protects, like an LED."
+  }
 }

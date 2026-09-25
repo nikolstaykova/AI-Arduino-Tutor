@@ -10,5 +10,9 @@
   ],
   "description": "Blows very hot air — used to shrink heat-shrink tubing over soldered joints.",
   "how_to_use": "Slide the heat-shrink over the joint first, then wave the heat gun a few centimetres away until the tube shrinks tight. Keep it moving; don't point it at plastic parts or your fingers.",
-  "image": "heat-gun.png"
+  "image": "heat-gun.png",
+  "plain": {
+    "what": "Blows very hot air — mostly to shrink heat-shrink tubing.",
+    "how": "Keep it moving a few centimetres away, never point it at people, and put it down on its stand."
+  }
 }

@@ -9,5 +9,9 @@
   "aliases": ["74hc595", "shift register", "sipo shift register"],
   "description": "An 8-bit serial-in, parallel-out shift register: 3 control pins from the microcontroller drive 8 parallel outputs (Q0-Q7).",
   "how_to_use": "DS (serial data in), SHCP (serial/shift clock), STCP (storage/latch clock) are the 3 pins the microcontroller drives — these are a bit-banged protocol, not a real I2C/SPI bus. Q0-Q7 are the 8 parallel outputs (not interchangeable — each drives a specific downstream component). Q7S is the serial output for daisy-chaining to the next chip's DS pin. OE (active low, tie to GND to keep outputs always active) and MR (active low, tie to VCC to disable reset) are usually tied off rather than driven.",
-  "image": "74hc595.png"
+  "image": "74hc595.png",
+  "plain": {
+    "what": "A chip that gives you 8 extra output pins while using only 3 on the Arduino — handy for lots of LEDs.",
+    "how": "Your program sends it 8 on/off values one after another; it then sets its 8 outputs all at once."
+  }
 }

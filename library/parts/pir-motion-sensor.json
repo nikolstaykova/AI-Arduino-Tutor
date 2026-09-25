@@ -8,5 +8,9 @@
   "aliases": ["pir", "pir sensor", "motion sensor"],
   "description": "A passive infrared motion sensor with a digital output.",
   "how_to_use": "VCC/GND power, OUT is a digital output that goes high when motion is detected and returns low after a delay.",
-  "image": "pir-motion-sensor.png"
+  "image": "pir-motion-sensor.png",
+  "plain": {
+    "what": "Notices when a person or animal moves in front of it (it senses body heat).",
+    "how": "VCC to 5V, GND to GND, OUT to an Arduino pin. OUT turns on when it sees movement."
+  }
 }

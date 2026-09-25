@@ -8,5 +8,9 @@
   "aliases": ["rgb led", "tri-color led"],
   "description": "A single LED package with independent red, green, and blue elements, plus one shared pin.",
   "how_to_use": "R/G/B are each a separate color channel (not interchangeable with each other — swapping which color goes where changes what the diagram actually does). COM is the shared pin: common anode (tie to 5V/3V3) by default, or common cathode (tie to GND) if the `common` attribute is set — check which mode a given diagram uses before assuming COM's role.",
-  "image": "rgb-led.png"
+  "image": "rgb-led.png",
+  "plain": {
+    "what": "Three little lights — red, green and blue — in one. Mix them to make almost any colour.",
+    "how": "The longest leg is shared (usually −). Each of the other three legs gets its own resistor and its own Arduino pin."
+  }
 }

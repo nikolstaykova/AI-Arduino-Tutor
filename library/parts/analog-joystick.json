@@ -8,5 +8,9 @@
   "aliases": ["joystick", "analog joystick"],
   "description": "A 2-axis analog joystick with an integrated push button.",
   "how_to_use": "VCC/GND power, VERT/HORZ are analog outputs (each axis reads ~VCC/2 at rest/center), SEL is the button — normally open, shorts to GND when the stick is pressed straight down.",
-  "image": "analog-joystick.png"
+  "image": "analog-joystick.png",
+  "plain": {
+    "what": "A thumb joystick like on a game controller — it reads left/right, up/down, and a click.",
+    "how": "5V and GND for power, VRx and VRy to two analog pins, SW to a digital pin for the click."
+  }
 }

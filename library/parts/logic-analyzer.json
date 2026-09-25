@@ -7,5 +7,9 @@
   "aliases": ["logic analyzer"],
   "description": "An 8-channel digital logic analyzer for recording/inspecting signals during simulation (exports a VCD file); a debugging tool, not a functional circuit component.",
   "how_to_use": "D0-D7 are the 8 input channels (each independently named via the `channelNames` attribute), GND is ground — purely observes whatever signals are wired to it, never drives anything.",
-  "image": "logic-analyzer.png"
+  "image": "logic-analyzer.png",
+  "plain": {
+    "what": "A tool that records the on/off signals on up to 8 wires, so you can see what your circuit is really doing.",
+    "how": "Clip its wires to the signals you want to watch, and GND to GND, then look at the recording on your computer."
+  }
 }

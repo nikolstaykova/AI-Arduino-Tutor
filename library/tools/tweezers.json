@@ -7,5 +7,9 @@
   "description": "A pinching tool for gripping small components.",
   "how_to_use": "Pinch a component's thin leg between the tips to place it precisely into a breadboard hole, or to retrieve a small dropped part.",
   "tutorial_clip": "tweezers.mp4",
-  "image": "tweezers.png"
+  "image": "tweezers.png",
+  "plain": {
+    "what": "For picking up and placing tiny parts.",
+    "how": "Pinch gently near the tips."
+  }
 }

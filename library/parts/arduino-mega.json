@@ -117,5 +117,9 @@
       "GND",
       "5V"
     ]
+  },
+  "plain": {
+    "what": "A big Arduino with lots more pins — for projects with many lights, buttons or sensors at once.",
+    "how": "Works just like the Uno: USB to your computer, parts wired to its sockets. Use it when you run out of pins on an Uno."
   }
 }

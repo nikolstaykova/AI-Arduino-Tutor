@@ -10,5 +10,9 @@
   "aliases": ["dip switch", "dip switch 8"],
   "description": "8 independent on/off switches in one package; switch N's two contacts are `Na`/`Nb`.",
   "how_to_use": "Each switch's two contacts (e.g. `1a`/`1b`) are only the same net while that specific switch is toggled on — unlike a pushbutton's paired legs, they're genuinely two separate terminals, not two names for one node. Within a given switch, `Na`/`Nb` are freely interchangeable (a plain on/off contact doesn't care about direction), so they're marked symmetric.",
-  "image": "dip-switch-8.png"
+  "image": "dip-switch-8.png",
+  "plain": {
+    "what": "Eight tiny on/off switches in one block — for settings you rarely change.",
+    "how": "Flip each switch with a pen tip. Each switch joins its own pair of legs when it's ON."
+  }
 }

@@ -9,5 +9,9 @@
   "aliases": ["a4988", "stepper driver"],
   "description": "A driver chip that sits between the microcontroller and a bipolar stepper motor, converting simple STEP/DIR pulses into the motor's coil currents.",
   "how_to_use": "STEP (one pulse = one step) and DIR (0=CCW, 1=CW) are the two pins the microcontroller normally drives. ENABLE (active low, pulled down already)/SLEEP (active low, pulled up)/RESET (active low, floating — must be held high) are usually left at their defaults; MS1/MS2/MS3 select microstepping resolution. VDD/GND are logic power; VMOT is motor power (unused in simulation). 1A/1B connect to the motor's B coil, 2A/2B to the motor's A coil (the driver's '1'/'2' numbering doesn't match the motor's A/B naming — verified from docs, not a typo).",
-  "image": "a4988.png"
+  "image": "a4988.png",
+  "plain": {
+    "what": "A driver board that gives a stepper motor the power it needs, so the Arduino just says 'step' and 'which way'.",
+    "how": "STEP and DIR to two Arduino pins, the motor's 4 wires to 1A/1B/2A/2B, and a separate power supply to VMOT."
+  }
 }

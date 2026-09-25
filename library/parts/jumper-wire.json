@@ -6,5 +6,9 @@
   "aliases": ["jumper", "jumper wire", "wire"],
   "description": "A short wire with a connector pin on each end.",
   "how_to_use": "Plug the ends into breadboard holes or Arduino pins to make a connection between them.",
-  "image": "jumper-wire.png"
+  "image": "jumper-wire.png",
+  "plain": {
+    "what": "Short wires with a pin on each end — the connectors you use to link parts and the Arduino.",
+    "how": "Push one end into a breadboard hole or Arduino socket and the other end where it should connect. Colours don't matter to the circuit, but red for + and black for − helps you keep track."
+  }
 }

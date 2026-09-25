@@ -9,5 +9,9 @@
   ],
   "description": "Melts sticks of glue to fix boards, wires and parts in place in a finished project.",
   "how_to_use": "Let it heat for a few minutes, squeeze a small bead onto the spot, and hold the part still for a few seconds. Never glue over a joint you might need to fix later.",
-  "image": "hot-glue-gun.png"
+  "image": "hot-glue-gun.png",
+  "plain": {
+    "what": "Melts glue sticks to fix parts and wires in place.",
+    "how": "Let it heat up, squeeze a small blob, hold the part still for a few seconds. The tip is hot!"
+  }
 }

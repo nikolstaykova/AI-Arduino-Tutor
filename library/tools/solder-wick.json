@@ -11,5 +11,9 @@
   ],
   "description": "A braid of fine copper that soaks up melted solder, for cleaning pads and removing small joints.",
   "how_to_use": "Lay the braid on the joint, press the hot iron on top of it — the solder melts and runs into the braid. Lift both together, then cut off the used silver end.",
-  "image": "solder-wick.png"
+  "image": "solder-wick.png",
+  "plain": {
+    "what": "A copper braid that soaks up melted solder, to clean a joint.",
+    "how": "Lay it on the solder, press the hot iron on top, and the solder soaks into the braid."
+  }
 }

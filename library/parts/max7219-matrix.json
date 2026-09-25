@@ -8,5 +8,9 @@
   "aliases": ["max7219", "led dot matrix", "8x8 matrix"],
   "description": "An 8x8 LED dot matrix driven by a MAX7219 controller, chainable via the `chain` attribute (e.g. chain=4 for a 32x8 display).",
   "how_to_use": "VCC/GND power, DIN/CLK/CS are the bit-banged control signals (not a standard I2C/SPI bus, so not protocol-protected the same way). DOUT passes the data stream to the next chained unit's DIN; CLK and CS are shared across every chained unit. NOTE: a single-instance diagram's plain DIN/CLK/CS/GND/VCC legs are confirmed from real docs, but a multi-unit chain's own `.2`-suffixed leg names (e.g. a second unit's GND.2/CS.2/CLK.2) are an OPEN, UNCONFIRMED question — seen in only one past diagram, never verified against Wokwi's own simulator or a second corroborating diagram. Do not assume a `.N` suffix pattern here without checking first.",
-  "image": "max7219-matrix.png"
+  "image": "max7219-matrix.png",
+  "plain": {
+    "what": "An 8×8 grid of red dots with a helper chip — show letters, icons and animations.",
+    "how": "Five wires: VCC and GND for power, and DIN, CS, CLK to three Arduino pins. A library (like LedControl) draws on it."
+  }
 }

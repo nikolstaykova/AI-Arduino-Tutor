@@ -8,5 +8,9 @@
   "aliases": ["led bar graph", "bar graph"],
   "description": "10 individual LEDs in one package, each with its own anode/cathode pair (A1/C1 through A10/C10).",
   "how_to_use": "Each LED segment is independent — its anode (`AN`) and cathode (`CN`) are only that one LED's pins, not shared with any other segment, and not interchangeable with a different segment's pins (each drives a specific position in the bar).",
-  "image": "led-bar-graph.png"
+  "image": "led-bar-graph.png",
+  "plain": {
+    "what": "Ten LEDs side by side in one package — great for a level meter.",
+    "how": "Each bar is a separate LED with its own + and − leg; wire them like normal LEDs with resistors."
+  }
 }

@@ -47,5 +47,9 @@
       "3V3",
       "5V"
     ]
+  },
+  "plain": {
+    "what": "A Wi-Fi 6 + Bluetooth board that can also talk to smart-home gadgets.",
+    "how": "Plug in USB and program it like an Arduino. 3.3 V pins; the silver box is the radio."
   }
 }

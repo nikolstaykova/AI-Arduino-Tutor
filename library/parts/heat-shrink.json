@@ -10,5 +10,9 @@
   ],
   "description": "Plastic sleeves that shrink tight when heated, insulating a bare joint.",
   "how_to_use": "Slide a piece onto the wire BEFORE soldering, then push it over the finished joint and warm it with the iron's side or a lighter held at a distance.",
-  "image": "heat-shrink.png"
+  "image": "heat-shrink.png",
+  "plain": {
+    "what": "Little plastic tubes that shrink tight when you heat them — to cover and protect a soldered joint.",
+    "how": "Slide a piece over the wire before soldering, then move it over the joint and heat it until it hugs the wire."
+  }
 }

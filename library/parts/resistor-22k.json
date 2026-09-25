@@ -25,5 +25,9 @@
   "description": "A fixed 22kΩ resistor.",
   "how_to_use": "Put it in series to limit current (e.g. before an LED), or use it as a pull-up / pull-down or in a voltage divider. It works either way round.",
   "image": "resistor-1k.png",
-  "leads": "wire-lead"
+  "leads": "wire-lead",
+  "plain": {
+    "what": "A 22 kΩ resistor — it limits how much electricity flows. For sensors and dividers.",
+    "how": "It works either way round. The coloured stripes tell you its value. Put it in line with the part it protects, like an LED."
+  }
 }

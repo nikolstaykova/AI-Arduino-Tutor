@@ -7,5 +7,9 @@
   "description": "Measures voltage, current, resistance, and continuity in a circuit.",
   "how_to_use": "Set the dial to the measurement you need, then touch the two probes to the two points you want to measure across — e.g. across a resistor's legs to confirm its actual value, or between two points to check continuity.",
   "tutorial_clip": "digital-multimeter.mp4",
-  "image": "digital-multimeter.png"
+  "image": "digital-multimeter.png",
+  "plain": {
+    "what": "A measuring tool: it tells you volts, resistance, and beeps when two points are connected.",
+    "how": "Turn the dial to what you want to measure, then touch the two probes to the two points."
+  }
 }

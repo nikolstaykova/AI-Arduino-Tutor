@@ -36,5 +36,13 @@
       "2"
     ]
   },
-  "leads": "short-leg"
+  "leads": "short-leg",
+  "plain": {
+    "what": "A button that connects its legs only while you press it.",
+    "how": "Put it across the middle gap of the breadboard. Wire one side to an Arduino pin and the other side to power; the Arduino can then tell when it's pressed.",
+    "pins": {
+      "1": "one side",
+      "2": "the other side (legs on the same side are always joined)"
+    }
+  }
 }

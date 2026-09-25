@@ -22,5 +22,9 @@
   "description": "A fixed resistor.",
   "how_to_use": "Wired as a pull-down between the pushbutton's input-side leg and ground, so the input pin reads a steady LOW when the button isn't pressed instead of floating.",
   "image": "resistor-10k.png",
-  "leads": "wire-lead"
+  "leads": "wire-lead",
+  "plain": {
+    "what": "A 10 kΩ resistor — it limits how much electricity flows. The usual one for buttons (a 'pull-down').",
+    "how": "It works either way round. The coloured stripes tell you its value. Put it in line with the part it protects, like an LED."
+  }
 }

@@ -10,5 +10,9 @@
   "description": "An LED display made of seven segments plus a decimal point, in 1/2/3/4-digit variants (the `digits` attribute).",
   "how_to_use": "1-digit variant: COM.1/COM.2 are two physical legs (top and bottom) always tied together internally — either one works identically. Multi-digit variants (verified via docs.wokwi.com/parts/wokwi-7segment) drop COM entirely in favor of one DIG1..DIGN pin per digit (the segment lines A-G/DP are a single shared bus across all digits, driven one digit at a time by multiplexing); a 4-digit clock-style display can also expose a CLN (colon) pin when its `colon` attribute is set.",
   "image": "seven-segment.png",
-  "pin_aliases": { "mode": "prefix", "prefixes": ["COM"] }
+  "pin_aliases": { "mode": "prefix", "prefixes": ["COM"] },
+  "plain": {
+    "what": "A display that shows one number (0–9) using seven little light bars.",
+    "how": "Each bar is its own LED: light the right bars to draw a number. Each needs a resistor."
+  }
 }

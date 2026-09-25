@@ -8,5 +8,9 @@
   "aliases": ["nokia 5110", "pcd8544"],
   "description": "A monochrome 84x48 pixel LCD (PCD8544 controller) with an SPI-style interface.",
   "how_to_use": "VCC/GND power, BL controls the backlight. RST/CE/DC/DIN/CLK are the control/data/clock lines the microcontroller drives — an SPI-style protocol, but named DIN/CLK rather than MOSI/SCK, so NOT recognized by (or protected by) this project's SPI-bus mechanism, which only matches the exact names MOSI/MISO/SCK/DO/DI. Deliberately left without protocol_legs — flag if a lesson ever needs two of these (or a mix with a real-named SPI device) sharing lines.",
-  "image": "nokia-5110-screen.png"
+  "image": "nokia-5110-screen.png",
+  "plain": {
+    "what": "The small black-and-white screen from an old Nokia phone — cheap and fun for simple graphics.",
+    "how": "Eight wires, and it runs at 3.3 V. A library (like Adafruit PCD8544) draws text and pictures."
+  }
 }

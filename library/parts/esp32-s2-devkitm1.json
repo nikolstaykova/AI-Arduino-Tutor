@@ -60,5 +60,9 @@
       "GND",
       "3V3"
     ]
+  },
+  "plain": {
+    "what": "A Wi-Fi board (no Bluetooth) that can also pretend to be a USB keyboard or mouse.",
+    "how": "Plug in USB and program it like an Arduino. 3.3 V pins."
   }
 }

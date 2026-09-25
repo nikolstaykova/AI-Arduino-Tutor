@@ -7,5 +7,9 @@
   "aliases": ["stepper motor", "stepper"],
   "description": "A bipolar stepper motor with two coils (A, B) — needs a driver chip (e.g. A4988) to supply real current, doesn't connect straight to microcontroller pins.",
   "how_to_use": "A+/A- and B+/B- are the two coil pairs, wired to a driver's motor-output pins (e.g. an A4988's 1A/1B/2A/2B) — not directly to the microcontroller.",
-  "image": "stepper-motor.png"
+  "image": "stepper-motor.png",
+  "plain": {
+    "what": "A motor that turns in small, exact steps — for precise movement, like in 3D printers.",
+    "how": "It needs a driver board (like the A4988) between it and the Arduino."
+  }
 }

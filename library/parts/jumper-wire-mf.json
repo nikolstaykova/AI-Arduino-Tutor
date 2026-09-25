@@ -12,5 +12,9 @@
   ],
   "description": "A jumper wire with a pin on one end and a socket on the other.",
   "how_to_use": "Slide the socket end over a stiff component pin (a potentiometer or module pin) and push the pin end into an Arduino header socket — a solderless connection with no breadboard.",
-  "image": "jumper-wire.png"
+  "image": "jumper-wire.png",
+  "plain": {
+    "what": "A jumper wire with a pin on one end and a socket on the other.",
+    "how": "Use it to connect a part with pins sticking out (like a sensor module) straight to a breadboard or Arduino."
+  }
 }

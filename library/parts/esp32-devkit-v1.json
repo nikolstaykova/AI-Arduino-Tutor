@@ -52,5 +52,9 @@
     "prefixes": [
       "GND"
     ]
+  },
+  "plain": {
+    "what": "A board with Wi-Fi and Bluetooth built in — for projects that talk to your phone or the internet.",
+    "how": "Program it like an Arduino over USB. It runs at 3.3 V, so be careful with 5 V parts. The silver box is the Wi-Fi radio."
   }
 }

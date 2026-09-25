@@ -8,5 +8,9 @@
   "aliases": ["photoresistor", "ldr", "light sensor"],
   "description": "A light-dependent-resistor sensor module with both a digital threshold output and an analog light-level output.",
   "how_to_use": "VCC/GND power, DO is a digital output (goes low when darkness is detected, on-board LED lights up), AO is an analog output proportional to light level (read with analogRead()). DO isn't a real I2C/SPI bus pin despite the name overlap with other parts' SDA-style legs.",
-  "image": "photoresistor-sensor.png"
+  "image": "photoresistor-sensor.png",
+  "plain": {
+    "what": "Senses light — the number goes up or down as it gets brighter or darker.",
+    "how": "VCC, GND, and the AO pin to an analog pin to read how bright it is. DO switches on/off at a level you set with the little screw."
+  }
 }

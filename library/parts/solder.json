@@ -9,5 +9,9 @@
   ],
   "description": "A soft metal wire that melts under a soldering iron and sets into a permanent electrical joint.",
   "how_to_use": "Heat the joint with the iron, then touch the solder to the joint (not the iron) so it flows around both metals. Use in a ventilated space.",
-  "image": "solder.png"
+  "image": "solder.png",
+  "plain": {
+    "what": "A soft metal wire that melts under a soldering iron and hardens into a permanent electrical joint.",
+    "how": "Heat the two things you want to join with the iron, then touch the solder to them (not to the iron) — it flows in and sets in a second."
+  }
 }

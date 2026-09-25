@@ -8,5 +8,9 @@
   "aliases": ["tm1637", "tm1637 display"],
   "description": "A 4-digit seven-segment display module driven by a TM1637 controller over a 2-wire interface.",
   "how_to_use": "CLK/DIO are a bit-banged, TM1637-proprietary protocol — it resembles I2C but isn't real I2C, and is confirmed NOT caught by this project's SDA/SCL-name protocol-bus guard. VCC/GND are power.",
-  "image": "tm1637-7segment.png"
+  "image": "tm1637-7segment.png",
+  "plain": {
+    "what": "A 4-digit number display (like a clock) that needs only two wires to control.",
+    "how": "VCC and GND for power, CLK and DIO to two Arduino pins, then use the TM1637 library to show numbers."
+  }
 }

@@ -10,5 +10,9 @@
   ],
   "description": "Clear glasses that protect your eyes from flying clipped leads and splashes of hot solder.",
   "how_to_use": "Wear them whenever you solder or clip component legs — a trimmed lead can fly surprisingly far.",
-  "image": "safety-glasses.png"
+  "image": "safety-glasses.png",
+  "plain": {
+    "what": "Glasses that protect your eyes from flying bits of wire and splashes of solder.",
+    "how": "Wear them whenever you solder or cut legs."
+  }
 }

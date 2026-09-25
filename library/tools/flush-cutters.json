@@ -7,5 +7,9 @@
   "description": "Cutters with blades ground flat on one side, for trimming a wire or lead close to flush without leaving a sharp stub.",
   "how_to_use": "Position the flat side of the jaws against the surface you want the cut to be flush with, then squeeze to trim the lead to length.",
   "tutorial_clip": "flush-cutters.mp4",
-  "image": "flush-cutters.png"
+  "image": "flush-cutters.png",
+  "plain": {
+    "what": "Small, sharp cutters for snipping wires and extra legs close to the board.",
+    "how": "Point the flat side towards what you're keeping. Hold the bit you cut off, so it doesn't fly away."
+  }
 }

@@ -7,5 +7,9 @@
   "description": "Pliers with long, narrow jaws for precision work in tight spaces.",
   "how_to_use": "Grip a component's leg or a wire near the tip of the jaws to bend it to a precise angle, or to reach into a crowded breadboard row without disturbing neighboring connections.",
   "tutorial_clip": "needle-nose-pliers-howto.mp4",
-  "image": "needle-nose-pliers.png"
+  "image": "needle-nose-pliers.png",
+  "plain": {
+    "what": "Pliers with long thin jaws, for bending legs and reaching into tight spots.",
+    "how": "Grip a leg near the tip to bend it neatly."
+  }
 }

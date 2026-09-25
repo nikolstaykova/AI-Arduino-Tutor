@@ -546,9 +546,13 @@ def api_part(body):
     if card is None:
         return {"error": "unknown part"}, 404
     facts = core.lesson_gen.part_facts(library).get(body.get("wokwi_type"), {})
-    return {"card": {k: card.get(k) for k in ("id", "display_name", "description", "how_to_use", "pins", "polarized",
-                                               "legs_placed_together", "straddles_center_gap", "symmetric_pins",
-                                               "pin_domains", "protocol_pins", "led_builtin")},
+    plain = card.get("plain") or {}
+    shown = {k: card.get(k) for k in ("id", "display_name", "description", "how_to_use", "pins", "polarized",
+                                       "legs_placed_together", "straddles_center_gap", "symmetric_pins",
+                                       "pin_domains", "protocol_pins", "led_builtin")}
+    # the learner reads the plain-language text; the technical text stays in the card for Claude and the engine
+    shown.update({"description": plain.get("what") or shown["description"], "how_to_use": plain.get("how") or shown["how_to_use"]})
+    return {"card": shown,
             "groups": facts.get("groups", []), "interchangeable": facts.get("interchangeable", card.get("symmetric_pins", []))}
 
 
@@ -570,7 +574,7 @@ def api_parts_catalog(_body):
         attrs = {"value": card["wokwi_value"]} if card.get("wokwi_value") else {}
         out.append({"id": card["id"], "name": card["display_name"], "subtype": card.get("subtype") or card["type"],
                     "wokwi_type": wt, "attrs": attrs, "popular": card["id"] in PICKER_FIRST,
-                    "description": card.get("description", "")})
+                    "description": (card.get("plain") or {}).get("what") or card.get("description", "")})
     out.sort(key=lambda c: (not c["popular"], PICKER_FIRST.index(c["id"]) if c["popular"] else 0, c["name"]))
     return {"parts": out}
 
@@ -663,8 +667,11 @@ def api_library(_body):
         out.append({"id": card["id"], "kind": kind, "name": card["display_name"],
                     "category": TOOL_CATEGORY.get(card["id"], "Tools") if kind == "tool" else LIB_CATEGORY.get(card.get("subtype"), "Other"),
                     "wokwi_type": wt, "attrs": {"value": card["wokwi_value"]} if card.get("wokwi_value") else {},
-                    "description": card.get("description", ""), "how_to_use": card.get("how_to_use", ""),
-                    "pins": card.get("pins", []), "polarized": bool(card.get("polarized")), "tier": card.get("tier"),
+                    # what learners read: the plain-language text; the technical card text
+                    # (description, how_to_use, pins) stays for Claude's brief and the engine
+                    "description": (card.get("plain") or {}).get("what") or card.get("description", ""),
+                    "how_to_use": (card.get("plain") or {}).get("how") or card.get("how_to_use", ""),
+                    "pins": (card.get("plain") or {}).get("pins") or {}, "polarized": bool(card.get("polarized")), "tier": card.get("tier"),
                     "aliases": card.get("aliases", []),
                     "video": f"/media/{clip}" if _media_file(clip) else None,
                     "used_in": used.get(card["id"], [])})
