@@ -125,6 +125,15 @@ def pin_modes_from_code(code):
     for pin, mode in re.findall(r"pinMode\s*\(\s*(\w+)\s*,\s*(OUTPUT|INPUT_PULLUP|INPUT)\s*\)", code):
         if resolve(pin):
             modes[resolve(pin)] = mode
+    # a pin array — pinMode(ledPins[i], OUTPUT) sets every pin in it
+    arrays = {}
+    for name, items in re.findall(r"(\w*[Pp]ins?\w*)\s*\[\s*\d*\s*\]\s*=\s*\{([^{}]*)\}", code):
+        pins = [x.strip() for x in items.split(",") if x.strip()]
+        if pins and all(re.fullmatch(r"A?\d+", x) for x in pins):
+            arrays[name] = pins
+    for name, mode in re.findall(r"pinMode\s*\(\s*(\w+)\s*\[[^\]]*\]\s*,\s*(OUTPUT|INPUT_PULLUP|INPUT)\s*\)", code):
+        for pin in arrays.get(name, []):
+            modes[pin] = mode
     for pin in re.findall(r"analogWrite\s*\(\s*(\w+)\s*,", code):
         if resolve(pin):
             modes.setdefault(resolve(pin), "OUTPUT")

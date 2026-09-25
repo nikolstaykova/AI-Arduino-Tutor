@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz2",
+      "top": 0,
+      "left": 180,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz3",
+      "top": 0,
+      "left": 240,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "bz1:1",
+      "bb1:1b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bz1:2",
+      "bb1:4b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:1b.j",
+      "bb1:bn.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:4b.j",
+      "uno:6",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bz2:1",
+      "bb1:6b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bz2:2",
+      "bb1:9b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:6b.j",
+      "bb1:bn.6",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:9b.j",
+      "uno:7",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bz3:1",
+      "bb1:11b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bz3:2",
+      "bb1:14b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:11b.j",
+      "bb1:bn.11",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:14b.j",
+      "uno:8",
+      "orange",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

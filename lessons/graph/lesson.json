@@ -1,0 +1,125 @@
+{
+  "id": "graph",
+  "title": "Graph",
+  "description": "Send a knob's reading to your computer and draw it as a graph.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/communication/Graph/",
+    "title": "Arduino docs: Graph"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "analog-read-serial"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "potentiometer-10k"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, 10 kΩ potentiometer (knob) and a few jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "potentiometer-10k"
+      ]
+    },
+    {
+      "id": "pot1-place",
+      "phase": "build",
+      "clip": "Push the knob into the breadboard so each of its three legs is in a different numbered column.",
+      "expected_landing": [
+        "pot1:GND",
+        "pot1:SIG",
+        "pot1:VCC"
+      ],
+      "strict": false,
+      "hints": [
+        "The two outer legs are for power; the middle leg gives the reading.",
+        "Two legs in the same column would be joined, so use three different columns."
+      ],
+      "goal": "Put the knob on the breadboard."
+    },
+    {
+      "id": "pot1-gnd",
+      "phase": "build",
+      "clip": "A jumper wire from one outer leg's column to the − (blue) row along the bottom edge — and, since this is the first thing using it, one more wire from that − row to a GND pin on the Arduino (now the whole row is GND).",
+      "expected_nets": [
+        [
+          "pot1:GND",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either outer leg works — swapping them only reverses which way is 'more'."
+      ],
+      "goal": "Connect one outer leg to GND."
+    },
+    {
+      "id": "pot1-5v",
+      "phase": "build",
+      "clip": "A jumper wire from the other outer leg's column to the + (red) row along the bottom edge — and, since this is the first thing using it, one more wire from that + row to the 5V pin on the Arduino (now the whole row is 5V).",
+      "expected_nets": [
+        [
+          "pot1:VCC",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the knob has 0 V at one end and 5 V at the other."
+      ],
+      "goal": "Connect the other outer leg to 5V."
+    },
+    {
+      "id": "pot1-pin",
+      "phase": "build",
+      "clip": "A jumper wire from the middle leg's column to pin A0 on the Arduino.",
+      "expected_nets": [
+        [
+          "pot1:SIG",
+          "uno:A0"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A0 is on the Arduino's ANALOG IN header.",
+        "The middle leg's voltage follows the knob: 0 V to 5 V."
+      ],
+      "goal": "Connect the knob's middle leg to A0."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. Open Tools → Serial Plotter and turn the knob: the line goes up and down.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "pot1:GND",
+        "uno:GND.1"
+      ],
+      [
+        "pot1:VCC",
+        "uno:5V"
+      ],
+      [
+        "pot1:SIG",
+        "uno:A0"
+      ]
+    ]
+  }
+}

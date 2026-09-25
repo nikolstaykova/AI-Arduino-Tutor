@@ -1,0 +1,125 @@
+{
+  "id": "fade",
+  "title": "Fading an LED",
+  "description": "Make an LED glow brighter and dimmer with analogWrite() (PWM).",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/basics/Fade/",
+    "title": "Arduino docs: Fade"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "blink"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "resistor-220",
+    "led"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, 220 Ω resistor, LED and a few jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "resistor-220",
+        "led"
+      ]
+    },
+    {
+      "id": "led1-resistor",
+      "phase": "build",
+      "clip": "Push a 220 Ω resistor into the breadboard, its two legs in two different numbered columns.",
+      "expected_landing": "r1:1",
+      "strict": false,
+      "hints": [
+        "A resistor works either way round.",
+        "It protects the LED: without it too much current flows and the LED burns out."
+      ],
+      "goal": "Put the resistor for the LED on the breadboard."
+    },
+    {
+      "id": "led1-pin",
+      "phase": "build",
+      "clip": "A jumper wire from one of the resistor's columns to pin 9 on the Arduino.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "uno:9"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 9 is on the Arduino's row of numbered sockets.",
+        "Any free hole in that column works."
+      ],
+      "goal": "Connect the resistor to pin 9."
+    },
+    {
+      "id": "led1-legs",
+      "phase": "build",
+      "clip": "Now the LED: its long leg in the same column as the resistor's other leg, its short leg in an empty column right next to it.",
+      "expected_nets": [
+        [
+          "led1:A",
+          "r1:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The long leg is + (the anode) — it must face the resistor or the LED stays dark.",
+        "Legs in the same column are already connected."
+      ],
+      "goal": "Connect the LED's long leg (+) to the resistor."
+    },
+    {
+      "id": "led1-gnd",
+      "phase": "build",
+      "clip": "A jumper wire from the short leg's column to the − (blue) row along the bottom edge — and, since this is the first thing using it, one more wire from that − row to a GND pin on the Arduino (now the whole row is GND).",
+      "expected_nets": [
+        [
+          "led1:C",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The short leg is − (the cathode).",
+        "The − row is already joined to GND."
+      ],
+      "goal": "Connect the LED's short leg (−) to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. The LED slowly glows brighter, then dimmer, over and over. Pin 9 has a ~ next to it: it can 'fake' in-between brightness (PWM).",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "r1:1",
+        "uno:9"
+      ],
+      [
+        "led1:A",
+        "r1:2"
+      ],
+      [
+        "led1:C",
+        "uno:GND.1"
+      ]
+    ]
+  }
+}

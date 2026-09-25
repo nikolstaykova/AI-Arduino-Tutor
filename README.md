@@ -32,7 +32,7 @@ Copy [`.env.example`](./.env.example) to `.env` — it's git-ignored, so tokens 
 ## What you can do
 
 ### Learn on a 3D world map
-- **One world per group of Arduino's official [built-in examples](https://docs.arduino.cc/built-in-examples/)** — Basics, Digital, Analog, Communication, Control Structures, Sensors, Display, Strings, USB, Arduino ISP — plus an **AI Lab** for lessons you invent. All 68 examples are on the map as numbered levels (1-1, 1-2 …); ones without a lesson yet are named "coming soon" stops, so numbers never shift.
+- **One world per group of Arduino's official [built-in examples](https://docs.arduino.cc/built-in-examples/)** — Basics, Digital, Analog, Communication, Control Structures, Sensors, Display, Strings, USB, Arduino ISP — plus an **AI Lab** for lessons you invent. All 68 examples are on the map as numbered levels (1-1, 1-2 …); ones without a lesson yet are named "coming soon" stops, so numbers never shift. The breadboard examples are written with the **lesson kit** (`tools/lesson_kit.py` + `tools/lessons_spec.py`: circuit blocks lay out the breadboard and write the beginner steps around the official sketch), and every lesson must pass the same validator as Claude's.
 - **Sparky drives a little car** along one winding road through themed low-poly worlds (a garden with a windmill, a neon arcade, a desert with a radio tower, a lighthouse bay, a switchyard, a forest, a pixel city with robots, a library, a keyboard cove, a chip factory) and a countryside of hills, rivers, lakes, cottages, sheep, bunnies and LED mushrooms.
 - **Play any level in any order** — prerequisites are tips, not locks. Levels are coloured by what you own: green **ready**, blue **works with a stand-in**, white **needs parts**, gold **done**, with up to three stars each (finish / no hints / no wrong steps).
 - **"What's on your desk?"** — pick your parts once and the map shows what you can build right now, including physics-checked stand-ins (a 220 Ω resistor where 1 kΩ is asked for: "2.9 mA → 11.8 mA, brighter, still safe").
@@ -88,7 +88,7 @@ Principles (full list in [`PLAN.md`](./PLAN.md)):
 
 ```bash
 CQ_PROFILE=/tmp/test_profile.json CQ_AI_BACKEND=none python3 bench_server.py 8799 &
-node bench/ui_3d_smoke.js /tmp/shots        # also ui_flow_smoke, ui_nobb_smoke, ui_reveal_smoke, ui_library_smoke, ui_pir_smoke
+node bench/ui_3d_smoke.js /tmp/shots        # also ui_flow_smoke, ui_nobb_smoke, ui_reveal_smoke, ui_library_smoke, ui_pir_smoke, ui_all_lessons_smoke
 ```
 
 `CQ_PROFILE` keeps tests away from your real progress; `CQ_AI_BACKEND=none` keeps them from calling Claude.

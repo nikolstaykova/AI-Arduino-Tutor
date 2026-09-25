@@ -1,0 +1,213 @@
+{
+  "id": "tone-multiple",
+  "title": "Tone on Multiple Speakers",
+  "description": "Play notes on three buzzers, one after another.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/digital/toneMultiple/",
+    "title": "Arduino docs: Tone Multiple"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "tone-melody"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "buzzer"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, piezo buzzer and a few jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "buzzer"
+      ]
+    },
+    {
+      "id": "bz1-place",
+      "phase": "build",
+      "clip": "Push the buzzer into the breadboard, its two legs in two different columns.",
+      "expected_landing": [
+        "bz1:1",
+        "bz1:2"
+      ],
+      "strict": false,
+      "hints": [
+        "The + leg is marked on the top (and is usually longer).",
+        "It only works one way round."
+      ],
+      "goal": "Put the buzzer on the breadboard."
+    },
+    {
+      "id": "bz1-pin",
+      "phase": "build",
+      "clip": "A jumper wire from the + leg's column to pin 6 on the Arduino.",
+      "expected_nets": [
+        [
+          "bz1:2",
+          "uno:6"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "tone() on this pin makes the buzzer sing."
+      ],
+      "goal": "Connect the buzzer's + leg to pin 6."
+    },
+    {
+      "id": "bz1-gnd",
+      "phase": "build",
+      "clip": "A jumper wire from the other leg's column to the − (blue) row along the bottom edge — and, since this is the first thing using it, one more wire from that − row to a GND pin on the Arduino (now the whole row is GND).",
+      "expected_nets": [
+        [
+          "bz1:1",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The − row is GND."
+      ],
+      "goal": "Connect the buzzer's − leg to GND."
+    },
+    {
+      "id": "bz2-place",
+      "phase": "build",
+      "clip": "Push the buzzer into the breadboard, its two legs in two different columns.",
+      "expected_landing": [
+        "bz2:1",
+        "bz2:2"
+      ],
+      "strict": false,
+      "hints": [
+        "The + leg is marked on the top (and is usually longer).",
+        "It only works one way round."
+      ],
+      "goal": "Put the buzzer on the breadboard."
+    },
+    {
+      "id": "bz2-pin",
+      "phase": "build",
+      "clip": "A jumper wire from the + leg's column to pin 7 on the Arduino.",
+      "expected_nets": [
+        [
+          "bz2:2",
+          "uno:7"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "tone() on this pin makes the buzzer sing."
+      ],
+      "goal": "Connect the buzzer's + leg to pin 7."
+    },
+    {
+      "id": "bz2-gnd",
+      "phase": "build",
+      "clip": "A jumper wire from the other leg's column to the − (blue) row.",
+      "expected_nets": [
+        [
+          "bz2:1",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The − row is GND."
+      ],
+      "goal": "Connect the buzzer's − leg to GND."
+    },
+    {
+      "id": "bz3-place",
+      "phase": "build",
+      "clip": "Push the buzzer into the breadboard, its two legs in two different columns.",
+      "expected_landing": [
+        "bz3:1",
+        "bz3:2"
+      ],
+      "strict": false,
+      "hints": [
+        "The + leg is marked on the top (and is usually longer).",
+        "It only works one way round."
+      ],
+      "goal": "Put the buzzer on the breadboard."
+    },
+    {
+      "id": "bz3-pin",
+      "phase": "build",
+      "clip": "A jumper wire from the + leg's column to pin 8 on the Arduino.",
+      "expected_nets": [
+        [
+          "bz3:2",
+          "uno:8"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "tone() on this pin makes the buzzer sing."
+      ],
+      "goal": "Connect the buzzer's + leg to pin 8."
+    },
+    {
+      "id": "bz3-gnd",
+      "phase": "build",
+      "clip": "A jumper wire from the other leg's column to the − (blue) row.",
+      "expected_nets": [
+        [
+          "bz3:1",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The − row is GND."
+      ],
+      "goal": "Connect the buzzer's − leg to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. The three buzzers take turns: A, B, C — over and over.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "bz1:2",
+        "uno:6"
+      ],
+      [
+        "bz1:1",
+        "uno:GND.1"
+      ],
+      [
+        "bz2:2",
+        "uno:7"
+      ],
+      [
+        "bz2:1",
+        "uno:GND.1"
+      ],
+      [
+        "bz3:2",
+        "uno:8"
+      ],
+      [
+        "bz3:1",
+        "uno:GND.1"
+      ]
+    ]
+  }
+}

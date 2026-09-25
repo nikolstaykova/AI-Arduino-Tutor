@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "bz1:1",
+      "bb1:1b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bz1:2",
+      "bb1:4b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:1b.j",
+      "bb1:bn.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:4b.j",
+      "uno:8",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

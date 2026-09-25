@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot1",
+      "top": 0,
+      "left": 120,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot2",
+      "top": 0,
+      "left": 180,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot3",
+      "top": 0,
+      "left": 240,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [
+      "bb1:1b.f",
+      "pot1:GND",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:2b.f",
+      "pot1:SIG",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:3b.f",
+      "pot1:VCC",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:1b.j",
+      "bb1:bn.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:3b.j",
+      "bb1:bp.3",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:2b.h",
+      "uno:A0",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "uno:5V",
+      "bb1:bp.1",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:5b.f",
+      "pot2:GND",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:6b.f",
+      "pot2:SIG",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:7b.f",
+      "pot2:VCC",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:5b.j",
+      "bb1:bn.5",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:7b.j",
+      "bb1:bp.7",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:6b.h",
+      "uno:A1",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:9b.f",
+      "pot3:GND",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:10b.f",
+      "pot3:SIG",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:11b.f",
+      "pot3:VCC",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:9b.j",
+      "bb1:bn.9",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:11b.j",
+      "bb1:bp.11",
+      "red",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:10b.h",
+      "uno:A2",
+      "orange",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

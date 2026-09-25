@@ -1,0 +1,306 @@
+{
+  "id": "serial-call-response",
+  "title": "Serial Call and Response",
+  "description": "Wait for the computer to ask, then answer with two knob readings and a button's state.",
+  "source": {
+    "url": "https://docs.arduino.cc/built-in-examples/communication/SerialCallResponse/",
+    "title": "Arduino docs: Serial Call and Response"
+  },
+  "difficulty": "beginner",
+  "board": "arduino-uno",
+  "requires": [
+    "digital-read-serial",
+    "analog-read-serial"
+  ],
+  "code": "code.ino",
+  "wokwi_diagram": "diagram.json",
+  "tools_used": [],
+  "parts_used": [
+    "arduino-uno",
+    "usb-cable",
+    "breadboard",
+    "jumper-wire",
+    "potentiometer-10k",
+    "pushbutton",
+    "resistor-10k"
+  ],
+  "steps": [
+    {
+      "id": "gather",
+      "phase": "gather",
+      "clip": "Grab an Arduino Uno and its USB cable, a breadboard, 10 kΩ potentiometer (knob), pushbutton, 10 kΩ resistor and a few jumper wires.",
+      "items": [
+        "arduino-uno",
+        "usb-cable",
+        "breadboard",
+        "jumper-wire",
+        "potentiometer-10k",
+        "pushbutton",
+        "resistor-10k"
+      ]
+    },
+    {
+      "id": "pot1-place",
+      "phase": "build",
+      "clip": "Push the knob into the breadboard so each of its three legs is in a different numbered column.",
+      "expected_landing": [
+        "pot1:GND",
+        "pot1:SIG",
+        "pot1:VCC"
+      ],
+      "strict": false,
+      "hints": [
+        "The two outer legs are for power; the middle leg gives the reading.",
+        "Two legs in the same column would be joined, so use three different columns."
+      ],
+      "goal": "Put the knob on the breadboard."
+    },
+    {
+      "id": "pot1-gnd",
+      "phase": "build",
+      "clip": "A jumper wire from one outer leg's column to the − (blue) row along the bottom edge — and, since this is the first thing using it, one more wire from that − row to a GND pin on the Arduino (now the whole row is GND).",
+      "expected_nets": [
+        [
+          "pot1:GND",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either outer leg works — swapping them only reverses which way is 'more'."
+      ],
+      "goal": "Connect one outer leg to GND."
+    },
+    {
+      "id": "pot1-5v",
+      "phase": "build",
+      "clip": "A jumper wire from the other outer leg's column to the + (red) row along the bottom edge — and, since this is the first thing using it, one more wire from that + row to the 5V pin on the Arduino (now the whole row is 5V).",
+      "expected_nets": [
+        [
+          "pot1:VCC",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the knob has 0 V at one end and 5 V at the other."
+      ],
+      "goal": "Connect the other outer leg to 5V."
+    },
+    {
+      "id": "pot1-pin",
+      "phase": "build",
+      "clip": "A jumper wire from the middle leg's column to pin A0 on the Arduino.",
+      "expected_nets": [
+        [
+          "pot1:SIG",
+          "uno:A0"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A0 is on the Arduino's ANALOG IN header.",
+        "The middle leg's voltage follows the knob: 0 V to 5 V."
+      ],
+      "goal": "Connect the knob's middle leg to A0."
+    },
+    {
+      "id": "pot2-place",
+      "phase": "build",
+      "clip": "Push the knob into the breadboard so each of its three legs is in a different numbered column.",
+      "expected_landing": [
+        "pot2:GND",
+        "pot2:SIG",
+        "pot2:VCC"
+      ],
+      "strict": false,
+      "hints": [
+        "The two outer legs are for power; the middle leg gives the reading.",
+        "Two legs in the same column would be joined, so use three different columns."
+      ],
+      "goal": "Put the knob on the breadboard."
+    },
+    {
+      "id": "pot2-gnd",
+      "phase": "build",
+      "clip": "A jumper wire from one outer leg's column to the − (blue) row.",
+      "expected_nets": [
+        [
+          "pot2:GND",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Either outer leg works — swapping them only reverses which way is 'more'."
+      ],
+      "goal": "Connect one outer leg to GND."
+    },
+    {
+      "id": "pot2-5v",
+      "phase": "build",
+      "clip": "A jumper wire from the other outer leg's column to the + (red) row.",
+      "expected_nets": [
+        [
+          "pot2:VCC",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Now the knob has 0 V at one end and 5 V at the other."
+      ],
+      "goal": "Connect the other outer leg to 5V."
+    },
+    {
+      "id": "pot2-pin",
+      "phase": "build",
+      "clip": "A jumper wire from the middle leg's column to pin A1 on the Arduino.",
+      "expected_nets": [
+        [
+          "pot2:SIG",
+          "uno:A1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "A1 is on the Arduino's ANALOG IN header.",
+        "The middle leg's voltage follows the knob: 0 V to 5 V."
+      ],
+      "goal": "Connect the knob's middle leg to A1."
+    },
+    {
+      "id": "btn1-place",
+      "phase": "build",
+      "clip": "Push the button into the breadboard so it sits across the middle gap: two legs above the gap, two below.",
+      "expected_landing": [
+        "btn1:1.r",
+        "btn1:2.r"
+      ],
+      "strict": false,
+      "hints": [
+        "The two legs in the same column — one above the gap, one below — are always connected inside the button.",
+        "Pressing the button connects its left column to its right column."
+      ],
+      "goal": "Put the button across the middle gap."
+    },
+    {
+      "id": "btn1-pin",
+      "phase": "build",
+      "clip": "A jumper wire from the top half of the button's left column to pin 2 on the Arduino.",
+      "expected_nets": [
+        [
+          "btn1:1.r",
+          "uno:2"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "Pin 2 is on the Arduino's row of numbered sockets.",
+        "Any free hole in that column works."
+      ],
+      "goal": "Connect one side of the button to pin 2."
+    },
+    {
+      "id": "btn1-5v",
+      "phase": "build",
+      "clip": "A jumper wire from the button's right column (bottom half) to the + (red) row.",
+      "expected_nets": [
+        [
+          "btn1:2.r",
+          "uno:5V"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "When you press, 5V flows through the button to the pin.",
+        "The + row is already 5V."
+      ],
+      "goal": "Connect the other side of the button to 5V."
+    },
+    {
+      "id": "btn1-pulldown",
+      "phase": "build",
+      "clip": "Now a 10 kΩ resistor: one leg in the button's left column (bottom half), the other leg in an empty column.",
+      "expected_nets": [
+        [
+          "r1:1",
+          "btn1:1.r"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "This is a pull-down: it keeps the pin at 0 (LOW) while the button isn't pressed.",
+        "Without it the pin 'floats' and reads random values."
+      ],
+      "goal": "Put a 10 kΩ resistor on the button's pin side."
+    },
+    {
+      "id": "btn1-pulldown-gnd",
+      "phase": "build",
+      "clip": "A jumper wire from the resistor's other column to the − (blue) row.",
+      "expected_nets": [
+        [
+          "r1:2",
+          "uno:GND.1"
+        ]
+      ],
+      "strict": false,
+      "hints": [
+        "The − row is GND.",
+        "Now the pin reads LOW, and HIGH only while you press."
+      ],
+      "goal": "Connect the pull-down resistor to GND."
+    },
+    {
+      "id": "upload-code",
+      "phase": "upload",
+      "clip": "Copy the code into the Arduino IDE and click Upload. The Arduino says hello until the computer answers. Type any letter in the Serial Monitor and it replies with the two knobs and the button.",
+      "code": "code.ino"
+    }
+  ],
+  "final_check": {
+    "expected_nets": [
+      [
+        "pot1:GND",
+        "uno:GND.1"
+      ],
+      [
+        "pot1:VCC",
+        "uno:5V"
+      ],
+      [
+        "pot1:SIG",
+        "uno:A0"
+      ],
+      [
+        "pot2:GND",
+        "uno:GND.1"
+      ],
+      [
+        "pot2:VCC",
+        "uno:5V"
+      ],
+      [
+        "pot2:SIG",
+        "uno:A1"
+      ],
+      [
+        "btn1:1.r",
+        "uno:2"
+      ],
+      [
+        "btn1:2.r",
+        "uno:5V"
+      ],
+      [
+        "r1:1",
+        "btn1:1.r"
+      ],
+      [
+        "r1:2",
+        "uno:GND.1"
+      ]
+    ]
+  }
+}

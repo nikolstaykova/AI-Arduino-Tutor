@@ -231,7 +231,14 @@ def run_scenarios(lesson, library=None, only=None):
         s, err = _play(lesson, library, lambda i: board.full(), board.full())
         results.append(_result("build_ahead", err is None, err or ""))
 
-    if "moved_pins" in wanted:
+    if "moved_pins" in wanted and lesson.data.get("fixed_pins"):
+        # the sketch walks its pins in a loop: a learner on another pin must be told it's wrong
+        moved, moves = board.moved_pins()
+        if moves:
+            s, err = _play(lesson, library, lambda i: board.upto(i, moved), moved)
+            refused = err is not None and not s.state["finished"]
+            results.append(_result("moved_pins", refused, "" if refused else f"a lesson with fixed pins accepted the learner's other pins ({moves})"))
+    elif "moved_pins" in wanted:
         moved, moves = board.moved_pins()
         if moves:
             s, err = _play(lesson, library, lambda i: board.upto(i, moved), moved)

@@ -6,6 +6,7 @@ replay (see eventlog.py). PLAN.md Phase 1's command table, implemented.
 Code owns state; nothing here calls an LLM. `sim`/`checker.synthesize_detected`
 stand in for the camera until Phase 4 exists.
 """
+import contextvars
 import copy
 import itertools
 import re
@@ -136,7 +137,15 @@ def _pin_pool(pin, board_component_ids, library=None):
     return pool
 
 
+# A lesson whose sketch walks its pins in a loop (`for (pin = 2; pin < 8; pin++)`)
+# can't follow a learner onto another pin — it sets "fixed_pins": true, and
+# while it's being checked no numbered pin is swappable (like 5V or GND).
+_FIXED_PINS = contextvars.ContextVar("fixed_pins", default=False)
+
+
 def _is_substitutable_pin(pin, board_component_ids, library=None):
+    if _FIXED_PINS.get():
+        return False
     return _pin_pool(pin, board_component_ids, library) is not None
 
 
@@ -952,6 +961,22 @@ def rewrite_pin_mentions(text, replacements):
     return _replace_named(text, named) if named else text
 
 
+# A pin array — `int ledPins[] = { 2, 7, 4 };` (Arduino's Arrays example): a
+# name with "Pin" in it, initialised with pin numbers only. Its elements are
+# pins, and `pinMode(ledPins[i], OUTPUT)` uses them.
+PIN_ARRAY_RE = re.compile(r"\b((?:const\s+)?(?:unsigned\s+)?(?:int|byte|uint8_t|short)\s+(\w*[Pp]ins?\w*)\s*\[\s*\d*\s*\]\s*=\s*\{)([^{}]*)(\})")
+
+
+def pin_arrays(code):
+    """{name: [pin, ...]} for every pin array in a sketch."""
+    out = {}
+    for m in PIN_ARRAY_RE.finditer(code or ""):
+        items = [x.strip() for x in m.group(3).split(",") if x.strip()]
+        if items and all(re.fullmatch(r"A?\d+", x) for x in items):
+            out[m.group(2)] = items
+    return out
+
+
 def rewrite_pins_in_code(code, replacements):
     """An Arduino sketch: change a pin number only where it IS a pin —
     an argument of a pin function (pinMode, digitalRead, analogWrite, tone,
@@ -989,6 +1014,10 @@ def rewrite_pins_in_code(code, replacements):
                           lambda m: m.group(1) + numeric.get(m.group(2), m.group(2)), code)
             code = re.sub(rf"(#define\s+(?:{names})\s+)(\d+)\b",
                           lambda m: m.group(1) + numeric.get(m.group(2), m.group(2)), code)
+        # the numbers inside a pin array are pins too
+        code = PIN_ARRAY_RE.sub(lambda m: m.group(1) + ",".join(
+            re.sub(r"\d+", lambda d: numeric.get(d.group(0), d.group(0)), x) if re.fullmatch(r"\s*\d+\s*", x) else x
+            for x in m.group(3).split(",")) + m.group(4) if all(re.fullmatch(r"\s*A?\d+\s*", x) for x in m.group(3).split(",") if x.strip()) else m.group(0), code)
         code = _COMMENT_RE.sub(lambda m: rewrite_pin_mentions(m.group(0), list(numeric.items())), code)
     return _replace_named(code, named)
 
@@ -2264,6 +2293,14 @@ def find_confirmed_pin(state, component_id, leg):
 
 
 def handle_event(lesson, library, state, event):
+    token = _FIXED_PINS.set(bool(lesson.data.get("fixed_pins")))
+    try:
+        return _handle_event(lesson, library, state, event)
+    finally:
+        _FIXED_PINS.reset(token)
+
+
+def _handle_event(lesson, library, state, event):
     state = copy.deepcopy(state)
     actions = []
 

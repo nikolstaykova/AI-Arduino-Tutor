@@ -491,6 +491,7 @@ def _check_code_followable(code, errors):
     LED_BUILTIN, or a constant declared with a literal."""
     constants = set(re.findall(r"(?:const\s+)?(?:unsigned\s+)?(?:int|byte|uint8_t|short|long)\s+(\w+)\s*=\s*A?\d+\s*;", code))
     constants |= set(re.findall(r"#define\s+(\w+)\s+A?\d+", code))
+    arrays = engine.pin_arrays(code)
     for func, args in engine._CALL_RE.findall(code):
         parts = [a.strip() for a in args.split(",")]
         for i in engine.PIN_FUNCTION_ARGS[func]:
@@ -499,6 +500,8 @@ def _check_code_followable(code, errors):
             arg = parts[i]
             if re.fullmatch(r"A?\d+|LED_BUILTIN", arg) or arg in constants:
                 continue
+            if re.fullmatch(r"(\w+)\s*\[.*\]", arg) and re.match(r"\w+", arg).group(0) in arrays:
+                continue                      # an element of a pin array: the app rewrites the array itself
             errors.append(f"The sketch passes `{arg}` as a pin to {func}(). Declare each pin once as a constant "
                           "(e.g. `const int ledPin = 13;`) and pass that name, so the app can follow a learner "
                           "who uses a different pin.")

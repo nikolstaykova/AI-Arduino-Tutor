@@ -25,10 +25,12 @@
           "lesson": "analog-read-serial"
         },
         {
-          "title": "Read Analog Voltage"
+          "title": "Read Analog Voltage",
+          "lesson": "read-analog-voltage"
         },
         {
-          "title": "Fading an LED"
+          "title": "Fading an LED",
+          "lesson": "fade"
         }
       ]
     },
@@ -40,28 +42,35 @@
       "blurb": "On and off: buttons, timing and tones.",
       "levels": [
         {
-          "title": "Blink Without Delay"
+          "title": "Blink Without Delay",
+          "lesson": "blink-without-delay"
         },
         {
-          "title": "Button"
+          "title": "Button",
+          "lesson": "button"
         },
         {
-          "title": "Debounce"
+          "title": "Debounce",
+          "lesson": "debounce"
         },
         {
-          "title": "Input Pullup Serial"
+          "title": "Input Pullup Serial",
+          "lesson": "input-pullup-serial"
         },
         {
-          "title": "State Change Detection"
+          "title": "State Change Detection",
+          "lesson": "state-change-detection"
         },
         {
           "title": "Tone Keyboard"
         },
         {
-          "title": "Tone Melody"
+          "title": "Tone Melody",
+          "lesson": "tone-melody"
         },
         {
-          "title": "Tone on Multiple Speakers"
+          "title": "Tone on Multiple Speakers",
+          "lesson": "tone-multiple"
         },
         {
           "title": "Pitch Follower"
@@ -76,10 +85,12 @@
       "blurb": "Everything in between: knobs, dimming, smoothing.",
       "levels": [
         {
-          "title": "Analog In, Out Serial"
+          "title": "Analog In, Out Serial",
+          "lesson": "analog-in-out-serial"
         },
         {
-          "title": "Analog Input"
+          "title": "Analog Input",
+          "lesson": "analog-input"
         },
         {
           "title": "Analog Write (Mega)"
@@ -88,10 +99,12 @@
           "title": "Calibration"
         },
         {
-          "title": "Fading"
+          "title": "Fading",
+          "lesson": "fading"
         },
         {
-          "title": "Smoothing"
+          "title": "Smoothing",
+          "lesson": "smoothing"
         }
       ]
     },
@@ -106,10 +119,12 @@
           "title": "ASCII Table"
         },
         {
-          "title": "Dimmer"
+          "title": "Dimmer",
+          "lesson": "dimmer"
         },
         {
-          "title": "Graph"
+          "title": "Graph",
+          "lesson": "graph"
         },
         {
           "title": "MIDI Note Player"
@@ -118,16 +133,19 @@
           "title": "Multi Serial (Mega)"
         },
         {
-          "title": "Physical Pixel"
+          "title": "Physical Pixel",
+          "lesson": "physical-pixel"
         },
         {
           "title": "Read ASCII String"
         },
         {
-          "title": "Serial Call and Response"
+          "title": "Serial Call and Response",
+          "lesson": "serial-call-response"
         },
         {
-          "title": "Serial Call and Response ASCII"
+          "title": "Serial Call and Response ASCII",
+          "lesson": "serial-call-response-ascii"
         },
         {
           "title": "SerialEvent"
@@ -136,7 +154,8 @@
           "title": "Serial Passthrough"
         },
         {
-          "title": "Virtual Color Mixer"
+          "title": "Virtual Color Mixer",
+          "lesson": "virtual-color-mixer"
         }
       ]
     },
@@ -148,22 +167,26 @@
       "blurb": "Arrays, loops, if and switch — steering your program.",
       "levels": [
         {
-          "title": "Arrays"
+          "title": "Arrays",
+          "lesson": "arrays"
         },
         {
-          "title": "For Loop (Knight Rider)"
+          "title": "For Loop (Knight Rider)",
+          "lesson": "for-loop"
         },
         {
           "title": "Switch Case (sensor)"
         },
         {
-          "title": "Switch Case (serial)"
+          "title": "Switch Case (serial)",
+          "lesson": "switch-case-serial"
         },
         {
           "title": "While Loop"
         },
         {
-          "title": "If Statement"
+          "title": "If Statement",
+          "lesson": "if-statement"
         }
       ]
     },

@@ -73,6 +73,8 @@ def enumerate_flows(lesson, library=None, exhaustive_mistakes=False, mode="full"
     library = library or load_library()
     board = Board(lesson, library)
     choices = pin_choices(board)
+    if lesson.data.get("fixed_pins"):             # the sketch walks its pins in a loop: exactly these pins
+        choices = {pin: [pin] for pin in choices}
     sym = engine._symmetric_map(lesson, library)
     sym_parts = sorted(c for c in sym if any(p.split(":", 1)[0] == c for conn in board.connections for p in conn))
     if mode == "smart":
@@ -177,6 +179,7 @@ def _non_pin_fingerprint(code):
     code = engine._COMMENT_RE.sub("", code)
     calls = [m.group(0) for m in re.finditer(r"\b(\w+(?:\.\w+)?)\s*\(([^()]*)\)", code)
              if m.group(1).split(".")[-1] not in engine.PIN_FUNCTION_ARGS]
+    code = engine.PIN_ARRAY_RE.sub("", code)            # a pin array's numbers are pins (rewritten on purpose)
     return calls + re.findall(r"\[\s*\d+\s*\]", code) + re.findall(r"=\s*\{[^{}]*\}", code)
 
 

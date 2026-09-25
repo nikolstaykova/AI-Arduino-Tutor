@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "author": "CircuitQuest (from the Arduino built-in examples)",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": 73.8,
+      "left": 156.4,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 19.8,
+      "left": -231,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
+      "top": 0,
+      "left": 120,
+      "attrs": {
+        "color": "green"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 0,
+      "left": 180,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 0,
+      "left": 240,
+      "attrs": {
+        "color": "red"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "btn1:1.l",
+      "bb1:1t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn1:1.r",
+      "bb1:1b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn1:2.l",
+      "bb1:3t.e",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "btn1:2.r",
+      "bb1:3b.f",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:1t.a",
+      "uno:2",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:3b.j",
+      "bb1:bn.3",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:bn.1",
+      "uno:GND.1",
+      "black",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:1",
+      "bb1:5b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "r1:2",
+      "bb1:9b.h",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:5b.g",
+      "uno:13",
+      "orange",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led1:A",
+      "bb1:9b.i",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led1:C",
+      "bb1:8b.i",
+      "green",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "bb1:8b.j",
+      "bb1:bn.8",
+      "black",
+      [
+        "v0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}
